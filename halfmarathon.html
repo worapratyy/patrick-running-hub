@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patrick — Half Marathon Training Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d0f;
+    --surface: #111518;
+    --surface2: #181d21;
+    --border: #1f272d;
+    --border2: #263038;
+    --text: #e8eff5;
+    --muted: #607080;
+    --accent: #00e5a0;
+    --accent2: #0096ff;
+    --accent3: #ff6b35;
+    --gold: #f5c842;
+    --rest-color: #2a3540;
+    --easy-color: #0d3d2e;
+    --quality-color: #1a2d4a;
+    --long-color: #2d1a3d;
+    --shakeout-color: #1a2d1a;
+    --race-color: #3d1a00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Crect x='0' y='0' width='1' height='40'/%3E%3Crect x='0' y='0' width='40' height='1'/%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  .hero {
+    position: relative;
+    padding: 60px 40px 50px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.3s;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.4s;
+  }
+  .stat-block { display: flex; flex-direction: column; gap: 4px; }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-value.highlight { color: var(--accent); }
+
+  /* ZONES BAR */
+  .zones-strip {
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .zone-pill {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  .zone-pill:last-child { border-right: none; }
+  .zone-pill:nth-child(1) { animation-delay: 0.5s; }
+  .zone-pill:nth-child(2) { animation-delay: 0.6s; }
+  .zone-pill:nth-child(3) { animation-delay: 0.7s; }
+  .zone-pill:nth-child(4) { animation-delay: 0.8s; }
+  .zone-pill:nth-child(5) { animation-delay: 0.9s; }
+  .zone-pill:nth-child(6) { animation-delay: 1.0s; }
+  .zone-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .zone-pace {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .zone-hr {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .z1 .zone-pace { color: #607080; }
+  .z2 .zone-pace { color: #00e5a0; }
+  .z3 .zone-pace { color: #80d060; }
+  .z4 .zone-pace { color: #f5c842; }
+  .z5 .zone-pace { color: #ff6b35; }
+  .zr .zone-pace { color: #ff3080; }
+  .zone-bar {
+    height: 2px;
+    border-radius: 1px;
+    margin-top: 8px;
+  }
+  .z1 .zone-bar { background: #607080; }
+  .z2 .zone-bar { background: #00e5a0; }
+  .z3 .zone-bar { background: #80d060; }
+  .z4 .zone-bar { background: #f5c842; }
+  .z5 .zone-bar { background: #ff6b35; }
+  .zr .zone-bar { background: #ff3080; width: 100%; }
+
+  /* PHASE PROGRESS */
+  .phase-bar {
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .phase-segment {
+    height: 6px;
+    border-radius: 3px;
+    position: relative;
+    cursor: default;
+  }
+  .phase-base { background: linear-gradient(90deg, #0096ff, #00c8ff); flex: 2; }
+  .phase-rebuild { background: linear-gradient(90deg, #607080, #8090a0); flex: 1; }
+  .phase-build { background: linear-gradient(90deg, #00e5a0, #00c87a); flex: 3; }
+  .phase-peak { background: linear-gradient(90deg, #f5c842, #ff9922); flex: 1; }
+  .phase-taper { background: linear-gradient(90deg, #ff6b35, #ff3080); flex: 1; }
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    padding: 0 8px;
+  }
+  .phase-label.small { font-size: 8px; }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1400px; margin: 0 auto; padding: 0; }
+
+  /* WEEK HEADERS NAVIGATION */
+  .week-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,13,15,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .week-nav::-webkit-scrollbar { display: none; }
+  .week-nav-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 14px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .week-nav-item:hover { color: var(--text); }
+  .week-nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .week-nav-item.recovery { color: #607080; }
+  .week-nav-item.race { color: #ff6b35; }
+
+  /* WEEK CARDS */
+  .weeks-grid { padding: 0; }
+
+  .week-card {
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .week-card.visible { opacity: 1; transform: translateY(0); }
+
+  .week-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 40px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .week-header:hover { background: rgba(255,255,255,0.02); }
+
+  .week-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--border2);
+    min-width: 70px;
+    transition: color 0.3s;
+  }
+  .week-card.active .week-num { color: var(--accent); }
+
+  .week-meta { display: flex; flex-direction: column; gap: 4px; }
+  .week-phase-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    width: fit-content;
+  }
+  .tag-base { background: rgba(0,150,255,0.15); color: #0096ff; }
+  .tag-rebuild { background: rgba(96,112,128,0.2); color: #8090a0; }
+  .tag-build { background: rgba(0,229,160,0.12); color: #00e5a0; }
+  .tag-peak { background: rgba(245,200,66,0.15); color: #f5c842; }
+  .tag-taper { background: rgba(255,107,53,0.15); color: #ff6b35; }
+
+  .week-focus {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .week-focus-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+    max-width: 600px;
+  }
+
+  .week-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .week-km {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .week-km span { font-size: 14px; font-weight: 400; color: var(--muted); }
+  .recovery-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 3px 8px;
+    background: rgba(96,112,128,0.15);
+    color: var(--muted);
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .chevron {
+    width: 20px; height: 20px;
+    color: var(--muted);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .week-card.active .chevron { transform: rotate(180deg); }
+
+  /* DAYS GRID */
+  .days-grid {
+    display: none;
+    padding: 0 40px 32px;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .week-card.active .days-grid { display: grid; }
+
+  .day-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .day-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .day-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .day-card:hover::before { opacity: 1; }
+  .day-card.done { opacity: 0.5; }
+  .day-card.done .day-name { text-decoration: line-through; }
+
+  /* Type backgrounds */
+  .type-rest { background: var(--rest-color); border-color: #2a3540; }
+  .type-easy { background: var(--easy-color); }
+  .type-easy:hover { border-color: #00e5a0; }
+  .type-quality { background: var(--quality-color); }
+  .type-quality:hover { border-color: #0096ff; }
+  .type-long { background: var(--long-color); }
+  .type-long:hover { border-color: #c060ff; }
+  .type-shakeout { background: var(--shakeout-color); }
+  .type-race {
+    background: var(--race-color);
+    border-color: #ff6b35 !important;
+    box-shadow: 0 0 20px rgba(255,107,53,0.15);
+  }
+
+  .day-dow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .day-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .day-type-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .dot-rest { background: var(--muted); }
+  .dot-easy { background: #00e5a0; }
+  .dot-quality { background: #0096ff; }
+  .dot-long { background: #c060ff; }
+  .dot-shakeout { background: #80d060; }
+  .dot-race { background: #ff6b35; }
+
+  .day-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .day-km {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .day-km span { font-size: 10px; color: var(--muted); }
+  .day-check {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 18px; height: 18px;
+    border: 1px solid var(--border2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 10px;
+  }
+  .day-check:hover { border-color: var(--accent); }
+  .day-card.done .day-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  /* DETAIL PANEL */
+  .detail-panel {
+    display: none;
+    margin: 0 40px 24px;
+    padding: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    position: relative;
+  }
+  .detail-panel.visible { display: block; }
+  .detail-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .detail-close:hover { color: var(--text); border-color: var(--border2); }
+  .detail-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .detail-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .detail-km {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .detail-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #a0b8c8;
+  }
+
+  /* RACE STRATEGY */
+  .race-strategy {
+    margin: 40px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .race-strategy-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(255,48,128,0.08));
+    border-bottom: 1px solid var(--border2);
+  }
+  .race-strategy-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .race-strategy-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .race-splits {
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .split-card {
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+  .split-km {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .split-pace {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .split-note { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  .race-nutrition {
+    padding: 24px 28px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .nutrition-item { display: flex; flex-direction: column; gap: 4px; }
+  .nutrition-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .nutrition-val { font-size: 13px; color: var(--text); line-height: 1.4; }
+
+  /* FOOTER */
+  .footer {
+    padding: 32px 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .footer-coach {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* PROGRESS BAR */
+  .progress-section {
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .progress-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { padding: 40px 20px 36px; }
+    .zones-strip { padding: 16px 20px; }
+    .week-header { padding: 20px 20px 16px; gap: 12px; }
+    .days-grid { padding: 0 20px 24px; grid-template-columns: repeat(4, 1fr); }
+    .detail-panel { margin: 0 20px 20px; }
+    .race-strategy { margin: 20px; }
+    .footer { padding: 24px 20px; }
+    .week-nav { padding: 0 20px; }
+    .phase-bar { padding: 16px 20px; }
+    .progress-section { padding: 16px 20px; }
+  }
+  @media (max-width: 600px) {
+    .days-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { gap: 24px; }
+    .week-focus { font-size: 15px; }
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a2530;
+    border: 1px solid var(--border2);
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 200;
+  }
+  .day-card:hover .tooltip { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Claude Coach · Bangkok, Thailand</div>
+    <div class="hero-title">Patrick's <span>Half Marathon</span><br>Training Plan</div>
+    <div class="hero-sub">MAY 03, 2026 · 21.1 KM · 8 WEEKS</div>
+    <div class="hero-stats">
+      <div class="stat-block">
+        <div class="stat-label">Goal Time</div>
+        <div class="stat-value highlight">Sub-2:15</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Target Pace</div>
+        <div class="stat-value">6:23/km</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Total Weeks</div>
+        <div class="stat-value">8</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Peak Week</div>
+        <div class="stat-value">~30 km</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Peak Long Run</div>
+        <div class="stat-value">18 km</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Plan Start</div>
+        <div class="stat-value">Mar 9</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZONES -->
+  <div class="zones-strip">
+    <div class="zone-pill z1">
+      <div class="zone-name">Z1 Recovery</div>
+      <div class="zone-pace">7:30–8:30</div>
+      <div class="zone-hr">HR &lt;126</div>
+      <div class="zone-bar" style="width:20%"></div>
+    </div>
+    <div class="zone-pill z2">
+      <div class="zone-name">Z2 Aerobic</div>
+      <div class="zone-pace">6:30–7:30</div>
+      <div class="zone-hr">HR 126–143</div>
+      <div class="zone-bar" style="width:40%"></div>
+    </div>
+    <div class="zone-pill z3">
+      <div class="zone-name">Z3 Tempo</div>
+      <div class="zone-pace">5:50–6:30</div>
+      <div class="zone-hr">HR 143–155</div>
+      <div class="zone-bar" style="width:60%"></div>
+    </div>
+    <div class="zone-pill z4">
+      <div class="zone-name">Z4 Threshold</div>
+      <div class="zone-pace">5:20–5:50</div>
+      <div class="zone-hr">HR 155–168</div>
+      <div class="zone-bar" style="width:80%"></div>
+    </div>
+    <div class="zone-pill z5">
+      <div class="zone-name">Z5 VO2 Max</div>
+      <div class="zone-pace">4:50–5:20</div>
+      <div class="zone-hr">HR 168+</div>
+      <div class="zone-bar" style="width:90%"></div>
+    </div>
+    <div class="zone-pill zr">
+      <div class="zone-name">Race Pace</div>
+      <div class="zone-pace">6:15–6:23</div>
+      <div class="zone-hr">Target for May 3</div>
+      <div class="zone-bar"></div>
+    </div>
+  </div>
+
+  <!-- PHASE BAR -->
+  <div class="phase-bar">
+    <span class="phase-label" style="color:#0096ff">BASE</span>
+    <div class="phase-segment phase-base"></div>
+    <span class="phase-label small" style="color:#8090a0">CHINA</span>
+    <div class="phase-segment phase-rebuild"></div>
+    <span class="phase-label" style="color:#00e5a0">BUILD</span>
+    <div class="phase-segment phase-build"></div>
+    <span class="phase-label" style="color:#f5c842">PEAK</span>
+    <div class="phase-segment phase-peak"></div>
+    <span class="phase-label" style="color:#ff6b35">TAPER</span>
+    <div class="phase-segment phase-taper"></div>
+    <span class="phase-label" style="color:#ff3080">🏁</span>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div class="progress-label">Training Progress</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-pct" id="progressPct">0%</div>
+  </div>
+
+  <!-- WEEK NAV -->
+  <div class="week-nav" id="weekNav">
+    <div class="week-nav-item active" data-week="1" onclick="scrollToWeek(1)">W1 · Base</div>
+    <div class="week-nav-item" data-week="2" onclick="scrollToWeek(2)">W2 · Base</div>
+    <div class="week-nav-item recovery" data-week="3" onclick="scrollToWeek(3)">W3 · Holiday ✈</div>
+    <div class="week-nav-item" data-week="4" onclick="scrollToWeek(4)">W4 · Build</div>
+    <div class="week-nav-item" data-week="5" onclick="scrollToWeek(5)">W5 · Build</div>
+    <div class="week-nav-item recovery" data-week="6" onclick="scrollToWeek(6)">W6 · Recovery</div>
+    <div class="week-nav-item" data-week="7" onclick="scrollToWeek(7)">W7 · Peak</div>
+    <div class="week-nav-item race" data-week="8" onclick="scrollToWeek(8)">W8 · Race 🏁</div>
+  </div>
+
+  <!-- WEEKS -->
+  <div class="weeks-grid" id="weeksGrid"></div>
+
+  <!-- RACE STRATEGY -->
+  <div class="race-strategy">
+    <div class="race-strategy-header">
+      <div class="race-strategy-title">🏁 Race Day Strategy — May 3, 2026</div>
+      <div class="race-strategy-sub">TARGET: 2:12–2:15 · PACE: 6:15–6:23/KM · HALF MARATHON</div>
+    </div>
+    <div class="race-splits">
+      <div class="split-card">
+        <div class="split-km">KM 0–3</div>
+        <div class="split-pace">6:30–6:40</div>
+        <div class="split-note">Start conservative. Race day adrenaline will push you too fast. Hold back deliberately.</div>
+      </div>
+      <div class="split-card">
+        <div class="split-km">KM 3–10</div>
+        <div class="split-pace">6:15–6:25</div>
+        <div class="split-note">Find race rhythm. Controlled and sustainable. Trust your training.</div>
+      </div>
+      <div class="split-card">
+        <div class="split-km">KM 10–16</div>
+        <div class="split-pace">6:15–6:20</div>
+        <div class="split-note">Steady state. Focus on form, not pace. Take gel at km 14.</div>
+      </div>
+      <div class="split-card">
+        <div class="split-km">KM 16–19</div>
+        <div class="split-pace">6:10–6:20</div>
+        <div class="split-note">Push if you feel good. This is where the race is won or lost.</div>
+      </div>
+      <div class="split-card">
+        <div class="split-km">KM 19–21.1</div>
+        <div class="split-pace" style="color:#ff6b35">All Out</div>
+        <div class="split-note">Empty the tank. Nothing left at the finish line. You've done the work.</div>
+      </div>
+    </div>
+    <div class="race-nutrition">
+      <div class="nutrition-item">
+        <div class="nutrition-label">Pre-Race Morning</div>
+        <div class="nutrition-val">Rice porridge + banana, 3 hrs before. Coffee if habitual.</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-label">Gel #1</div>
+        <div class="nutrition-val">At km 7 — take with water.</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-label">Gel #2</div>
+        <div class="nutrition-val">At km 14 — critical for the final push.</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-label">Hydration</div>
+        <div class="nutrition-val">Sip at every aid station. Small amounts, don't stop.</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-label">Bangkok Heat</div>
+        <div class="nutrition-val">Pour water on head at stations. If temp &gt;28°C, add 15–20 sec/km.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-text">Generated March 8, 2026 · Claude Coach v1 · Strava ID: 196020651</div>
+    <div class="footer-coach">Zones estimated — run threshold test in Week 1 to calibrate</div>
+  </div>
+
+</div>
+
+<script>
+const PLAN = {
+  weeks: [
+    {
+      weekNumber: 1, phase: "Base", phaseTag: "tag-base", isRecovery: false,
+      totalKm: 24, focus: "Establish structure — get the first runs done",
+      focusSub: "Mar 9–15 · First week. Build the habit.",
+      note: "First week. The goal is to establish the running structure. Treadmill-based for now — keep HR in Zone 2 and get the time on feet. First run already done! ✅",
+      days: [
+        { dow:"Mon", date:"Mar 9",  type:"rest",    name:"Rest / Mobility",  km:0,  detail:"Full rest or 15 min mobility work. Hips, calves, hamstrings." },
+        { dow:"Tue", date:"Mar 10", type:"easy",    name:"Easy Zone 2 Run",  km:7,  detail:"✅ COMPLETED — Mar 10, 7:07 AM\n📏 7.01 km · ⏱ 8:30/km · ❤️ HR 129 bpm (Zone 2) · ⏳ 59:32 · 🔥 488 cal\n👟 Adidas EVO SL · ⌚ Garmin FR570\n\nPace was slower than target but HR was perfect — exactly what Zone 2 training looks like on the treadmill. Great first run." },
+        { dow:"Wed", date:"Mar 11", type:"rest",    name:"Rest",             km:0,  detail:"Full rest." },
+        { dow:"Thu", date:"Mar 12", type:"rest",    name:"Rest",             km:0,  detail:"Full rest." },
+        { dow:"Fri", date:"Mar 13", type:"easy",    name:"Easy Zone 2 Run",  km:5,  detail:"5 km easy Zone 2 on treadmill. HR: 115–125 bpm · Pace: 8:40–9:00/km · Speed: 5.5–5.7 km/h. Light run — keep it comfortable." },
+        { dow:"Sat", date:"Mar 14", type:"rest",    name:"Rest",             km:0,  detail:"Full rest." },
+        { dow:"Sun", date:"Mar 15", type:"long",    name:"Long Run — 12 km", km:12, detail:"12 km Zone 2. HR: 120–128 bpm · Pace: 8:30–8:45/km. Build! Stay disciplined — if HR climbs above Zone 2 in the heat, walk until it drops. Bring 500ml water." }
+      ]
+    },
+    {
+      weekNumber: 2, phase: "Base", phaseTag: "tag-base", isRecovery: false,
+      totalKm: 12, focus: "Pre-vacation runs — bank the km before China",
+      focusSub: "Mar 16–22 · Get both runs done before the holiday.",
+      note: "Get both treadmill sessions done before the vacation. Mar 19 is the last run before the flight — do it in the morning! Then full rest in China.",
+      days: [
+        { dow:"Mon", date:"Mar 16", type:"rest",  name:"Rest",                  km:0,  detail:"Full rest." },
+        { dow:"Tue", date:"Mar 17", type:"easy",  name:"Easy Zone 2 Run",       km:6,  detail:"6 km easy Zone 2 on treadmill. HR: 115–125 bpm · Pace: 8:35–8:50/km · Speed: 5.5–5.7 km/h. Pre-vacation week — bank the fitness." },
+        { dow:"Wed", date:"Mar 18", type:"rest",  name:"Rest",                  km:0,  detail:"Full rest." },
+        { dow:"Thu", date:"Mar 19", type:"easy",  name:"Easy Zone 2 Run ✈",     km:6,  detail:"6 km Zone 2 on treadmill. HR: 115–125 bpm · Pace: 8:35–8:50/km. Last run before vacation — flight tonight. Get it done in the morning!" },
+        { dow:"Fri", date:"Mar 20", type:"rest",  name:"Rest — Holiday",        km:0,  detail:"In China. Full rest." },
+        { dow:"Sat", date:"Mar 21", type:"rest",  name:"Rest — Holiday",        km:0,  detail:"In China. Full rest." },
+        { dow:"Sun", date:"Mar 22", type:"rest",  name:"Rest — Holiday",        km:0,  detail:"In China. Full rest." }
+      ]
+    },
+    {
+      weekNumber: 3, phase: "China Holiday ✈", phaseTag: "tag-rebuild", isRecovery: true,
+      totalKm: 19, focus: "Full rest during holiday — recharge completely",
+      focusSub: "Mar 19–24 holiday · Resume Mar 27",
+      note: "Full rest during the China holiday (Mar 19–24). No running at all — enjoy the trip. Resume with an easy run on Friday Mar 27 and a short long run Sunday Mar 29.",
+      days: [
+        { dow:"Mon", date:"Mar 23", type:"rest",  name:"Rest — Holiday",      km:0,  detail:"Full rest. You're in China — enjoy it! No running required." },
+        { dow:"Tue", date:"Mar 24", type:"rest",  name:"Rest — Holiday",      km:0,  detail:"Rest / travel day home. Long flights — stay hydrated." },
+        { dow:"Wed", date:"Mar 25", type:"rest",  name:"Rest — Arrived Home", km:0,  detail:"Arrived back Bangkok early morning. Full rest day to recover from travel." },
+        { dow:"Thu", date:"Mar 26", type:"rest",  name:"Rest",                km:0,  detail:"Rest. Let the jet lag clear." },
+        { dow:"Fri", date:"Mar 27", type:"easy",  name:"Easy Run",            km:7,  detail:"7 km easy Zone 2. First run back — keep it gentle. Pace: 6:30–7:30/km." },
+        { dow:"Sat", date:"Mar 28", type:"rest",  name:"Rest",                km:0,  detail:"Rest." },
+        { dow:"Sun", date:"Mar 29", type:"long",  name:"Recovery Long Run",   km:12, detail:"12 km easy Zone 2 — ease back into distance. Feel good, not heroic." }
+      ]
+    },
+    {
+      weekNumber: 4, phase: "Build", phaseTag: "tag-build", isRecovery: false,
+      totalKm: 27, focus: "Back from China — first tempo + long run build",
+      focusSub: "Mar 30–Apr 5 · Ease back in, then push on Thursday & Sunday.",
+      note: "You're back from China. Start easy on Tuesday, then first real tempo on Thursday. Sunday's long run is a new distance — time on feet, not pace.",
+      days: [
+        { dow:"Mon", date:"Mar 30", type:"rest",    name:"Rest",               km:0,  detail:"Full rest." },
+        { dow:"Tue", date:"Mar 31", type:"easy",    name:"Easy Zone 2 Run",    km:6,  detail:"6 km easy Zone 2 on treadmill. HR: 115–125 bpm · Pace: 8:35–8:50/km. Back from China — comfortable shake out. Welcome home!" },
+        { dow:"Wed", date:"Apr 1",  type:"rest",    name:"Rest",               km:0,  detail:"Rest." },
+        { dow:"Thu", date:"Apr 2",  type:"quality", name:"Tempo Run",          km:8,  detail:"8 km with tempo block. Treadmill: 6.0–6.3 km/h · HR: 130–140 bpm · Pace: 7:30–8:00/km. Warm-up 2 km easy → 4 km tempo → 2 km cool-down. First tempo session — controlled and purposeful." },
+        { dow:"Fri", date:"Apr 3",  type:"rest",    name:"Rest",               km:0,  detail:"Rest after the quality session." },
+        { dow:"Sat", date:"Apr 4",  type:"rest",    name:"Rest",               km:0,  detail:"Rest before long run." },
+        { dow:"Sun", date:"Apr 5",  type:"long",    name:"Long Run — 13 km",   km:13, detail:"13 km Zone 2. HR: 120–128 bpm · Pace: 8:25–8:40/km. New distance! Back from China — time on feet, not pace. Bring water." }
+      ]
+    },
+    {
+      weekNumber: 5, phase: "Build", phaseTag: "tag-build", isRecovery: false,
+      totalKm: 30, focus: "Build week — easy Tuesday, tempo Thursday, big Sunday",
+      focusSub: "Apr 6–12 · Biggest long run yet at 16 km.",
+      note: "Key build week. Easy run Tuesday to keep legs fresh, then tempo Thursday, then your biggest long run yet on Sunday. This week builds the aerobic engine.",
+      days: [
+        { dow:"Mon", date:"Apr 6",  type:"rest",    name:"Rest",              km:0,  detail:"Full rest." },
+        { dow:"Tue", date:"Apr 7",  type:"easy",    name:"Easy Zone 2 Run",   km:6,  detail:"6 km easy Zone 2 on treadmill. HR: 115–125 bpm · Pace: 8:35–8:50/km · Speed: 5.5–5.7 km/h. Peak volume week — easy day before Thursday's tempo." },
+        { dow:"Wed", date:"Apr 8",  type:"rest",    name:"Rest",              km:0,  detail:"Rest. Let legs recover for Thursday." },
+        { dow:"Thu", date:"Apr 9",  type:"quality", name:"Tempo Run",         km:8,  detail:"8 km tempo. Treadmill: 6.2–6.5 km/h · HR: 130–140 bpm · Pace: 7:20–7:50/km. Warm-up 2 km easy → 4 km tempo → 2 km cool-down. Faster tempo! Controlled and purposeful." },
+        { dow:"Fri", date:"Apr 10", type:"rest",    name:"Rest",              km:0,  detail:"Full rest." },
+        { dow:"Sat", date:"Apr 11", type:"rest",    name:"Rest",              km:0,  detail:"Rest before the big long run." },
+        { dow:"Sun", date:"Apr 12", type:"long",    name:"Long Run — 16 km",  km:16, detail:"16 km Zone 2. HR: 120–130 bpm · Pace: 8:20–8:35/km. Biggest run yet! Bring water and 1 gel at km 10. Time on feet — stay disciplined with the pace." }
+      ]
+    },
+    {
+      weekNumber: 6, phase: "Recovery", phaseTag: "tag-rebuild", isRecovery: true,
+      totalKm: 24, focus: "Recovery week — absorb 5 weeks of work",
+      focusSub: "Apr 13–19 · Mandatory. Do not skip this.",
+      note: "Mandatory recovery week. Fitness is built during recovery, not during workouts. Your body needs this week to absorb everything from weeks 1–5.",
+      days: [
+        { dow:"Mon", date:"Apr 13", type:"rest",  name:"Rest",               km:0,  detail:"Full rest." },
+        { dow:"Tue", date:"Apr 14", type:"easy",  name:"Easy Zone 2 Run",    km:6,  detail:"6 km very easy Zone 2. HR: 115–125 bpm · Pace: 8:40–8:55/km. Recovery week — resist any urge to push." },
+        { dow:"Wed", date:"Apr 15", type:"rest",  name:"Rest",               km:0,  detail:"Rest." },
+        { dow:"Thu", date:"Apr 16", type:"easy",  name:"Easy Zone 2 Run",    km:5,  detail:"5 km easy Zone 2. HR: 115–125 bpm · Pace: 8:45–9:00/km. Short & easy. Recovery week — no strides." },
+        { dow:"Fri", date:"Apr 17", type:"rest",  name:"Rest",               km:0,  detail:"Rest." },
+        { dow:"Sat", date:"Apr 18", type:"rest",  name:"Rest",               km:0,  detail:"Rest before the long run." },
+        { dow:"Sun", date:"Apr 19", type:"long",  name:"Easy Long Run 13 km",km:13, detail:"13 km easy Zone 2 — shorter intentionally. You're consolidating. Don't add distance. Enjoy the lightness in your legs. You've earned this recovery." }
+      ]
+    },
+    {
+      weekNumber: 7, phase: "Peak", phaseTag: "tag-peak", isRecovery: false,
+      totalKm: 32, focus: "Peak week — final tempo + 18 km peak long run",
+      focusSub: "Apr 20–26 · 18 km peak long run. You'll know you can do this.",
+      note: "This week is the peak of your training. Easy run Tuesday to stay fresh, then the final hard tempo on Thursday, then 18 km on Sunday. After Sunday's run, you will know you can finish the half marathon.",
+      days: [
+        { dow:"Mon", date:"Apr 20", type:"rest",    name:"Rest",              km:0,  detail:"Full rest." },
+        { dow:"Tue", date:"Apr 21", type:"easy",    name:"Easy Zone 2 Run",   km:6,  detail:"6 km easy Zone 2 on treadmill. HR: 115–125 bpm · Pace: 8:35–8:50/km. Peak week — save energy for Thursday's tempo and Sunday's big run." },
+        { dow:"Wed", date:"Apr 22", type:"rest",    name:"Rest",              km:0,  detail:"Rest." },
+        { dow:"Thu", date:"Apr 23", type:"quality", name:"Tempo Run",         km:8,  detail:"8 km final hard tempo. Treadmill: 6.3–6.7 km/h · HR: 130–140 bpm · Pace: 7:15–7:45/km. Warm-up 2 km → 4 km tempo → 2 km cool-down. Final hard tempo session — this is peak fitness." },
+        { dow:"Fri", date:"Apr 24", type:"rest",    name:"Rest",              km:0,  detail:"Rest. Mentally prep for the big weekend." },
+        { dow:"Sat", date:"Apr 25", type:"rest",    name:"Rest",              km:0,  detail:"Rest. Fresh legs for Sunday's peak run." },
+        { dow:"Sun", date:"Apr 26", type:"long",    name:"Peak Long Run — 18 km", km:18, detail:"18 km — PEAK RUN! HR: 120–130 bpm · Pace: 8:20–8:35/km. First 14 km steady Zone 2, final 4 km push slightly harder. Bring 2 gels (km 8 and km 14). After this run, you KNOW you can finish the half marathon." }
+      ]
+    },
+    {
+      weekNumber: 8, phase: "Taper 🏁", phaseTag: "tag-taper", isRecovery: true,
+      totalKm: 28, focus: "RACE WEEK — freshen up, trust the training",
+      focusSub: "Apr 27–May 3 · Race day is Sunday May 3.",
+      note: "Taper madness is real. You WILL feel sluggish, heavy, and doubt your fitness. This is normal — it means the taper is working. The fitness is banked. Today's job is just to stay fresh.",
+      days: [
+        { dow:"Mon", date:"Apr 27", type:"rest",     name:"Rest",                    km:0,    detail:"Full rest. Start hydrating well. Eat normal, nutritious meals." },
+        { dow:"Tue", date:"Apr 28", type:"easy",     name:"Easy Run + Strides",      km:4,    detail:"4 km easy with 4×80m strides at race pace. HR: 115–125 bpm. Keep legs feeling snappy. Taper week — don't overdo it!" },
+        { dow:"Wed", date:"Apr 29", type:"rest",     name:"Rest",                    km:0,    detail:"Rest. Extra sleep is training right now." },
+        { dow:"Thu", date:"Apr 30", type:"rest",     name:"Rest",                    km:0,    detail:"Full rest. You may feel sluggish — that is the taper working. Trust the 7 weeks." },
+        { dow:"Fri", date:"May 1",  type:"rest",     name:"Rest — Pre-Race Prep",    km:0,    detail:"Full rest. Prepare race kit: bib, shoes, socks, watch, 2 gels. Eat a normal dinner. Sleep early." },
+        { dow:"Sat", date:"May 2",  type:"shakeout", name:"Race-Eve Shakeout",       km:2.5,  detail:"2–3 km very easy + 3 strides at race pace. Just getting the legs moving. Some athletes skip this — do what feels right. Don't prove anything today." },
+        { dow:"Sun", date:"May 3",  type:"race",     name:"🏁 RACE DAY — Half Marathon", km:21.1, detail:"RACE DAY. Start conservative — first 3 km should feel almost too easy. Find rhythm at km 3–5. Hold race pace 6:15–6:25/km through km 15. If you feel good at km 16, push. Empty the tank in the final 2 km. You've done the work. Run your race." }
+      ]
+    }
+  ]
+};
+
+const DEFAULT_COMPLETED = { 'w1-d1': true }; // Mar 10 ✅ 7.01 km · 8:30/km · HR 129 bpm
+let completedDays = { ...DEFAULT_COMPLETED, ...JSON.parse(localStorage.getItem('hm-completed') || '{}') };
+
+function getDotClass(type) {
+  return 'dot-' + type;
+}
+
+function renderWeeks() {
+  const grid = document.getElementById('weeksGrid');
+  PLAN.weeks.forEach((week, wi) => {
+    const card = document.createElement('div');
+    card.className = 'week-card' + (wi === 0 ? ' active' : '');
+    card.id = 'week-' + week.weekNumber;
+
+    const tagClass = week.phaseTag;
+    const recoveryBadge = week.isRecovery ? '<div class="recovery-badge">Recovery</div>' : '';
+
+    card.innerHTML = `
+      <div class="week-header" onclick="toggleWeek(${week.weekNumber})">
+        <div class="week-num">${String(week.weekNumber).padStart(2,'0')}</div>
+        <div class="week-meta">
+          <div class="week-phase-tag ${tagClass}">${week.phase}</div>
+          <div class="week-focus">${week.focus}</div>
+          <div class="week-focus-sub">${week.focusSub}</div>
+        </div>
+        <div class="week-stats">
+          <div class="week-km">${week.totalKm} <span>km</span></div>
+          ${recoveryBadge}
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="days-grid" id="days-${week.weekNumber}"></div>
+      <div class="detail-panel" id="detail-${week.weekNumber}">
+        <span class="detail-close" onclick="closeDetail(${week.weekNumber})">✕ close</span>
+        <div class="detail-header">
+          <div class="detail-title" id="detail-title-${week.weekNumber}">—</div>
+          <div class="detail-km" id="detail-km-${week.weekNumber}">—</div>
+        </div>
+        <div class="detail-body" id="detail-body-${week.weekNumber}">—</div>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // Render days
+    const daysContainer = card.querySelector('.days-grid');
+    week.days.forEach((day, di) => {
+      const key = `w${week.weekNumber}-d${di}`;
+      const isDone = completedDays[key];
+      const div = document.createElement('div');
+      div.className = `day-card type-${day.type}${isDone ? ' done' : ''}`;
+      div.setAttribute('data-week', week.weekNumber);
+      div.setAttribute('data-day', di);
+
+      const kmDisplay = day.km > 0 ? `<div class="day-km">${day.km} <span>km</span></div>` : `<div class="day-km" style="color:var(--muted)">—</div>`;
+
+      div.innerHTML = `
+        <div class="day-dow">${day.dow}</div>
+        <div class="day-date">${day.date}</div>
+        <div class="day-name"><span class="day-type-dot ${getDotClass(day.type)}"></span>${day.name}</div>
+        ${kmDisplay}
+        <div class="day-check" onclick="toggleDone(event,'${key}',${week.weekNumber},${di})">${isDone ? '✓' : ''}</div>
+      `;
+      div.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('day-check')) {
+          showDetail(week.weekNumber, di, day);
+        }
+      });
+      daysContainer.appendChild(div);
+    });
+  });
+
+  // Observe for animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.week-card').forEach(c => observer.observe(c));
+
+  updateProgress();
+}
+
+function toggleWeek(num) {
+  const card = document.getElementById('week-' + num);
+  const isActive = card.classList.contains('active');
+  // Close all
+  document.querySelectorAll('.week-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('visible'));
+  if (!isActive) card.classList.add('active');
+
+  // Update nav
+  document.querySelectorAll('.week-nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.week-nav-item[data-week="${num}"]`)?.classList.add('active');
+}
+
+function scrollToWeek(num) {
+  toggleWeek(num);
+  const card = document.getElementById('week-' + num);
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function showDetail(weekNum, dayIdx, day) {
+  const panel = document.getElementById('detail-' + weekNum);
+  const title = document.getElementById('detail-title-' + weekNum);
+  const km = document.getElementById('detail-km-' + weekNum);
+  const body = document.getElementById('detail-body-' + weekNum);
+
+  title.textContent = day.name;
+  km.textContent = day.km > 0 ? day.km + ' km' : 'Rest';
+  body.textContent = day.detail;
+
+  panel.classList.add('visible');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+}
+
+function closeDetail(weekNum) {
+  document.getElementById('detail-' + weekNum).classList.remove('visible');
+}
+
+function toggleDone(e, key, weekNum, dayIdx) {
+  e.stopPropagation();
+  completedDays[key] = !completedDays[key];
+  localStorage.setItem('hm-completed', JSON.stringify(completedDays));
+
+  const card = document.querySelector(`[data-week="${weekNum}"][data-day="${dayIdx}"]`);
+  const check = card.querySelector('.day-check');
+  if (completedDays[key]) {
+    card.classList.add('done');
+    check.textContent = '✓';
+  } else {
+    card.classList.remove('done');
+    check.textContent = '';
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  let total = 0, done = 0;
+  PLAN.weeks.forEach((week, wi) => {
+    week.days.forEach((day, di) => {
+      total++;
+      const key = `w${week.weekNumber}-d${di}`;
+      if (completedDays[key]) done++;
+    });
+  });
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+renderWeeks();
+</script>
+</body>
+</html>
