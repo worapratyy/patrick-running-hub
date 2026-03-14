@@ -23,15 +23,6 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     #overlay p{font-size:14px;font-weight:700;color:#15803d}
 
-    /* Config */
-    #cfg{display:none;background:#fff;border:1.5px dashed #d1d5db;border-radius:var(--r);padding:14px 16px;margin-bottom:var(--gap);flex-direction:column;gap:10px}
-    #cfg.show{display:flex}
-    #cfg label{font-size:11px;font-weight:600;color:var(--gray)}
-    .cfg-row{display:flex;gap:8px;flex-wrap:wrap}
-    #cfg input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;flex:1;min-width:180px}
-    #cfg button{background:var(--green);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
-    #cfg .hint{font-size:10px;color:var(--gray2)}
-
     /* Error */
     #err{display:none;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:11px 14px;margin-bottom:var(--gap);gap:10px;font-size:12px;color:#991b1b;align-items:center}
     #err.show{display:flex}
@@ -141,21 +132,9 @@
 <div id="overlay"><div class="ring"></div><p>Loading runs…</p></div>
 <div class="dash">
 
-  <!-- Config -->
-  <div id="cfg">
-    <label>⚙️ Railway API Settings</label>
-    <div class="cfg-row">
-      <input id="cfgUrl" type="text" placeholder="https://your-app.up.railway.app"/>
-      <input id="cfgUid" type="number" placeholder="User ID (e.g. 1)" style="max-width:140px"/>
-      <button onclick="saveConfig()">Save &amp; Load</button>
-    </div>
-    <span class="hint">Find your User ID at <strong>/api/users</strong> on your Railway URL</span>
-  </div>
-
   <!-- Error -->
   <div id="err">
     <span>⚠️</span><span id="errMsg">Error loading data.</span>
-    <button onclick="document.getElementById('cfg').classList.toggle('show')">⚙️ Settings</button>
   </div>
 
   <!-- Header -->
@@ -169,7 +148,6 @@
       <div class="badge" id="bdgStreak">—</div>
       <div class="badge goal" id="bdgRace">🎯 HM Goal</div>
       <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
-      <button class="hbtn" onclick="document.getElementById('cfg').classList.toggle('show')">⚙️</button>
     </div>
   </header>
 
@@ -275,7 +253,9 @@
 <script>
 'use strict';
 // ── CONFIG ────────────────────────────────────────────────
-const TODAY           = new Date().toISOString().split('T')[0];
+const API_URL = 'https://web-production-02724.up.railway.app';
+const USER_ID = 1;
+const TODAY   = new Date().toISOString().split('T')[0];
 const MAX_HR          = 185;
 const GARMIN_HM_PRED  = '2:01:41'; // update weekly from Garmin Connect
 const RACE_DATE       = '2026-05-03'; // your target race date
@@ -292,16 +272,6 @@ const SHOES = [
   { name:'Adidas Adizero EVO SL', startDate:'2026-02-14', maxKm:500, color:'#0d9488' },
 ];
 
-// ── CONFIG HELPERS ────────────────────────────────────────
-function getCfg(){
-  return { url:(localStorage.getItem('s_url')||'').trim(), uid:parseInt(localStorage.getItem('s_uid')||'1') };
-}
-function saveConfig(){
-  localStorage.setItem('s_url',(document.getElementById('cfgUrl').value||'').trim().replace(/\/$/,''));
-  localStorage.setItem('s_uid',parseInt(document.getElementById('cfgUid').value)||1);
-  document.getElementById('cfg').classList.remove('show');
-  boot();
-}
 
 // ── HELPERS ───────────────────────────────────────────────
 function ps(pM,pS){ return `${pM}:${String(pS).padStart(2,'0')}`; }
@@ -596,70 +566,48 @@ function showErr(msg){
   document.getElementById('err').classList.add('show');
   document.getElementById('overlay').style.display='none';
 }
-let _lastActivityId = null;
 
-async function boot(forceCoach=false){
+async function boot(){
   document.getElementById('overlay').style.display='flex';
   document.getElementById('err').classList.remove('show');
-  const {url,uid}=getCfg();
-  if(!url){
-    document.getElementById('cfg').classList.add('show');
-    document.getElementById('overlay').style.display='none';
-    showErr('Enter your Railway API URL in ⚙️ settings above to get started.');
-    return;
-  }
   try{
-    // Fetch users + runs + analytics all at once
     const [uRes, rRes, aRes] = await Promise.all([
-      fetch(`${url}/api/users`),
-      fetch(`${url}/api/runs/${uid}`),
-      fetch(`${url}/api/analytics/${uid}`)
+      fetch(`${API_URL}/api/users`),
+      fetch(`${API_URL}/api/runs/${USER_ID}`),
+      fetch(`${API_URL}/api/analytics/${USER_ID}`)
     ]);
     if(!rRes.ok) throw new Error(`HTTP ${rRes.status}`);
-
-    // Name
     if(uRes.ok){
       const uData = await uRes.json();
-      const user = uData.users?.find(u=>u.id===uid) || uData.users?.[0];
+      const user = uData.users?.find(u=>u.id===USER_ID) || uData.users?.[0];
       if(user?.full_name){
         const firstName = user.full_name.split(' ')[0];
         set('hdName', firstName);
         document.title = `🏃 ${firstName} — Running Dashboard`;
       }
     }
-
-    // Analytics — store weekly for stacked chart, check if new activity
     if(aRes.ok){
       const aData = await aRes.json();
       window._analyticsWeekly = aData.weekly || [];
-      const newId = aData.summary?.last_activity_id;
-      if(newId !== _lastActivityId){ _lastActivityId = newId; forceCoach=true; }
     }
-
-    // Runs
     const d = await rRes.json();
-    if(!d.runs||!d.runs.length) throw new Error('No runs returned from API');
+    if(!d.runs||!d.runs.length) throw new Error('No runs found');
     render(d.runs);
-
   } catch(e){
-    showErr(`Cannot reach API: ${e.message} — check URL in ⚙️ settings`);
+    showErr(`Cannot load data: ${e.message}`);
   } finally{
     document.getElementById('overlay').style.display='none';
   }
 }
 async function manualSync(){
-  const {url}=getCfg(); if(!url) return;
   const btn=document.getElementById('syncBtn');
   btn.disabled=true; btn.textContent='↻ Syncing…';
-  try{ await fetch(`${url}/sync-daily`); await boot(true); }
+  try{ await fetch(`${API_URL}/sync-daily`); await boot(); }
   catch(e){ showErr('Sync failed: '+e.message); }
   btn.disabled=false; btn.textContent='↻ Sync';
 }
 // ── INIT ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
-  const {url,uid}=getCfg();
-  document.getElementById('cfgUrl').value=url||'';
-  document.getElementById('cfgUid').value=uid||1;
   boot().catch(e=>{ showErr('Unexpected error: '+e.message); });
 });
 </script>
