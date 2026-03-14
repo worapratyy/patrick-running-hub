@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏃 Running Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg:#f0fdf4; --card:#fff; --green:#16a34a; --green2:#15803d;
+      --blue:#2563eb; --orange:#ea580c; --purple:#7c3aed; --teal:#0d9488;
+      --red:#dc2626; --yellow:#ca8a04; --gray:#6b7280; --gray2:#9ca3af;
+      --text:#111827; --border:#e5e7eb; --r:10px; --gap:16px;
+      --shadow:0 2px 8px rgba(0,0,0,.09);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    .dash{max-width:1380px;width:100%;margin:0 auto;padding:var(--gap)}
+
+    /* Loading */
+    #overlay{position:fixed;inset:0;background:rgba(240,253,244,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999}
+    .ring{width:48px;height:48px;border-radius:50%;border:4px solid #bbf7d0;border-top-color:#16a34a;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #overlay p{font-size:14px;font-weight:700;color:#15803d}
+
+    /* Config */
+    #cfg{display:none;background:#fff;border:1.5px dashed #d1d5db;border-radius:var(--r);padding:14px 16px;margin-bottom:var(--gap);flex-direction:column;gap:10px}
+    #cfg.show{display:flex}
+    #cfg label{font-size:11px;font-weight:600;color:var(--gray)}
+    .cfg-row{display:flex;gap:8px;flex-wrap:wrap}
+    #cfg input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;flex:1;min-width:180px}
+    #cfg button{background:var(--green);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
+    #cfg .hint{font-size:10px;color:var(--gray2)}
+
+    /* Error */
+    #err{display:none;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:11px 14px;margin-bottom:var(--gap);gap:10px;font-size:12px;color:#991b1b;align-items:center}
+    #err.show{display:flex}
+    #err button{margin-left:auto;background:#fee2e2;border:1px solid #fca5a5;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;color:#991b1b}
+
+    /* Header */
+    .hdr{background:linear-gradient(135deg,#14532d 0%,#166534 60%,#15803d 100%);color:#fff;border-radius:var(--r);padding:16px 22px;margin-bottom:var(--gap);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .hdr h1{font-size:18px;font-weight:800}
+    .hdr-sub{font-size:10px;opacity:.65;margin-top:2px}
+    .hdr-right{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+    .badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.28);padding:4px 11px;border-radius:14px;font-size:11px;font-weight:600}
+    .badge.org{background:rgba(252,76,2,.22);border-color:rgba(252,76,2,.45)}
+    .badge.goal{background:rgba(124,58,237,.3);border-color:rgba(167,139,250,.5)}
+    .hbtn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.45);color:#fff;padding:4px 13px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s}
+    .hbtn:hover{background:rgba(255,255,255,.28)}
+    .hbtn:disabled{opacity:.45;cursor:not-allowed}
+
+    /* KPI row — 5 cards */
+    .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--gap);margin-bottom:var(--gap)}
+    .kpi{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);border-top:4px solid var(--green)}
+    .kpi.b{border-top-color:var(--blue)}.kpi.o{border-top-color:var(--orange)}
+    .kpi.p{border-top-color:var(--purple)}.kpi.t{border-top-color:var(--teal)}
+    .kpi-l{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);margin-bottom:8px}
+    .kpi-v{font-size:30px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+    .kpi-v sup{font-size:11px;font-weight:700}
+    .kpi-s{font-size:10px;color:var(--gray);margin-top:6px}
+    .kpi-s.g{color:var(--green);font-weight:600}
+
+    /* Last run banner */
+    .lrb{display:none;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:var(--r);padding:14px 22px;margin-bottom:var(--gap);gap:22px;align-items:center;flex-wrap:wrap}
+    .lrb.show{display:flex}
+    .lr-bl{display:flex;flex-direction:column;gap:2px}
+    .lr-l{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#166534;font-weight:700}
+    .lr-v{font-size:19px;font-weight:800;color:#14532d;font-variant-numeric:tabular-nums}
+    .lr-s{font-size:10px;color:#166534}
+    .lr-div{width:1px;height:36px;background:#86efac;flex-shrink:0}
+
+    /* PR row — 4 race-distance cards */
+    .pr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:var(--gap)}
+    .pr-item{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow);border-top:4px solid var(--purple)}
+    .pr-d{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);margin-bottom:6px}
+    .pr-t{font-size:26px;font-weight:800;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
+    .pr-p{font-size:10px;color:var(--gray);margin-top:4px}
+    .pr-dt{font-size:9px;color:var(--gray2);margin-top:2px}
+
+    /* Row 2 — race prediction + shoe mileage (inline, compact) */
+    .row2{display:grid;grid-template-columns:1.7fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
+    .race-card{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);border-top:4px solid var(--purple)}
+    .race-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);margin-bottom:6px}
+    .race-hm{font-size:38px;font-weight:800;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
+    .race-hm sup{font-size:12px}
+    .race-splits{display:flex;gap:16px;margin-top:6px;flex-wrap:wrap}
+    .race-split{font-size:11px;color:var(--gray)}
+    .race-split strong{color:var(--text);font-weight:700}
+    .race-note{font-size:10px;color:var(--green);font-weight:600;margin-top:5px}
+    .race-method{font-size:9px;color:var(--gray2);margin-top:3px}
+
+    /* Shoe card */
+    .shoe-card{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);border-top:4px solid var(--teal);display:flex;flex-direction:column;gap:10px}
+    .shoe-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+    .shoe-name{font-size:11px;font-weight:600}
+    .shoe-km{font-family:'SF Mono','Fira Code',monospace;font-size:12px;font-weight:600}
+    .shoe-track{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+    .shoe-fill{height:100%;border-radius:3px;transition:width .5s ease}
+    .shoe-meta{font-size:9px;color:var(--gray2);margin-top:2px}
+
+    /* Charts */
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
+    .cc{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);margin-bottom:var(--gap)}
+    .cc:last-child{margin-bottom:0}
+    .cch h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray)}
+    .cch p{font-size:10px;color:var(--gray2);margin-top:3px;margin-bottom:14px}
+    .ch-lg{position:relative;height:225px}
+    .g2 .cc{margin-bottom:0}
+
+    /* Indoor/outdoor badge */
+    .run-type{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;margin-left:6px;vertical-align:middle}
+    .run-type.indoor{background:#ede9fe;color:#6d28d9}
+    .run-type.outdoor{background:#dcfce7;color:#15803d}
+
+    /* Holiday warning */
+
+    .hw{display:none;background:#fefce8;border:1.5px solid #fde68a;border-radius:var(--r);padding:11px 18px;margin-bottom:var(--gap);gap:10px;align-items:center;font-size:12px;color:#92400e}
+    .hw.show{display:flex}
+
+    /* Footer */
+    .footer{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:11px;color:#9a3412;margin-top:var(--gap)}
+    .footer strong{color:#7c2d12}
+
+    /* Responsive */
+    @media(max-width:1100px){
+      .kpi-row{grid-template-columns:repeat(3,1fr)}
+      .pr-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:900px){
+      .row2{grid-template-columns:1fr}
+      .g2{grid-template-columns:1fr}
+    }
+    @media(max-width:600px){
+      .kpi-row{grid-template-columns:repeat(2,1fr)}
+      .pr-grid{grid-template-columns:repeat(2,1fr)}
+      .lrb{gap:14px}
+    }
+  </style>
+</head>
+<body>
+<div id="overlay"><div class="ring"></div><p>Loading runs…</p></div>
+<div class="dash">
+
+  <!-- Config -->
+  <div id="cfg">
+    <label>⚙️ Railway API Settings</label>
+    <div class="cfg-row">
+      <input id="cfgUrl" type="text" placeholder="https://your-app.up.railway.app"/>
+      <input id="cfgUid" type="number" placeholder="User ID (e.g. 1)" style="max-width:140px"/>
+      <button onclick="saveConfig()">Save &amp; Load</button>
+    </div>
+    <span class="hint">Find your User ID at <strong>/api/users</strong> on your Railway URL</span>
+  </div>
+
+  <!-- Error -->
+  <div id="err">
+    <span>⚠️</span><span id="errMsg">Error loading data.</span>
+    <button onclick="document.getElementById('cfg').classList.toggle('show')">⚙️ Settings</button>
+  </div>
+
+  <!-- Header -->
+  <header class="hdr">
+    <div>
+      <h1>🏃 <span id="hdName">…</span>'s Running Dashboard</h1>
+      <div class="hdr-sub" id="hdrSub">Half Marathon Training · Garmin Forerunner 570 · Live from Strava</div>
+    </div>
+    <div class="hdr-right">
+      <div class="badge org">🟠 Strava Live</div>
+      <div class="badge" id="bdgStreak">—</div>
+      <div class="badge goal" id="bdgRace">🎯 HM Goal</div>
+      <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
+      <button class="hbtn" onclick="document.getElementById('cfg').classList.toggle('show')">⚙️</button>
+    </div>
+  </header>
+
+  <!-- KPI row — 5 cards -->
+  <section class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-l">Total Runs</div>
+      <div class="kpi-v" id="kRuns">—</div>
+      <div class="kpi-s g" id="kRunsSub">—</div>
+    </div>
+    <div class="kpi b">
+      <div class="kpi-l">Total Distance</div>
+      <div class="kpi-v" id="kDist">—</div>
+      <div class="kpi-s" id="kDistSub">—</div>
+    </div>
+    <div class="kpi o">
+      <div class="kpi-l">Zone 2 Rate</div>
+      <div class="kpi-v" id="kZ2">—</div>
+      <div class="kpi-s" id="kZ2Sub">—</div>
+    </div>
+    <div class="kpi p">
+      <div class="kpi-l">Longest Run</div>
+      <div class="kpi-v" id="kLong">—</div>
+      <div class="kpi-s" id="kLongDate">—</div>
+    </div>
+    <div class="kpi t">
+      <div class="kpi-l">This Week</div>
+      <div class="kpi-v" id="kWeek">—</div>
+      <div class="kpi-s" id="kWeekSub">—</div>
+    </div>
+  </section>
+
+  <!-- Last Run banner -->
+  <div class="lrb" id="lrb">
+    <div class="lr-bl"><div class="lr-l">Last Run</div><div class="lr-v" id="lrDate">—</div><div class="lr-s" id="lrName">—</div></div>
+    <div class="lr-div"></div>
+    <div class="lr-bl"><div class="lr-l">Distance</div><div class="lr-v" id="lrDist">—</div><div class="lr-s" id="lrMi">—</div></div>
+    <div class="lr-div"></div>
+    <div class="lr-bl"><div class="lr-l">Pace</div><div class="lr-v" id="lrPace">—</div><div class="lr-s">/km</div></div>
+    <div class="lr-div"></div>
+    <div class="lr-bl"><div class="lr-l">Avg HR</div><div class="lr-v" id="lrHR">—</div><div class="lr-s" id="lrHRz">bpm</div></div>
+    <div class="lr-div"></div>
+    <div class="lr-bl"><div class="lr-l">Cadence</div><div class="lr-v" id="lrCad">—</div><div class="lr-s">spm</div></div>
+    <div class="lr-div"></div>
+    <div class="lr-bl"><div class="lr-l">Duration</div><div class="lr-v" id="lrTime">—</div><div class="lr-s">h:mm:ss</div></div>
+  </div>
+
+  <!-- Personal Records — race distances -->
+  <div class="pr-grid" id="prGrid"></div>
+
+  <!-- Race Prediction + Shoe Mileage -->
+  <div class="row2">
+    <div class="race-card">
+      <div class="race-lbl">🎯 Garmin Race Prediction <span style="font-size:9px;opacity:.7">· update GARMIN_HM_PRED in config after long runs</span></div>
+      <div class="race-hm" id="predHM">—<sup>HM</sup></div>
+      <div class="race-splits">
+        <div class="race-split">5K <strong id="p5k">—</strong></div>
+        <div class="race-split">10K <strong id="p10k">—</strong></div>
+        <div class="race-split">Marathon <strong id="pFM">—</strong></div>
+      </div>
+      <div class="race-note" id="predNote"></div>
+      <div class="race-method" id="predMethod"></div>
+    </div>
+    <div class="shoe-card">
+      <div class="kpi-l">👟 Shoe Mileage</div>
+      <div id="shoeList"></div>
+    </div>
+  </div>
+
+  <!-- Charts: Weekly Mileage + HR Trend -->
+  <div class="g2">
+    <div class="cc">
+      <div class="cch"><h3>📅 Weekly Mileage</h3><p id="wkSub">—</p></div>
+      <div class="ch-lg"><canvas id="cWeekly"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="cch"><h3>❤️ Heart Rate Trend</h3><p id="hrSub">Avg bpm · green band = Zone 2</p></div>
+      <div class="ch-lg"><canvas id="cHR"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Pace Trend — full width -->
+  <div class="cc">
+    <div class="cch"><h3>⚡ Pace Trend</h3><p>min/km · lower is faster · orange dashed = 4-run rolling avg</p></div>
+    <div class="ch-lg"><canvas id="cPace"></canvas></div>
+  </div>
+
+  <!-- Holiday warning -->
+  <div class="hw" id="holidayWarn">
+    <span>🎉</span><span id="holidayMsg"></span>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>🟠</span>
+    <div>
+      <strong>Strava Webhook</strong> — runs sync automatically within seconds of finishing ·
+      Use <strong>↻ Sync</strong> after your next run to update the dashboard
+    </div>
+  </div>
+
+</div>
+<script>
+'use strict';
+// ── CONFIG ────────────────────────────────────────────────
+const TODAY           = new Date().toISOString().split('T')[0];
+const MAX_HR          = 185;
+const GARMIN_HM_PRED  = '2:01:41'; // update weekly from Garmin Connect
+const RACE_DATE       = '2026-05-03'; // your target race date
+
+const Z = {
+  z1:   Math.round(MAX_HR * 0.55),
+  z2lo: Math.round(MAX_HR * 0.60),
+  z2hi: Math.round(MAX_HR * 0.70),
+  z3hi: Math.round(MAX_HR * 0.80),
+  z4hi: Math.round(MAX_HR * 0.90),
+};
+
+const SHOES = [
+  { name:'Adidas Adizero EVO SL', startDate:'2026-02-14', maxKm:500, color:'#0d9488' },
+];
+
+// ── CONFIG HELPERS ────────────────────────────────────────
+function getCfg(){
+  return { url:(localStorage.getItem('s_url')||'').trim(), uid:parseInt(localStorage.getItem('s_uid')||'1') };
+}
+function saveConfig(){
+  localStorage.setItem('s_url',(document.getElementById('cfgUrl').value||'').trim().replace(/\/$/,''));
+  localStorage.setItem('s_uid',parseInt(document.getElementById('cfgUid').value)||1);
+  document.getElementById('cfg').classList.remove('show');
+  boot();
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function ps(pM,pS){ return `${pM}:${String(pS).padStart(2,'0')}`; }
+function pf(pM,pS){ return pM + pS/60; }
+function secToHMS(s){
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=Math.round(s%60);
+  return h>0?`${h}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`:`${m}:${String(sc).padStart(2,'0')}`;
+}
+function fkm(k){ return k>=100?k.toFixed(1):k.toFixed(2); }
+function sdt(s){ return new Date(s+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); }
+function weekMon(s){
+  const d=new Date(s+'T12:00:00'),dy=d.getDay();
+  d.setDate(d.getDate()+(dy===0?-6:1-dy));
+  return d.toISOString().split('T')[0];
+}
+function hrZone(hr){
+  if(!hr) return '—';
+  if(hr<Z.z2lo)  return 'Z1 · Recovery';
+  if(hr<=Z.z2hi) return 'Z2 ✓ Aerobic';
+  if(hr<=Z.z3hi) return 'Z3 · Tempo';
+  if(hr<=Z.z4hi) return 'Z4 · Threshold';
+  return 'Z5 · Max';
+}
+function set(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
+function riegel(refSec,refKm,tgtKm){ return refSec*Math.pow(tgtKm/refKm,1.06); }
+function weekRange(runs,startStr,endStr){
+  const map={};
+  runs.forEach(r=>{ const k=weekMon(r.date); if(!map[k]) map[k]={wk:k,km:0,n:0}; map[k].km+=r.dist; map[k].n++; });
+  const out=[],cur=new Date(startStr+'T12:00:00'),end=new Date(endStr+'T12:00:00');
+  const dy=cur.getDay(); if(dy!==1) cur.setDate(cur.getDate()+(dy===0?-6:1-dy));
+  while(cur<=end){ const k=cur.toISOString().split('T')[0]; out.push(map[k]||{wk:k,km:0,n:0}); cur.setDate(cur.getDate()+7); }
+  return out;
+}
+
+// ── CHART REGISTRY ────────────────────────────────────────
+const CH={};
+function mkChart(id,cfg){ if(CH[id]) CH[id].destroy(); CH[id]=new Chart(document.getElementById(id),cfg); }
+const BASE={responsive:true,maintainAspectRatio:false,animation:{duration:500}};
+
+// ── RENDER ────────────────────────────────────────────────
+function render(runs){
+  if(!runs||runs.length===0){ showErr('No runs found. Connect Strava and run /sync-daily once.'); return; }
+  runs.sort((a,b)=>a.date.localeCompare(b.date));
+  runs=runs.filter(r=>r.date>='2026-01-14');
+  if(!runs.length){ showErr('No runs found after 14 Jan 2026.'); return; }
+  const last=runs[runs.length-1];
+
+  // Recent window: last 90 days, min 12 runs
+  const ago=new Date(TODAY); ago.setDate(ago.getDate()-90);
+  const cut=ago.toISOString().split('T')[0];
+  let rec=runs.filter(r=>r.date>=cut);
+  if(rec.length<12) rec=runs.slice(-Math.min(12,runs.length));
+
+  const totalKm=runs.reduce((s,r)=>s+r.dist,0);
+
+  // Best run for race predictor
+  const raceable=rec.filter(r=>r.dist>=3&&r.pM>0&&r.pM<15);
+  const bestRun=raceable.length>0?raceable.reduce((b,r)=>pf(r.pM,r.pS)<pf(b.pM,b.pS)?r:b):null;
+
+  // Zone 2
+  const hrR=rec.filter(r=>r.hr&&r.hr>0);
+  const z2=hrR.filter(r=>r.hr>=Z.z2lo&&r.hr<=Z.z2hi);
+  const z2p=hrR.length>0?Math.round(z2.length/hrR.length*100):null;
+
+  // Longest
+  const lng=[...runs].sort((a,b)=>b.dist-a.dist)[0];
+
+  // This week
+  const thisMon=weekMon(TODAY);
+  const wkRuns=runs.filter(r=>weekMon(r.date)===thisMon);
+  const wkKm=wkRuns.reduce((s,r)=>s+r.dist,0);
+
+  // Streak
+  let streak=0;
+  const sc=new Date(thisMon+'T12:00:00');
+  for(let i=0;i<52;i++){
+    const wk=sc.toISOString().split('T')[0];
+    if(runs.some(r=>weekMon(r.date)===wk)) streak++;
+    else if(i>0) break;
+    sc.setDate(sc.getDate()-7);
+  }
+
+  // ── KPIs ──────────────────────────────────────────────
+  set('kRuns', runs.length);
+  set('kRunsSub', `since ${sdt(runs[0].date)}`);
+
+  document.getElementById('kDist').innerHTML=`${fkm(totalKm)}<sup>km</sup>`;
+  set('kDistSub',`${runs.length} runs total`);
+
+  set('kZ2', z2p!==null?`${z2p}%`:'N/A');
+  set('kZ2Sub', hrR.length>0?`${z2.length}/${hrR.length} runs · ${Z.z2lo}–${Z.z2hi} bpm`:'No HR data yet');
+  set('hrSub', `Avg bpm · Zone 2 = ${Z.z2lo}–${Z.z2hi} bpm`);
+
+  document.getElementById('kLong').innerHTML=`${fkm(lng.dist)}<sup>km</sup>`;
+  set('kLongDate', sdt(lng.date));
+
+  document.getElementById('kWeek').innerHTML=`${wkKm.toFixed(1)}<sup>km</sup>`;
+  set('kWeekSub',`${wkRuns.length} run${wkRuns.length!==1?'s':''} this week`);
+
+  // ── Header badges ──
+  set('bdgStreak', streak>0?`🔥 ${streak}-Week Streak`:'🏃 Start your streak!');
+  const raceDate=new Date(RACE_DATE+'T00:00:00');
+  const daysToRace=Math.ceil((raceDate-new Date())/86400000);
+  const weeksToRace=daysToRace>0?Math.ceil(daysToRace/7):0;
+  const raceCountdown=daysToRace>0?`${weeksToRace}w to race day`:'Race day!';
+  set('bdgRace', `🎯 HM ${GARMIN_HM_PRED} goal · ${raceCountdown}`);
+  set('hdrSub', `Half Marathon Training · Garmin Forerunner 570 · ${runs.length} runs · ${raceCountdown}`);
+
+  // ── Last run banner ──
+  document.getElementById('lrb').classList.add('show');
+  set('lrDate', sdt(last.date));
+  const runTypeLabel = last.indoor ? '<span class="run-type indoor">🏃 Treadmill</span>' : '<span class="run-type outdoor">🌳 Outdoor</span>';
+  document.getElementById('lrName').innerHTML = (last.name||'Run') + runTypeLabel;
+  set('lrDist', `${fkm(last.dist)} km`);
+  set('lrMi',   sdt(last.date));
+  set('lrPace', last.pM>0?ps(last.pM,last.pS):'—');
+  set('lrHR',   last.hr?`${last.hr}`:'—');
+  set('lrHRz',  last.hr?`bpm · ${hrZone(last.hr)}`:'bpm');
+  set('lrCad',  last.cad?`${Math.round(last.cad)}`:'—');
+  const moveS=last.pM>0?(last.pM*60+last.pS)*last.dist:0;
+  set('lrTime', moveS>0?secToHMS(moveS):'—');
+
+  // ── Race predictor — Garmin primary ──
+  document.getElementById('predHM').innerHTML=`${GARMIN_HM_PRED}<sup>HM</sup>`;
+  const [gH,gM,gS]=GARMIN_HM_PRED.split(':').map(Number);
+  const gHMsec=gH*3600+gM*60+gS;
+  set('p5k',  secToHMS(riegel(gHMsec,21.0975,5)));
+  set('p10k', secToHMS(riegel(gHMsec,21.0975,10)));
+  set('pFM',  secToHMS(riegel(gHMsec,21.0975,42.195)));
+  const gMin=gHMsec/60;
+  set('predNote',
+    gMin<100?'🔥 Sub 1:40 — elite!':
+    gMin<110?'🔥 Sub 1:50 — excellent!':
+    gMin<120?'✓ Sub 2:00 — on track!':
+    gMin<122?'✓ Sub 2:02 goal — on track! ✓':
+    gMin<125?'✓ Sub 2:05 — solid!':
+    gMin<130?'↑ Building toward sub 2:10':'↑ Keep going — improving!');
+  set('predMethod','Garmin VO2max-based · update GARMIN_HM_PRED in config after each sync');
+
+  // ── Shoes ──
+  const sl=document.getElementById('shoeList'); sl.innerHTML='';
+  SHOES.forEach(sh=>{
+    const shoeRuns=sh.startDate?runs.filter(r=>r.date>=sh.startDate):runs;
+    const km=shoeRuns.reduce((s,r)=>s+r.dist,0);
+    const pct=Math.min(100,km/sh.maxKm*100);
+    const col=pct>80?'#dc2626':pct>60?'#ea580c':sh.color;
+    sl.innerHTML+=`<div>
+      <div class="shoe-row"><span class="shoe-name">${sh.name}</span><span class="shoe-km">${km.toFixed(0)} km</span></div>
+      <div class="shoe-track"><div class="shoe-fill" style="width:${pct.toFixed(1)}%;background:${col}"></div></div>
+      <div class="shoe-meta">${pct.toFixed(1)}% used · ${Math.max(0,sh.maxKm-km).toFixed(0)} km remaining · replace at ${sh.maxKm} km</div>
+    </div>`;
+  });
+
+  checkHolidays();
+  buildPR(runs);
+  buildCharts(runs, rec, window._analyticsWeekly||null);
+}
+
+
+
+// ── HOLIDAY WARNINGS ──────────────────────────────────────
+const HOLIDAYS = [
+  { date:'2026-04-06', name:'Chakri Day',      tip:'Public holiday — roads quiet, great for outdoor run!' },
+  { date:'2026-04-13', name:'Songkran',         tip:'Songkran starts — run early morning before water fights.' },
+  { date:'2026-04-14', name:'Songkran Holiday', tip:'⚠️ Songkran Day 2 — streets flooded & crowded. Use treadmill today!' },
+  { date:'2026-04-15', name:'Songkran Holiday', tip:'Songkran Day 3 — treadmill recommended again.' },
+  { date:'2026-05-01', name:'Labour Day',        tip:'Holiday — extra rest day before race-eve shakeout tomorrow.' },
+];
+function checkHolidays(){
+  const today = TODAY;
+  const upcoming = HOLIDAYS.filter(h => h.date >= today && h.date <= (() => { const d=new Date(today); d.setDate(d.getDate()+3); return d.toISOString().split('T')[0]; })());
+  if(upcoming.length){
+    const h = upcoming[0];
+    document.getElementById('holidayMsg').innerHTML = `<strong>${h.name} (${sdt(h.date)})</strong> — ${h.tip}`;
+    document.getElementById('holidayWarn').classList.add('show');
+  }
+}
+
+// ── PR Records — race distances ───────────────────────────
+function buildPR(runs){
+  const targets=[
+    {lbl:'5 km',  icon:'🏃', target:5,    tol:1.5},
+    {lbl:'10 km', icon:'⚡', target:10,   tol:2},
+    {lbl:'21 km', icon:'🎯', target:21.1, tol:3},
+    {lbl:'42 km', icon:'🏅', target:42.2, tol:5},
+  ];
+  const el=document.getElementById('prGrid'); el.innerHTML='';
+  targets.forEach(t=>{
+    const cands=runs.filter(r=>r.dist>=(t.target-t.tol)&&r.dist<=(t.target+t.tol)&&r.pM>0&&r.pM<15);
+    if(cands.length===0){
+      el.innerHTML+=`<div class="pr-item">
+        <div class="pr-d">${t.icon} ${t.lbl}</div>
+        <div class="pr-t" style="color:var(--gray2);font-size:14px">No runs yet</div>
+        <div class="pr-p" style="color:var(--gray2)">Need a ${t.lbl} run</div>
+      </div>`;
+      return;
+    }
+    const best=cands.reduce((a,r)=>pf(r.pM,r.pS)<pf(a.pM,a.pS)?r:a);
+    const finishSec=(best.pM*60+best.pS)*t.target;
+    el.innerHTML+=`<div class="pr-item">
+      <div class="pr-d">${t.icon} ${t.lbl}</div>
+      <div class="pr-t">${ps(best.pM,best.pS)}<span style="font-size:12px;font-weight:500">/km</span></div>
+      <div class="pr-p">≈ ${secToHMS(finishSec)} finish · ${fkm(best.dist)} km run</div>
+      <div class="pr-dt">${sdt(best.date)}</div>
+    </div>`;
+  });
+}
+
+// ── CHARTS ────────────────────────────────────────────────
+function buildCharts(runs, rec, analyticsWeekly){
+  // 1. Weekly mileage — actual Strava runs only
+  const wStart=runs[0].date<'2025-10-01'?'2025-10-01':runs[0].date;
+  const wkD=weekRange(runs.filter(r=>r.date>=wStart),wStart,TODAY);
+  const wkMax=Math.max(...wkD.map(w=>w.km),10);
+  set('wkSub',`${sdt(wStart)} – now · by week · ${runs.length} total runs`);
+  mkChart('cWeekly',{type:'bar',data:{
+    labels:wkD.map(w=>{ const d=new Date(w.wk+'T12:00:00'); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); }),
+    datasets:[{
+      data:wkD.map(w=>parseFloat(w.km.toFixed(2))),
+      backgroundColor:wkD.map(w=>w.km===0?'#e5e7eb':w.km>=30?'#14532d':w.km>=20?'#15803d':w.km>=10?'#16a34a':'#4ade80'),
+      borderRadius:8,borderSkipped:false
+    }]
+  },options:{...BASE,plugins:{legend:{display:false},tooltip:{callbacks:{
+    title:i=>`Week of ${wkD[i[0].dataIndex].wk}`,
+    label:c=>c.parsed.y===0?'Rest week':`${c.parsed.y.toFixed(1)} km`
+  }}},scales:{
+    x:{grid:{display:false},border:{display:false},ticks:{font:{size:9}}},
+    y:{beginAtZero:true,max:Math.ceil(wkMax*1.25/5)*5,grid:{color:'#f3f4f6'},border:{display:false},ticks:{callback:v=>v+' km',font:{size:9}}}
+  }}});
+
+  // 2. HR trend
+  mkChart('cHR',{type:'line',data:{
+    labels:rec.map(r=>sdt(r.date)),
+    datasets:[
+      {label:'_t',data:rec.map(()=>Z.z2hi),borderColor:'rgba(22,163,74,.4)',borderDash:[5,3],borderWidth:1,fill:'+1',backgroundColor:'rgba(22,163,74,.08)',pointRadius:0,tension:0},
+      {label:'_b',data:rec.map(()=>Z.z2lo),borderColor:'rgba(22,163,74,.4)',borderDash:[5,3],borderWidth:1,fill:false,pointRadius:0,tension:0},
+      {label:'Avg HR',data:rec.map(r=>r.hr||null),
+       borderColor:'#dc2626',borderWidth:2.5,fill:false,tension:.35,spanGaps:true,
+       pointRadius:5,pointBackgroundColor:rec.map(r=>!r.hr?'transparent':r.hr<=Z.z2hi?'#15803d':'#dc2626'),
+       pointBorderColor:'#fff',pointBorderWidth:2,pointHoverRadius:7}
+    ]
+  },options:{...BASE,plugins:{
+    legend:{labels:{filter:i=>!i.text.startsWith('_'),usePointStyle:true,boxWidth:8,font:{size:10}}},
+    tooltip:{filter:i=>i.datasetIndex===2,callbacks:{label:c=>c.parsed.y?`${c.parsed.y} bpm · ${hrZone(c.parsed.y)}`:'No HR data'}}
+  },scales:{
+    x:{grid:{display:false},border:{display:false},ticks:{font:{size:9}}},
+    y:{min:100,max:170,grid:{color:'#f3f4f6'},border:{display:false},ticks:{callback:v=>v+' bpm',font:{size:9}}}
+  }}});
+
+  // 3. Pace — auto-scaled, walk-filtered
+  const paceRec=rec.filter(r=>r.pM>0&&r.pM<15);
+  const pVals=paceRec.map(r=>pf(r.pM,r.pS));
+  const pMin=pVals.length>0?Math.max(4,parseFloat((Math.min(...pVals)-.6).toFixed(1))):6;
+  const pMax=pVals.length>0?Math.min(16,parseFloat((Math.max(...pVals)+.6).toFixed(1))):12;
+  mkChart('cPace',{type:'line',data:{
+    labels:paceRec.map(r=>sdt(r.date)),
+    datasets:[{
+      label:'Pace',
+      data:paceRec.map(r=>parseFloat(pf(r.pM,r.pS).toFixed(3))),
+      borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',
+      borderWidth:2.5,fill:true,tension:.3,
+      pointRadius:4,pointBackgroundColor:'#2563eb',pointBorderColor:'#fff',pointBorderWidth:2,pointHoverRadius:6
+    }]
+  },options:{...BASE,plugins:{
+    legend:{display:false},
+    tooltip:{callbacks:{label:ctx=>`${ps(paceRec[ctx.dataIndex].pM,paceRec[ctx.dataIndex].pS)} /km`}}
+  },scales:{
+    x:{grid:{display:false},border:{display:false},ticks:{font:{size:9}}},
+    y:{reverse:true,min:pMin,max:pMax,grid:{color:'#f3f4f6'},border:{display:false},
+       ticks:{font:{size:9},callback:v=>{ const m=Math.floor(v),s=Math.round((v-m)*60); return `${m}:${String(s).padStart(2,'0')}`; }}}
+  }}});
+
+  // 4. Rolling 4-run avg overlay on pace chart
+  if(CH['cPace']&&paceRec.length>=4){
+    const rolling=paceRec.map((_,i,a)=>{
+      if(i<3) return null;
+      const sl=a.slice(i-3,i+1);
+      return parseFloat((sl.reduce((s,r)=>s+pf(r.pM,r.pS),0)/4).toFixed(3));
+    });
+    CH['cPace'].data.datasets.push({
+      label:'4-run avg',data:rolling,
+      borderColor:'rgba(234,88,12,.7)',borderDash:[4,3],
+      borderWidth:2,fill:false,tension:0,pointRadius:0,spanGaps:false
+    });
+    CH['cPace'].update('none');
+  }
+}
+
+// ── API ───────────────────────────────────────────────────
+function showErr(msg){
+  set('errMsg',msg);
+  document.getElementById('err').classList.add('show');
+  document.getElementById('overlay').style.display='none';
+}
+let _lastActivityId = null;
+
+async function boot(forceCoach=false){
+  document.getElementById('overlay').style.display='flex';
+  document.getElementById('err').classList.remove('show');
+  const {url,uid}=getCfg();
+  if(!url){
+    document.getElementById('cfg').classList.add('show');
+    document.getElementById('overlay').style.display='none';
+    showErr('Enter your Railway API URL in ⚙️ settings above to get started.');
+    return;
+  }
+  try{
+    // Fetch users + runs + analytics all at once
+    const [uRes, rRes, aRes] = await Promise.all([
+      fetch(`${url}/api/users`),
+      fetch(`${url}/api/runs/${uid}`),
+      fetch(`${url}/api/analytics/${uid}`)
+    ]);
+    if(!rRes.ok) throw new Error(`HTTP ${rRes.status}`);
+
+    // Name
+    if(uRes.ok){
+      const uData = await uRes.json();
+      const user = uData.users?.find(u=>u.id===uid) || uData.users?.[0];
+      if(user?.full_name){
+        const firstName = user.full_name.split(' ')[0];
+        set('hdName', firstName);
+        document.title = `🏃 ${firstName} — Running Dashboard`;
+      }
+    }
+
+    // Analytics — store weekly for stacked chart, check if new activity
+    if(aRes.ok){
+      const aData = await aRes.json();
+      window._analyticsWeekly = aData.weekly || [];
+      const newId = aData.summary?.last_activity_id;
+      if(newId !== _lastActivityId){ _lastActivityId = newId; forceCoach=true; }
+    }
+
+    // Runs
+    const d = await rRes.json();
+    if(!d.runs||!d.runs.length) throw new Error('No runs returned from API');
+    render(d.runs);
+
+  } catch(e){
+    showErr(`Cannot reach API: ${e.message} — check URL in ⚙️ settings`);
+  } finally{
+    document.getElementById('overlay').style.display='none';
+  }
+}
+async function manualSync(){
+  const {url}=getCfg(); if(!url) return;
+  const btn=document.getElementById('syncBtn');
+  btn.disabled=true; btn.textContent='↻ Syncing…';
+  try{ await fetch(`${url}/sync-daily`); await boot(true); }
+  catch(e){ showErr('Sync failed: '+e.message); }
+  btn.disabled=false; btn.textContent='↻ Sync';
+}
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  const {url,uid}=getCfg();
+  document.getElementById('cfgUrl').value=url||'';
+  document.getElementById('cfgUid').value=uid||1;
+  boot().catch(e=>{ showErr('Unexpected error: '+e.message); });
+});
+</script>
+</body>
+</html>
