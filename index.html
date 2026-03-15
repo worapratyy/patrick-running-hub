@@ -108,6 +108,29 @@
     .hw{display:none;background:#fefce8;border:1.5px solid #fde68a;border-radius:var(--r);padding:11px 18px;margin-bottom:var(--gap);gap:10px;align-items:center;font-size:12px;color:#92400e}
     .hw.show{display:flex}
 
+    /* Race Readiness */
+    .rr{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);margin-bottom:var(--gap);display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center}
+    .rr-score{width:88px;height:88px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:4px solid #e5e7eb;position:relative}
+    .rr-score.ahead{border-color:#16a34a;background:#f0fdf4}
+    .rr-score.on_track{border-color:#16a34a;background:#f0fdf4}
+    .rr-score.close{border-color:#ca8a04;background:#fefce8}
+    .rr-score.behind{border-color:#dc2626;background:#fef2f2}
+    .rr-score.default{border-color:#9ca3af;background:#f9fafb}
+    .rr-num{font-size:28px;font-weight:800;line-height:1}
+    .rr-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray)}
+    .rr-mid h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);margin-bottom:6px}
+    .rr-verdict{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+    .rr-bars{display:flex;gap:10px;flex-wrap:wrap}
+    .rr-bar{flex:1;min-width:80px}
+    .rr-bar-l{font-size:9px;color:var(--gray);margin-bottom:3px;display:flex;justify-content:space-between}
+    .rr-track{height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+    .rr-fill{height:100%;border-radius:3px;transition:width .6s ease}
+    .rr-right{text-align:center;flex-shrink:0}
+    .rr-pred{font-size:28px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:var(--purple)}
+    .rr-pred-l{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-top:3px}
+    .rr-days{font-size:11px;color:var(--gray);margin-top:6px}
+    @media(max-width:700px){.rr{grid-template-columns:auto 1fr;}.rr-right{grid-column:1/-1;text-align:left;display:flex;gap:16px;align-items:baseline}}
+
     /* Footer */
     .footer{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:11px;color:#9a3412;margin-top:var(--gap)}
     .footer strong{color:#7c2d12}
@@ -147,10 +170,32 @@
       <div class="badge org">🟠 Strava Live</div>
       <div class="badge" id="bdgStreak">—</div>
       <div class="badge goal" id="bdgRace">🎯 HM Goal</div>
-      <a class="hbtn" href="halfmarathon.html">📋 Training Plan</a>
       <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
     </div>
   </header>
+
+  <!-- Race Readiness -->
+  <div class="rr" id="rrCard" style="display:none">
+    <div class="rr-score default" id="rrScore">
+      <div class="rr-num" id="rrNum">—</div>
+      <div class="rr-lbl">Ready</div>
+    </div>
+    <div class="rr-mid">
+      <h3>🏁 Race Readiness · May 3</h3>
+      <div class="rr-verdict" id="rrVerdict">Calculating…</div>
+      <div class="rr-bars">
+        <div class="rr-bar"><div class="rr-bar-l"><span>Weekly km</span><span id="rrB1">—</span></div><div class="rr-track"><div class="rr-fill" id="rrF1" style="width:0;background:#16a34a"></div></div></div>
+        <div class="rr-bar"><div class="rr-bar-l"><span>Long runs</span><span id="rrB2">—</span></div><div class="rr-track"><div class="rr-fill" id="rrF2" style="width:0;background:#7c3aed"></div></div></div>
+        <div class="rr-bar"><div class="rr-bar-l"><span>HR efficiency</span><span id="rrB3">—</span></div><div class="rr-track"><div class="rr-fill" id="rrF3" style="width:0;background:#2563eb"></div></div></div>
+        <div class="rr-bar"><div class="rr-bar-l"><span>Taper</span><span id="rrB4">—</span></div><div class="rr-track"><div class="rr-fill" id="rrF4" style="width:0;background:#0d9488"></div></div></div>
+      </div>
+    </div>
+    <div class="rr-right">
+      <div class="rr-pred" id="rrPred">—</div>
+      <div class="rr-pred-l">Predicted HM</div>
+      <div class="rr-days" id="rrDays">— days to race</div>
+    </div>
+  </div>
 
   <!-- KPI row — 5 cards -->
   <section class="kpi-row">
@@ -561,6 +606,38 @@ function buildCharts(runs, rec, analyticsWeekly){
   }
 }
 
+// ── RACE READINESS ────────────────────────────────────────
+function renderReadiness(d){
+  if(!d || d.score == null) return;
+  const card = document.getElementById('rrCard');
+  card.style.display = 'grid';
+
+  // Score circle
+  const sc = document.getElementById('rrScore');
+  const st = d.on_target || 'default';
+  sc.className = `rr-score ${st}`;
+  set('rrNum', d.score);
+
+  // Verdict
+  set('rrVerdict', d.verdict || '—');
+
+  // Breakdown bars
+  const b = d.breakdown || {};
+  [['rrB1','rrF1', b.weekly_compliance],
+   ['rrB2','rrF2', b.long_run],
+   ['rrB3','rrF3', b.hr_efficiency],
+   ['rrB4','rrF4', b.taper]
+  ].forEach(([bId, fId, val]) => {
+    const v = val ?? 0;
+    set(bId, `${v}%`);
+    document.getElementById(fId).style.width = `${v}%`;
+  });
+
+  // Prediction + countdown
+  set('rrPred', d.predicted_hm || '—');
+  set('rrDays', d.days_to_race != null ? `${d.days_to_race} days to race` : '—');
+}
+
 // ── API ───────────────────────────────────────────────────
 function showErr(msg){
   set('errMsg',msg);
@@ -572,10 +649,11 @@ async function boot(){
   document.getElementById('overlay').style.display='flex';
   document.getElementById('err').classList.remove('show');
   try{
-    const [uRes, rRes, aRes] = await Promise.all([
+    const [uRes, rRes, aRes, rrRes] = await Promise.all([
       fetch(`${API_URL}/api/users`),
       fetch(`${API_URL}/api/runs/${USER_ID}`),
-      fetch(`${API_URL}/api/analytics/${USER_ID}`)
+      fetch(`${API_URL}/api/analytics/${USER_ID}`),
+      fetch(`${API_URL}/api/readiness/${USER_ID}`)
     ]);
     if(!rRes.ok) throw new Error(`HTTP ${rRes.status}`);
     if(uRes.ok){
@@ -591,6 +669,7 @@ async function boot(){
       const aData = await aRes.json();
       window._analyticsWeekly = aData.weekly || [];
     }
+    if(rrRes.ok){ renderReadiness(await rrRes.json()); }
     const d = await rRes.json();
     if(!d.runs||!d.runs.length) throw new Error('No runs found');
     render(d.runs);
