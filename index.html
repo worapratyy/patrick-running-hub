@@ -170,7 +170,6 @@
       <div class="badge org">🟠 Strava Live</div>
       <div class="badge" id="bdgStreak">—</div>
       <div class="badge goal" id="bdgRace">🎯 HM Goal</div>
-      <a class="hbtn" href="halfmarathon.html">📋 Training Plan</a>
       <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
     </div>
   </header>
@@ -304,15 +303,17 @@ const API_URL = 'https://web-production-02724.up.railway.app';
 const USER_ID = 1;
 const TODAY   = new Date().toISOString().split('T')[0];
 const MAX_HR          = 185;
-const GARMIN_HM_PRED  = '2:00:26'; // update weekly from Garmin Connect
+const GARMIN_HM_PRED  = '2:01:41'; // update weekly from Garmin Connect
 const RACE_DATE       = '2026-05-03'; // your target race date
 
+// Garmin LTHR auto-detected 2026-03-27: 168 bpm @ 5:24/km
+const LTHR = 168;
 const Z = {
-  z1:   Math.round(MAX_HR * 0.55),
-  z2lo: Math.round(MAX_HR * 0.60),
-  z2hi: Math.round(MAX_HR * 0.70),
-  z3hi: Math.round(MAX_HR * 0.80),
-  z4hi: Math.round(MAX_HR * 0.90),
+  z1:   109,  // Z1 Warm Up
+  z2lo: 134,  // Z2 Easy lower
+  z2hi: 149,  // Z2 Easy upper
+  z3hi: 159,  // Z3 Aerobic upper
+  z4hi: 167,  // Z4 Threshold upper
 };
 
 const SHOES = [
@@ -336,11 +337,11 @@ function weekMon(s){
 }
 function hrZone(hr){
   if(!hr) return '—';
-  if(hr<Z.z2lo)  return 'Z1 · Recovery';
-  if(hr<=Z.z2hi) return 'Z2 ✓ Aerobic';
-  if(hr<=Z.z3hi) return 'Z3 · Tempo';
+  if(hr<Z.z2lo)  return 'Z1 · Warm Up';
+  if(hr<=Z.z2hi) return 'Z2 ✓ Easy';
+  if(hr<=Z.z3hi) return 'Z3 · Aerobic';
   if(hr<=Z.z4hi) return 'Z4 · Threshold';
-  return 'Z5 · Max';
+  return 'Z5 · Maximum';
 }
 function set(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
 function riegel(refSec,refKm,tgtKm){ return refSec*Math.pow(tgtKm/refKm,1.06); }
