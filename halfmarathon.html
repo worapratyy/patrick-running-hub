@@ -911,7 +911,7 @@ const PLAN = {
       note: "You're back from China. Start easy on Tuesday, then first real tempo on Thursday. Sunday's long run is a new distance — time on feet, not pace.",
       days: [
         { dow:"Mon", date:"Mar 30", type:"rest",    name:"Rest",               km:0,  detail:"Full rest." },
-        { dow:"Tue", date:"Mar 31", type:"easy",    name:"Easy Zone 2 Run",    km:6,  detail:"6 km easy on treadmill. HR: 120–133 bpm (Zone 2) · Pace: 8:35–8:50/km. Back from China — comfortable shake out. Welcome home!" },
+        { dow:"Tue", date:"Mar 31", type:"easy",    name:"Easy Zone 2 Run",    km:6,  detail:"6 km easy on treadmill. HR: 120–143 bpm (Zone 2 — allow up to Z2 if feeling good) · Pace: 8:35–8:50/km. Back from China — comfortable shake out. Let HR drift up to 143 if legs feel fresh." },
         { dow:"Wed", date:"Apr 1",  type:"rest",    name:"Rest",               km:0,  detail:"Rest." },
         { dow:"Thu", date:"Apr 2",  type:"quality", name:"Tempo Run",          km:8,  detail:"8 km with tempo block. Treadmill: 6.0–6.3 km/h · HR: 140–149 bpm (Garmin Z2 Easy) · Pace: 7:30–8:00/km.\nWarm-up 2 km Zone 2 → 4 km tempo at Z2 (140–149) → 2 km cool-down Zone 2.\nFirst tempo — find the rhythm, don't push past 149. Controlled and purposeful." },
         { dow:"Fri", date:"Apr 3",  type:"rest",    name:"Rest",               km:0,  detail:"Rest after the quality session." },
@@ -926,12 +926,12 @@ const PLAN = {
       note: "Key build week. Easy run Tuesday to keep legs fresh, then tempo Thursday, then your biggest long run yet on Sunday. This week builds the aerobic engine.",
       days: [
         { dow:"Mon", date:"Apr 6",  type:"rest",    name:"Rest",              km:0,  detail:"Full rest." },
-        { dow:"Tue", date:"Apr 7",  type:"easy",    name:"Easy Zone 2 Run",   km:6,  detail:"6 km easy on treadmill. HR: 120–133 bpm (Zone 2) · Pace: 8:35–8:50/km · Speed: 5.5–5.7 km/h. Peak volume week — easy day before Thursday's tempo." },
+        { dow:"Tue", date:"Apr 7",  type:"easy",    name:"Easy Zone 2 Run",   km:6,  detail:"6 km easy on treadmill. HR: 128–143 bpm (Zone 2 — aerobic base) · Pace: 8:20–8:40/km · Speed: 5.6–5.8 km/h. Push into real aerobic base — target mid-Z2 today." },
         { dow:"Wed", date:"Apr 8",  type:"rest",    name:"Rest",              km:0,  detail:"Rest. Let legs recover for Thursday." },
-        { dow:"Thu", date:"Apr 9",  type:"quality", name:"Tempo Run",         km:8,  detail:"8 km tempo. Treadmill: 6.2–6.5 km/h · HR: 144–155 bpm (Z2–Z3 Easy→Aerobic) · Pace: 7:20–7:50/km.\nWarm-up 2 km Zone 2 → 4 km tempo pushing into Z3 (150–155) → 2 km cool-down Zone 2.\nStep it up from Week 4 — aim to feel comfortably hard in the tempo block." },
+        { dow:"Thu", date:"Apr 9",  type:"quality", name:"Tempo Run",         km:8,  detail:"8 km tempo. Treadmill: 6.3–6.7 km/h · HR: 150–159 bpm (Z3 Aerobic) · Pace: 7:10–7:40/km.\nWarm-up 2 km Zone 2 → 4 km tempo at full Z3 (150–159) → 2 km cool-down Zone 2.\nThis is genuinely hard — sentences only. Step up from Week 4." },
         { dow:"Fri", date:"Apr 10", type:"rest",    name:"Rest",              km:0,  detail:"Full rest." },
         { dow:"Sat", date:"Apr 11", type:"rest",    name:"Rest",              km:0,  detail:"Rest before the big long run." },
-        { dow:"Sun", date:"Apr 12", type:"long",    name:"Long Run — 16 km",  km:16, detail:"16 km easy. HR: 120–133 bpm (Zone 2) · Pace: 8:20–8:35/km. Biggest run yet! Bring water and 1 gel at km 10. Time on feet — stay disciplined with the pace." }
+        { dow:"Sun", date:"Apr 12", type:"long",    name:"Long Run — 16 km",  km:16, detail:"16 km. HR: 120–133 first 12 km (Zone 2) → allow 134–143 in final 4 km (Z2) · Pace: 8:20–8:35/km. Biggest run yet! Bring water and 1 gel at km 10. Second half: if feeling strong, allow HR to drift into Z2 (134–143)." }
       ]
     },
     {
@@ -956,12 +956,12 @@ const PLAN = {
       note: "This week is the peak of your training. Easy run Tuesday to stay fresh, then the final hard tempo on Thursday, then 18 km on Sunday. After Sunday's run, you will know you can finish the half marathon.",
       days: [
         { dow:"Mon", date:"Apr 20", type:"rest",    name:"Rest",              km:0,  detail:"Full rest." },
-        { dow:"Tue", date:"Apr 21", type:"easy",    name:"Easy Zone 2 Run",   km:6,  detail:"6 km easy on treadmill. HR: 120–133 bpm (Zone 2) · Pace: 8:35–8:50/km. Peak week — save energy for Thursday's tempo and Sunday's big run." },
+        { dow:"Tue", date:"Apr 21", type:"easy",    name:"Easy Zone 2 Run",   km:6,  detail:"6 km easy on treadmill. HR: 128–143 bpm (Zone 2 — aerobic base) · Pace: 8:20–8:40/km. Peak week — keep it aerobic, save energy for Thursday's threshold session and Sunday's 18km." },
         { dow:"Wed", date:"Apr 22", type:"rest",    name:"Rest",              km:0,  detail:"Rest." },
-        { dow:"Thu", date:"Apr 23", type:"quality", name:"Tempo Run",         km:8,  detail:"8 km final hard tempo. Treadmill: 6.3–6.7 km/h · HR: 150–159 bpm (Z3 Aerobic) · Pace: 7:15–7:45/km.\nWarm-up 2 km Zone 2 → 4 km tempo at Z3 (150–159) → 2 km cool-down Zone 2.\nThis is threshold work — push to Z3 and hold. Peak fitness session of the plan." },
-        { dow:"Fri", date:"Apr 24", type:"rest",    name:"Rest",              km:0,  detail:"Rest. Mentally prep for the big weekend." },
+        { dow:"Thu", date:"Apr 23", type:"quality", name:"Tempo Run — Threshold",  km:8,  detail:"8 km THRESHOLD session. Treadmill: 6.7–7.0 km/h · HR: 158–167 bpm (Z4 Threshold) · Pace: 7:00–7:30/km.\nWarm-up 2 km Zone 2 → 4 km at Z4 THRESHOLD (158–167) → 2 km cool-down Zone 2.\n⚠️ This is the hardest run of the plan. You should only be able to say 2–3 words at a time in the tempo block. Hold form, not pace." },
+        { dow:"Fri", date:"Apr 24", type:"rest",    name:"Rest",              km:0,  detail:"Full rest. Legs will be tired — that's correct. Mentally prep for Sunday." },
         { dow:"Sat", date:"Apr 25", type:"rest",    name:"Rest",              km:0,  detail:"Rest. Fresh legs for Sunday's peak run." },
-        { dow:"Sun", date:"Apr 26", type:"long",    name:"Peak Long Run — 18 km", km:18, detail:"18 km — PEAK RUN! HR: 120–133 bpm (Zone 2) · Pace: 8:20–8:35/km. First 14 km steady Zone 2, final 4 km push to Z3 (150–159). Bring 2 gels (km 8 and km 14). After this run, you KNOW you can finish the half marathon." }
+        { dow:"Sun", date:"Apr 26", type:"long",    name:"Peak Long Run — 18 km 🏆", km:18, detail:"18 km — PROGRESSION PEAK RUN!\nFirst 14 km: Zone 2 (120–133 bpm) · Pace: 8:20–8:35/km — disciplined and controlled.\nFinal 4 km: push to Z3 (150–155 bpm) · Pace: 7:30–8:00/km — race simulation.\nBring 2 gels (km 8 and km 14). After this run, you KNOW you can finish the half marathon." }
       ]
     },
     {
@@ -976,7 +976,7 @@ const PLAN = {
         { dow:"Thu", date:"Apr 30", type:"rest",     name:"Rest",                    km:0,    detail:"Full rest. You may feel sluggish — that is the taper working. Trust the 7 weeks." },
         { dow:"Fri", date:"May 1",  type:"rest",     name:"Rest — Pre-Race Prep",    km:0,    detail:"Full rest. Prepare race kit: bib, shoes, socks, watch, 2 gels. Eat a normal dinner. Sleep early." },
         { dow:"Sat", date:"May 2",  type:"shakeout", name:"Race-Eve Shakeout",       km:2.5,  detail:"2–3 km very easy + 3 strides at race pace. Just getting the legs moving. Some athletes skip this — do what feels right. Don't prove anything today." },
-        { dow:"Sun", date:"May 3",  type:"race",     name:"🏁 RACE DAY — Half Marathon", km:21.1, detail:"RACE DAY. Start conservative — first 3 km should feel almost too easy. Find rhythm at km 3–5. Hold race pace 6:15–6:25/km through km 15. If you feel good at km 16, push. Empty the tank in the final 2 km. You've done the work. Run your race." }
+        { dow:"Sun", date:"May 3",  type:"race",     name:"🏁 RACE DAY — Half Marathon", km:21.1, detail:"RACE DAY — Zone-Based Pacing Strategy:\n\n🟢 km 0–5: Hold BACK — HR 145–152 (Z2 Easy). Should feel almost too easy. Resist the crowd.\n🟡 km 5–15: Settle into Z3 (150–158 bpm) — comfortably hard, controlled breathing.\n🟠 km 15–19: Push to Z4 (158–165 bpm) if feeling good — this is where the race happens.\n🔴 km 19–21.1: Empty the tank — whatever you have left.\n\nTarget pace: 6:15–6:25/km. Target finish: 2:10–2:20.\nYou've done the work. Run your race." }
       ]
     }
   ]
