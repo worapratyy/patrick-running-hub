@@ -4,478 +4,336 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patrick — 2026 Race Season</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #080b0d;
-  --surface:  #0e1215;
-  --surface2: #141a1f;
-  --surface3: #1a2128;
-  --border:   #1e2830;
-  --border2:  #263340;
-  --text:     #dde8f0;
-  --muted:    #4a6070;
-  --muted2:   #6a8090;
-  --accent:   #00e5a0;
-  --accent2:  #0096ff;
-  --accent3:  #ff6b35;
-  --gold:     #f5c842;
-  --red:      #ff3d5a;
+  /* ── Match dashboard palette ── */
+  --bg:        #eef9f2;
+  --surface:   #ffffff;
+  --surface2:  #f4fbf7;
+  --border:    #d4eddf;
+  --border2:   #c0e2ce;
+  --text:      #0f1f17;
+  --muted:     #6b8f78;
+  --muted2:    #4a7060;
+  --hdr-bg:    #1a3528;
+  --hdr-text:  #e8f5ed;
+  --hdr-muted: #7aaa8e;
 
-  --c-rest:       #141c22;
-  --c-easy-bg:    #071f18;
-  --c-easy:       #00e5a0;
-  --c-tempo-bg:   #071525;
-  --c-tempo:      #0096ff;
-  --c-long-bg:    #160d28;
-  --c-long:       #b060ff;
-  --c-shakeout-bg:#0a1f0f;
-  --c-shakeout:   #6dd96d;
-  --c-race-bg:    #2a0d00;
-  --c-race:       #ff6b35;
+  /* accent colours */
+  --green:  #16a34a;
+  --blue:   #2563eb;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+  --teal:   #0d9488;
+  --red:    #dc2626;
+  --gold:   #ca8a04;
+
+  /* session type colours */
+  --c-rest-bg:    #f1f5f2; --c-rest-bdr:    #c8d8cc; --c-rest-txt:    #6b8f78;
+  --c-easy-bg:    #f0fdf4; --c-easy-bdr:    #86efac; --c-easy-txt:    #16a34a;
+  --c-tempo-bg:   #eff6ff; --c-tempo-bdr:   #93c5fd; --c-tempo-txt:   #2563eb;
+  --c-long-bg:    #faf5ff; --c-long-bdr:    #c4b5fd; --c-long-txt:    #7c3aed;
+  --c-shakeout-bg:#f0fdfa; --c-shakeout-bdr:#5eead4; --c-shakeout-txt:#0d9488;
+  --c-race-bg:    #fff7ed; --c-race-bdr:    #fdba74; --c-race-txt:    #ea580c;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 13px;
+/* ── TOP ACCENT BAR (matches dashboard purple line) ── */
+body::before {
+  content:''; display:block; height:3px; width:100%;
+  background: linear-gradient(90deg,#7c3aed,#2563eb,#16a34a);
+  position:fixed; top:0; left:0; z-index:100;
 }
 
-/* ── HEADER ──────────────────────────────── */
+/* ── HEADER ───────────────────────────── */
 .hdr {
-  height: 58px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 0 20px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 10;
+  height:62px; margin-top:3px;
+  background:var(--hdr-bg);
+  display:flex; align-items:center; gap:16px; padding:0 20px;
+  flex-shrink:0; position:relative; z-index:10;
+  box-shadow:0 2px 12px rgba(0,0,0,0.18);
 }
 
-.hdr-brand {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
+.hdr-brand { flex-shrink:0; }
 .hdr-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
+  font-family:'Syne',sans-serif; font-size:16px; font-weight:800;
+  letter-spacing:-0.02em; line-height:1; color:var(--hdr-text);
 }
-.hdr-title em { color: var(--accent); font-style: normal; }
+.hdr-title em { color:#4ade80; font-style:normal; }
 .hdr-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--hdr-muted); margin-top:2px;
 }
+.hdr-sep { width:1px; height:30px; background:rgba(255,255,255,0.12); flex-shrink:0; }
 
-.hdr-sep {
-  width: 1px; height: 28px;
-  background: var(--border2);
-  flex-shrink: 0;
+/* stat pills in header */
+.hdr-stats { display:flex; align-items:center; gap:10px; flex:1; }
+.hdr-stat-pill {
+  display:flex; flex-direction:column; gap:1px;
+  padding:5px 10px; border-radius:6px;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);
 }
-
-.hdr-stats {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex: 1;
-}
-.hdr-stat { display: flex; flex-direction: column; gap: 2px; }
 .hdr-stat-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
+  font-family:'DM Mono',monospace; font-size:7.5px; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--hdr-muted);
 }
 .hdr-stat-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
+  font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--hdr-text);
 }
-.hdr-stat-val.hi { color: var(--accent); }
-.hdr-stat-val.sm { font-size: 10px; }
+.hdr-stat-val.hi { color:#4ade80; }
+.hdr-stat-val.sm { font-size:10px; }
 
-.progress-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 100px;
-  flex: 1;
-  max-width: 200px;
+/* ── RACE COUNTDOWN CARDS (replaces useless export row) ── */
+.race-countdowns { display:flex; gap:8px; flex-shrink:0; }
+.race-card {
+  display:flex; flex-direction:column; gap:1px;
+  padding:5px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.06); cursor:default;
+  transition:background 0.15s;
+  min-width:90px;
 }
-.progress-track {
-  flex: 1;
-  height: 2px;
-  background: var(--border2);
-  border-radius: 1px;
-  overflow: hidden;
+.race-card:hover { background:rgba(255,255,255,0.11); }
+.race-card.done  { opacity:0.45; }
+.race-card-label {
+  font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--hdr-muted);
 }
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 1px;
-  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+.race-card-days {
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:800; line-height:1;
 }
-.progress-pct {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--accent);
-  min-width: 28px;
-  text-align: right;
+.race-card-days.c1 { color:#f87171; }
+.race-card-days.c2 { color:#60a5fa; }
+.race-card-days.c3 { color:#a78bfa; }
+.race-card-sub {
+  font-family:'DM Mono',monospace; font-size:8px; color:var(--hdr-muted);
 }
 
-.hdr-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 5px 10px;
-  border: 1px solid var(--border2);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--muted2);
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
+/* small utility buttons tucked at far right */
+.hdr-utils { display:flex; gap:5px; flex-shrink:0; }
+.ubtn {
+  font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.1em; text-transform:uppercase;
+  padding:4px 8px; border-radius:4px; border:1px solid rgba(255,255,255,0.15);
+  background:transparent; color:var(--hdr-muted); cursor:pointer; transition:all 0.15s;
 }
-.btn:hover { color: var(--text); border-color: var(--muted2); }
-.btn.export:hover { color: var(--accent); border-color: var(--accent); }
-.btn.reset:hover { color: var(--red); border-color: var(--red); }
-.btn label { cursor: pointer; }
-.btn input[type=file] { display: none; }
+.ubtn:hover { color:var(--hdr-text); border-color:rgba(255,255,255,0.35); }
+.ubtn.danger:hover { color:#f87171; border-color:#f87171; }
+.ubtn input[type=file]{ display:none; }
 
-/* ── MAIN SPLIT ──────────────────────────── */
-.main {
-  display: flex;
-  height: calc(100vh - 58px);
-  overflow: hidden;
-}
+/* ── MAIN SPLIT ───────────────────────── */
+.main { display:flex; height:calc(100vh - 65px); overflow:hidden; }
 
-/* ── CALENDAR PANEL ──────────────────────── */
+/* ── CALENDAR PANEL ───────────────────── */
 .cal-panel {
-  flex: 0 0 62%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-right: 1px solid var(--border);
+  flex:0 0 62%; display:flex; flex-direction:column;
+  overflow:hidden; border-right:1px solid var(--border);
 }
 
 .cal-dow-header {
-  display: grid;
-  grid-template-columns: 72px repeat(7, 1fr);
-  gap: 3px;
-  padding: 10px 12px 6px;
-  flex-shrink: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  display:grid; grid-template-columns:80px repeat(7,1fr); gap:3px;
+  padding:8px 14px 7px; flex-shrink:0;
+  background:var(--surface); border-bottom:1px solid var(--border);
 }
 .dow-cell {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: center;
-  padding: 2px 0;
+  font-family:'DM Mono',monospace; font-size:8.5px; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--muted); text-align:center;
 }
 
 .cal-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 12px 16px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
+  flex:1; overflow-y:auto; padding:10px 14px 20px; background:var(--bg);
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
 }
-.cal-body::-webkit-scrollbar { width: 4px; }
-.cal-body::-webkit-scrollbar-track { background: transparent; }
-.cal-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.cal-body::-webkit-scrollbar{ width:4px; }
+.cal-body::-webkit-scrollbar-thumb{ background:var(--border2); border-radius:2px; }
 
+/* week row */
 .week-row {
-  display: grid;
-  grid-template-columns: 72px repeat(7, 1fr);
-  gap: 3px;
-  margin-bottom: 4px;
-  padding: 3px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  transition: border-color 0.2s;
+  display:grid; grid-template-columns:80px repeat(7,1fr); gap:3px;
+  margin-bottom:5px; padding:4px; border-radius:8px;
+  border:1px solid transparent; transition:border-color 0.2s, background 0.2s;
 }
 .week-row.is-current {
-  border-color: rgba(0,229,160,0.15);
-  background: rgba(0,229,160,0.02);
+  background:rgba(22,163,74,0.04); border-color:rgba(22,163,74,0.2);
+  box-shadow:0 0 0 1px rgba(22,163,74,0.08);
 }
 
 .week-gutter {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  padding: 0 6px 0 2px;
+  display:flex; flex-direction:column; justify-content:center;
+  gap:3px; padding:0 8px 0 2px;
 }
 .wk-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
-  line-height: 1;
+  font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+  color:var(--muted2); line-height:1;
 }
 .wk-phase {
-  font-family: 'DM Mono', monospace;
-  font-size: 7.5px;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  opacity: 0.6;
-  line-height: 1.2;
-  word-break: break-word;
-  hyphens: auto;
+  font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.05em;
+  color:var(--muted); line-height:1.3; word-break:break-word;
+}
+.wk-km {
+  font-family:'DM Mono',monospace; font-size:8px; font-weight:500;
+  color:var(--green); margin-top:1px;
 }
 
-/* ── SESSION PILL ────────────────────────── */
+/* ── SESSION PILL (light card style) ─── */
 .pill {
-  position: relative;
-  border-radius: 3px;
-  padding: 6px 7px 5px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: border-color 0.12s, filter 0.12s, transform 0.1s;
-  min-height: 60px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  user-select: none;
+  position:relative; border-radius:5px; padding:6px 7px 5px;
+  cursor:pointer; border-left:3px solid transparent;
+  border-top:1px solid transparent; border-right:1px solid transparent; border-bottom:1px solid transparent;
+  transition:box-shadow 0.12s, transform 0.1s, border-color 0.12s;
+  min-height:62px; display:flex; flex-direction:column;
+  overflow:hidden; user-select:none; background:var(--surface);
+  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
-.pill:hover { filter: brightness(1.25); transform: translateY(-1px); }
-.pill.selected { border-color: var(--accent) !important; }
-.pill.drag-over { border-color: var(--accent2) !important; filter: brightness(1.4); }
-.pill.dragging { opacity: 0.3; transform: scale(0.97); }
+.pill:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+.pill.selected { box-shadow:0 0 0 2px var(--green), 0 4px 12px rgba(22,163,74,0.15) !important; }
+.pill.drag-over { box-shadow:0 0 0 2px var(--blue) !important; transform:scale(1.02); }
+.pill.dragging  { opacity:0.35; transform:scale(0.97); }
 
-.pill-rest     { background: var(--c-rest); }
-.pill-easy     { background: var(--c-easy-bg); }
-.pill-quality  { background: var(--c-tempo-bg); }
-.pill-long     { background: var(--c-long-bg); }
-.pill-shakeout { background: var(--c-shakeout-bg); }
-.pill-race     { background: var(--c-race-bg); }
+.pill-rest     { background:var(--c-rest-bg);     border-left-color:var(--c-rest-bdr); }
+.pill-easy     { background:var(--c-easy-bg);     border-left-color:var(--c-easy-bdr); }
+.pill-quality  { background:var(--c-tempo-bg);    border-left-color:var(--c-tempo-bdr); }
+.pill-long     { background:var(--c-long-bg);     border-left-color:var(--c-long-bdr); }
+.pill-shakeout { background:var(--c-shakeout-bg); border-left-color:var(--c-shakeout-bdr); }
+.pill-race     { background:var(--c-race-bg);     border-left-color:var(--c-race-bdr); }
 
 .pill-dt {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  margin-bottom: 3px;
+  font-family:'DM Mono',monospace; font-size:8px;
+  color:var(--muted); margin-bottom:2px;
 }
 .pill-nm {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 9.5px;
-  font-weight: 500;
-  line-height: 1.3;
-  flex: 1;
+  font-family:'DM Sans',sans-serif; font-size:9.5px; font-weight:500;
+  line-height:1.3; flex:1;
 }
-.pill-rest .pill-nm     { color: var(--muted2); }
-.pill-easy .pill-nm     { color: var(--c-easy); }
-.pill-quality .pill-nm  { color: var(--c-tempo); }
-.pill-long .pill-nm     { color: var(--c-long); }
-.pill-shakeout .pill-nm { color: var(--c-shakeout); }
-.pill-race .pill-nm     { color: var(--c-race); }
+.pill-rest .pill-nm     { color:var(--c-rest-txt); }
+.pill-easy .pill-nm     { color:var(--c-easy-txt); }
+.pill-quality .pill-nm  { color:var(--c-tempo-txt); }
+.pill-long .pill-nm     { color:var(--c-long-txt); }
+.pill-shakeout .pill-nm { color:var(--c-shakeout-txt); }
+.pill-race .pill-nm     { color:var(--c-race-txt); }
 
 .pill-km {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  margin-top: 4px;
+  font-family:'DM Mono',monospace; font-size:10.5px; font-weight:500; margin-top:3px;
 }
-.pill-rest .pill-km     { color: var(--muted); opacity: 0.3; }
-.pill-easy .pill-km     { color: var(--c-easy); }
-.pill-quality .pill-km  { color: var(--c-tempo); }
-.pill-long .pill-km     { color: var(--c-long); }
-.pill-shakeout .pill-km { color: var(--c-shakeout); }
-.pill-race .pill-km     { color: var(--c-race); }
+.pill-rest .pill-km     { color:var(--c-rest-txt); opacity:0.4; }
+.pill-easy .pill-km     { color:var(--c-easy-txt); }
+.pill-quality .pill-km  { color:var(--c-tempo-txt); }
+.pill-long .pill-km     { color:var(--c-long-txt); }
+.pill-shakeout .pill-km { color:var(--c-shakeout-txt); }
+.pill-race .pill-km     { color:var(--c-race-txt); }
 
-.pill-status-icon {
-  position: absolute;
-  top: 5px; right: 6px;
-  font-size: 9px;
-  line-height: 1;
-}
-.pill.is-done   { opacity: 0.55; }
-.pill.is-done   .pill-status-icon { color: var(--accent); }
-.pill.is-missed .pill-status-icon { color: var(--red); }
-.pill.is-done:hover, .pill.is-missed:hover { opacity: 1; }
+.pill-status-icon { position:absolute; top:5px; right:6px; font-size:9px; line-height:1; }
+.pill.is-done   { opacity:0.6; }
+.pill.is-done   .pill-status-icon { color:var(--green); }
+.pill.is-missed { opacity:0.7; }
+.pill.is-missed .pill-status-icon { color:var(--red); }
+.pill.is-done:hover,.pill.is-missed:hover { opacity:1; }
 
-/* ── EDITOR PANEL ────────────────────────── */
+/* ── EDITOR PANEL ─────────────────────── */
 .ed-panel {
-  flex: 1;
-  overflow-y: auto;
-  background: var(--surface);
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
+  flex:1; overflow-y:auto; background:var(--surface);
+  border-left:1px solid var(--border);
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
 }
-.ed-panel::-webkit-scrollbar { width: 4px; }
-.ed-panel::-webkit-scrollbar-track { background: transparent; }
-.ed-panel::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.ed-panel::-webkit-scrollbar{ width:4px; }
+.ed-panel::-webkit-scrollbar-thumb{ background:var(--border2); border-radius:2px; }
 
-/* Empty state */
 .ed-empty {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  pointer-events: none;
+  height:100%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:12px; pointer-events:none;
 }
-.ed-empty-arrow {
-  font-family: 'Syne', sans-serif;
-  font-size: 32px;
-  color: var(--muted);
-  opacity: 0.25;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.5; }
-}
+.ed-empty-icon { font-size:36px; opacity:0.2; animation:pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:0.15} 50%{opacity:0.35} }
 .ed-empty-txt {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  opacity: 0.5;
-  text-align: center;
-  line-height: 1.8;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--muted); opacity:0.6; text-align:center; line-height:1.9;
 }
 
 /* Form */
-.ed-form { padding: 18px 18px 32px; }
+.ed-form { padding:20px 20px 36px; }
 
 .ed-hdr {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+  display:flex; align-items:flex-start; gap:12px; margin-bottom:20px;
+  padding-bottom:16px; border-bottom:1px solid var(--border);
 }
-.ed-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 3px 7px;
-  border-radius: 2px;
-  font-weight: 500;
-  flex-shrink: 0;
-  margin-top: 2px;
+.ed-type-stripe {
+  width:4px; border-radius:2px; align-self:stretch; flex-shrink:0;
+  margin-top:2px;
 }
-.badge-rest     { background: var(--c-rest);        color: var(--muted2); }
-.badge-easy     { background: var(--c-easy-bg);     color: var(--c-easy); border: 1px solid rgba(0,229,160,0.2); }
-.badge-quality  { background: var(--c-tempo-bg);    color: var(--c-tempo); border: 1px solid rgba(0,150,255,0.2); }
-.badge-long     { background: var(--c-long-bg);     color: var(--c-long); border: 1px solid rgba(176,96,255,0.2); }
-.badge-shakeout { background: var(--c-shakeout-bg); color: var(--c-shakeout); border: 1px solid rgba(109,217,109,0.2); }
-.badge-race     { background: var(--c-race-bg);     color: var(--c-race); border: 1px solid rgba(255,107,53,0.2); }
+.stripe-rest     { background:var(--c-rest-bdr); }
+.stripe-easy     { background:var(--c-easy-bdr); }
+.stripe-quality  { background:var(--c-tempo-bdr); }
+.stripe-long     { background:var(--c-long-bdr); }
+.stripe-shakeout { background:var(--c-shakeout-bdr); }
+.stripe-race     { background:var(--c-race-bdr); }
 
-.ed-date-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--muted2);
+.ed-badge {
+  font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.16em;
+  text-transform:uppercase; padding:3px 8px; border-radius:3px; font-weight:500;
+  display:inline-block; margin-bottom:4px;
 }
-.ed-week-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-  margin-top: 2px;
-}
+.badge-rest     { background:var(--c-rest-bg);     color:var(--c-rest-txt);     border:1px solid var(--c-rest-bdr); }
+.badge-easy     { background:var(--c-easy-bg);     color:var(--c-easy-txt);     border:1px solid var(--c-easy-bdr); }
+.badge-quality  { background:var(--c-tempo-bg);    color:var(--c-tempo-txt);    border:1px solid var(--c-tempo-bdr); }
+.badge-long     { background:var(--c-long-bg);     color:var(--c-long-txt);     border:1px solid var(--c-long-bdr); }
+.badge-shakeout { background:var(--c-shakeout-bg); color:var(--c-shakeout-txt); border:1px solid var(--c-shakeout-bdr); }
+.badge-race     { background:var(--c-race-bg);     color:var(--c-race-txt);     border:1px solid var(--c-race-bdr); }
+
+.ed-date-lbl { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); }
+.ed-week-lbl { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-top:2px; }
 
 /* Fields */
-.fg { margin-bottom: 12px; }
+.fg { margin-bottom:13px; }
 .fl {
-  display: block;
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 5px;
+  display:block; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:5px; font-weight:400;
 }
 .fi {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 2px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  padding: 7px 9px;
-  outline: none;
-  transition: border-color 0.15s, background 0.15s;
-  appearance: none;
-  -webkit-appearance: none;
+  width:100%; background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:5px; color:var(--text); font-family:'DM Sans',sans-serif;
+  font-size:12px; padding:7px 10px; outline:none;
+  transition:border-color 0.15s, box-shadow 0.15s;
+  appearance:none; -webkit-appearance:none;
 }
-.fi:focus { border-color: var(--accent); background: var(--surface3); }
-.fi option { background: var(--surface2); color: var(--text); }
-textarea.fi {
-  resize: vertical;
-  min-height: 72px;
-  line-height: 1.65;
-  font-size: 11.5px;
-  font-family: 'DM Mono', monospace;
-}
-input[type=number].fi { -moz-appearance: textfield; }
-input[type=number].fi::-webkit-inner-spin-button { -webkit-appearance: none; }
+.fi:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(22,163,74,0.12); }
+.fi option { background:var(--surface); color:var(--text); }
+textarea.fi { resize:vertical; min-height:80px; line-height:1.7; font-size:11.5px; font-family:'DM Mono',monospace; }
+input[type=number].fi { -moz-appearance:textfield; }
+input[type=number].fi::-webkit-inner-spin-button { -webkit-appearance:none; }
 
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.divider { height:1px; background:var(--border); margin:16px 0; }
 
-.divider { height: 1px; background: var(--border); margin: 14px 0; }
-
-/* Status buttons */
-.status-row { display: flex; gap: 6px; margin-bottom: 12px; }
+/* Status */
+.status-row { display:flex; gap:6px; margin-bottom:13px; }
 .sbt {
-  flex: 1;
-  padding: 7px 4px;
-  border-radius: 2px;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.15s;
+  flex:1; padding:8px 4px; border-radius:5px; border:1.5px solid var(--border);
+  background:var(--surface2); color:var(--muted);
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; transition:all 0.15s; font-weight:400;
 }
-.sbt:hover { color: var(--text); }
-.sbt.done-on   { background: rgba(0,229,160,0.1); border-color: var(--accent); color: var(--accent); }
-.sbt.missed-on { background: rgba(255,61,90,0.1);  border-color: var(--red);    color: var(--red); }
-.sbt.pending-on{ border-color: var(--muted2); color: var(--muted2); }
+.sbt:hover { border-color:var(--muted2); color:var(--text); background:var(--surface); }
+.sbt.done-on    { background:#f0fdf4; border-color:#86efac; color:var(--green); }
+.sbt.missed-on  { background:#fef2f2; border-color:#fca5a5; color:var(--red); }
+.sbt.pending-on { background:var(--surface); border-color:var(--muted2); color:var(--muted2); }
 
 /* Move row */
-.move-row { display: flex; align-items: center; gap: 8px; }
-.move-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  white-space: nowrap;
+.move-row { display:flex; align-items:center; gap:10px; }
+.move-lbl { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+
+/* ── RACE BLOCK SEPARATOR ─────────────── */
+.block-sep {
+  display:flex; align-items:center; gap:10px; margin:14px 4px 10px;
 }
+.block-sep-line { flex:1; height:1px; background:var(--border2); }
+.block-sep-label {
+  font-family:'DM Mono',monospace; font-size:8.5px; letter-spacing:0.16em;
+  text-transform:uppercase; white-space:nowrap; padding:3px 10px;
+  border-radius:10px; border:1px solid var(--border2); background:var(--surface);
+}
+.block-sep-label.lbl-hm2  { color:var(--blue);   border-color:#93c5fd; background:#eff6ff; }
+.block-sep-label.lbl-10k  { color:var(--purple); border-color:#c4b5fd; background:#faf5ff; }
 </style>
 </head>
 <body>
@@ -483,36 +341,52 @@ input[type=number].fi::-webkit-inner-spin-button { -webkit-appearance: none; }
 <!-- HEADER -->
 <div class="hdr">
   <div class="hdr-brand">
-    <div class="hdr-title">Patrick's <em>2026 Race Season</em></div>
-    <div class="hdr-sub">🏁 May 3 · HM &nbsp;|&nbsp; 🏁 Jul 5 · HM &nbsp;|&nbsp; 🏁 Aug 16 · 10K</div>
+    <div class="hdr-title">🏃 Patrick's <em>2026 Season</em></div>
+    <div class="hdr-sub">Half Marathon Training · Garmin FR570 · Bangkok</div>
   </div>
   <div class="hdr-sep"></div>
+
   <div class="hdr-stats">
-    <div class="hdr-stat">
+    <div class="hdr-stat-pill">
       <div class="hdr-stat-lbl">Runs done</div>
       <div class="hdr-stat-val hi" id="statDone">—</div>
     </div>
-    <div class="hdr-stat">
+    <div class="hdr-stat-pill">
       <div class="hdr-stat-lbl">km logged</div>
       <div class="hdr-stat-val" id="statKm">—</div>
     </div>
-    <div class="hdr-stat">
-      <div class="hdr-stat-lbl">Next race</div>
-      <div class="hdr-stat-val" id="statWks">—</div>
-    </div>
-    <div class="hdr-stat" style="flex:1;min-width:0">
+    <div class="hdr-stat-pill" style="flex:1;min-width:0">
       <div class="hdr-stat-lbl">Next session</div>
       <div class="hdr-stat-val sm" id="statNext" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
     </div>
-    <div class="progress-wrap">
-      <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
-      <div class="progress-pct" id="progPct">0%</div>
+  </div>
+
+  <!-- RACE COUNTDOWN CARDS (replaces unused export/import/reset) -->
+  <div class="race-countdowns">
+    <div class="race-card" id="raceCard1">
+      <div class="race-card-label">🏁 HM · May 3</div>
+      <div class="race-card-days c1" id="raceDays1">—</div>
+      <div class="race-card-sub" id="raceSub1">days away</div>
+    </div>
+    <div class="race-card" id="raceCard2">
+      <div class="race-card-label">🏁 HM · Jul 5</div>
+      <div class="race-card-days c2" id="raceDays2">—</div>
+      <div class="race-card-sub" id="raceSub2">days away</div>
+    </div>
+    <div class="race-card" id="raceCard3">
+      <div class="race-card-label">🏁 10K · Aug 16</div>
+      <div class="race-card-days c3" id="raceDays3">—</div>
+      <div class="race-card-sub" id="raceSub3">days away</div>
     </div>
   </div>
-  <div class="hdr-actions">
-    <button class="btn export" onclick="exportPlan()">↓ Export</button>
-    <label class="btn"><input type="file" accept=".json" onchange="importPlan(event)">↑ Import</label>
-    <button class="btn reset" onclick="resetPlan()">⟳ Reset</button>
+
+  <div class="hdr-sep"></div>
+
+  <!-- Utility buttons, compact -->
+  <div class="hdr-utils">
+    <button class="ubtn" onclick="exportPlan()" title="Export plan as JSON">↓ Export</button>
+    <label class="ubtn" title="Import plan from JSON">↑ Import<input type="file" accept=".json" onchange="importPlan(event)"></label>
+    <button class="ubtn danger" onclick="resetPlan()" title="Reset to defaults">⟳</button>
   </div>
 </div>
 
@@ -537,15 +411,14 @@ input[type=number].fi::-webkit-inner-spin-button { -webkit-appearance: none; }
   <!-- EDITOR -->
   <div class="ed-panel" id="edPanel">
     <div class="ed-empty" id="edEmpty">
-      <div class="ed-empty-arrow">←</div>
+      <div class="ed-empty-icon">✏️</div>
       <div class="ed-empty-txt">Click any session<br>to view &amp; edit</div>
     </div>
     <div class="ed-form" id="edForm" style="display:none">
       <div class="ed-hdr">
-        <div>
+        <div class="ed-type-stripe" id="edStripe"></div>
+        <div style="flex:1">
           <div class="ed-badge" id="edBadge">Easy</div>
-        </div>
-        <div>
           <div class="ed-date-lbl" id="edDate">—</div>
           <div class="ed-week-lbl" id="edWkLbl">—</div>
         </div>
@@ -900,18 +773,23 @@ function renderCal() {
     // Race block divider
     if (idx > 0 && wk.race !== WEEKS[idx-1].race) {
       const sep = document.createElement('div');
-      const labels = { HM2:'Race 2 — Half Marathon · Jul 5', '10K':'Race 3 — 10K · Aug 16 · Asics META Time Trials' };
-      sep.style.cssText = 'margin:12px 4px 8px; display:flex; align-items:center; gap:10px;';
-      sep.innerHTML = `<div style="flex:1;height:1px;background:var(--border2)"></div><div style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);white-space:nowrap">${labels[wk.race]||wk.race}</div><div style="flex:1;height:1px;background:var(--border2)"></div>`;
+      const labelMap = { HM2:['Race 2 · Half Marathon · Jul 5','lbl-hm2'], '10K':['Race 3 · 10K · Aug 16 · ASICS META','lbl-10k'] };
+      const [lbl,cls] = labelMap[wk.race] || [wk.race,''];
+      sep.className = 'block-sep';
+      sep.innerHTML = `<div class="block-sep-line"></div><div class="block-sep-label ${cls}">${lbl}</div><div class="block-sep-line"></div>`;
       body.appendChild(sep);
     }
     const row = document.createElement('div');
     row.className = 'week-row' + (wk.n === getCurrentWeekNum() ? ' is-current' : '');
 
     // gutter
+    // calc week planned km
+    let wkPlanned = 0, wkDone = 0;
+    for (let i=0;i<7;i++) { const d=addDays(wk.start,i); const s=sessions[d]; if(s){wkPlanned+=(s.km||0); if(s.status==='done') wkDone+=(s.km||0);} }
     const g = document.createElement('div');
     g.className = 'week-gutter';
-    g.innerHTML = `<div class="wk-num">W${wk.n}</div><div class="wk-phase">${wk.phase}</div>`;
+    const kmLabel = wkDone > 0 ? `${wkDone.toFixed(0)}/${wkPlanned.toFixed(0)} km` : `${wkPlanned.toFixed(0)} km`;
+    g.innerHTML = `<div class="wk-num">W${wk.n}</div><div class="wk-phase">${wk.phase}</div><div class="wk-km">${kmLabel}</div>`;
     row.appendChild(g);
 
     for (let i = 0; i < 7; i++) {
@@ -964,6 +842,8 @@ function openEditor(date) {
   const badge = document.getElementById('edBadge');
   badge.className = `ed-badge badge-${s.type}`;
   badge.textContent = typeLabel(s.type);
+  const stripe = document.getElementById('edStripe');
+  if (stripe) stripe.className = `ed-type-stripe stripe-${s.type}`;
   document.getElementById('edDate').textContent = fmtFull(date);
   // Which week?
   const wk = WEEKS.find(w => { for(let i=0;i<7;i++) if(addDays(w.start,i)===date) return true; });
@@ -1003,6 +883,8 @@ function refreshBadge() {
   const b = document.getElementById('edBadge');
   b.className = `ed-badge badge-${t}`;
   b.textContent = typeLabel(t);
+  const stripe = document.getElementById('edStripe');
+  if (stripe) { stripe.className = `ed-type-stripe stripe-${t}`; }
 }
 
 function refreshStatus(st) {
@@ -1057,17 +939,26 @@ function updateStats() {
   document.getElementById('progFill').style.width = pct + '%';
   document.getElementById('progPct').textContent  = pct + '%';
 
+  // Race countdown cards
   const today = new Date();
-  const races = [
-    { date: new Date('2026-05-03T00:00:00'), label: 'May 3 HM' },
-    { date: new Date('2026-07-05T00:00:00'), label: 'Jul 5 HM' },
-    { date: new Date('2026-08-16T00:00:00'), label: 'Aug 16 10K' },
+  const raceDefs = [
+    { date: new Date('2026-05-03T00:00:00'), daysEl:'raceDays1', subEl:'raceSub1', cardEl:'raceCard1' },
+    { date: new Date('2026-07-05T00:00:00'), daysEl:'raceDays2', subEl:'raceSub2', cardEl:'raceCard2' },
+    { date: new Date('2026-08-16T00:00:00'), daysEl:'raceDays3', subEl:'raceSub3', cardEl:'raceCard3' },
   ];
-  const nextRace = races.find(r => r.date >= today);
-  if (nextRace) {
-    const daysLeft = Math.ceil((nextRace.date - today) / 86400000);
-    document.getElementById('statWks').textContent = `${nextRace.label} · ${daysLeft}d`;
-  }
+  raceDefs.forEach(r => {
+    const days = Math.ceil((r.date - today) / 86400000);
+    const dEl = document.getElementById(r.daysEl);
+    const sEl = document.getElementById(r.subEl);
+    const cEl = document.getElementById(r.cardEl);
+    if (days < 0) {
+      dEl.textContent = 'Done ✓'; sEl.textContent = `${Math.abs(days)}d ago`; cEl.classList.add('done');
+    } else if (days === 0) {
+      dEl.textContent = 'TODAY'; sEl.textContent = '🏁 Race day!';
+    } else {
+      dEl.textContent = days; sEl.textContent = 'days away';
+    }
+  });
 
   const nextDate = allDates.find(d => sessions[d]?.status==='pending' && sessions[d]?.type!=='rest');
   if (nextDate) {
