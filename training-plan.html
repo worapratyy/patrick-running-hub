@@ -121,6 +121,7 @@ body::before {
 .ubtn:hover { color:var(--hdr-text); border-color:rgba(255,255,255,0.35); }
 .ubtn.danger:hover { color:#f87171; border-color:#f87171; }
 .ubtn input[type=file]{ display:none; }
+a.ubtn { text-decoration:none; display:inline-block; }
 
 /* ── MAIN SPLIT ───────────────────────── */
 .main { display:flex; height:calc(100vh - 65px); overflow:hidden; }
@@ -384,6 +385,7 @@ input[type=number].fi::-webkit-inner-spin-button { -webkit-appearance:none; }
 
   <!-- Utility buttons, compact -->
   <div class="hdr-utils">
+    <a class="ubtn" href="https://worapratyy.github.io/patrick-running-hub/index.html" title="Back to Dashboard">← Dashboard</a>
     <button class="ubtn" onclick="exportPlan()" title="Export plan as JSON">↓ Export</button>
     <label class="ubtn" title="Import plan from JSON">↑ Import<input type="file" accept=".json" onchange="importPlan(event)"></label>
     <button class="ubtn danger" onclick="resetPlan()" title="Reset to defaults">⟳</button>
@@ -958,11 +960,14 @@ function updateStats() {
     }
   });
 
-  const nextDate = allDates.find(d => sessions[d]?.status==='pending' && sessions[d]?.type!=='rest');
+  const todayStr = new Date().toISOString().slice(0,10);
+  const nextDate = allDates.find(d => d >= todayStr && sessions[d]?.status==='pending' && sessions[d]?.type!=='rest');
   if (nextDate) {
     const ns = sessions[nextDate];
     document.getElementById('statNext').textContent =
-      `${fmtShort(nextDate)} · ${ns.name.replace(/[✅❌⚠️🏁]/g,'').trim()}${ns.km>0?' '+ns.km+'km':''}`;
+      `${fmtShort(nextDate)} · ${ns.name.replace(/[✅❌⚠️🏁👟]/g,'').trim()}${ns.km>0?' '+ns.km+'km':''}`;
+  } else {
+    document.getElementById('statNext').textContent = 'All done 🎉';
   }
 }
 
