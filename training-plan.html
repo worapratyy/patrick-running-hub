@@ -936,8 +936,6 @@ function updateStats() {
 
   document.getElementById('statDone').textContent = `${done.length} / ${active.length}`;
   document.getElementById('statKm').textContent   = doneKm.toFixed(1) + ' km';
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progPct').textContent  = pct + '%';
 
   // Race countdown cards
   const today = new Date();
