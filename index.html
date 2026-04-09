@@ -424,8 +424,7 @@ function render(runs){
   set('bdgStreak', streak>0?`🔥 ${streak}-Week Streak`:'🏃 Start your streak!');
   const raceDate=new Date(RACE_DATE+'T00:00:00');
   const daysToRace=Math.ceil((raceDate-new Date())/86400000);
-  const weeksToRace=daysToRace>0?Math.ceil(daysToRace/7):0;
-  const raceCountdown=daysToRace>0?`${weeksToRace}w to race day`:'Race day!';
+  const raceCountdown=daysToRace>0?`${daysToRace}d to race day`:'Race day!';
   set('bdgRace', `🎯 HM ${GARMIN_HM_PRED} goal · ${raceCountdown}`);
   set('hdrSub', `Half Marathon Training · Garmin Forerunner 570 · ${runs.length} runs · ${raceCountdown}`);
 
@@ -444,6 +443,8 @@ function render(runs){
   set('lrTime', moveS>0?secToHMS(moveS):'—');
 
   // ── Race predictor — Garmin primary ──
+  // Also sync Race Readiness predicted HM with Garmin (API value is stale)
+  set('rrPred', GARMIN_HM_PRED);
   document.getElementById('predHM').innerHTML=`${GARMIN_HM_PRED}<sup>HM</sup>`;
   const [gH,gM,gS]=GARMIN_HM_PRED.split(':').map(Number);
   const gHMsec=gH*3600+gM*60+gS;
