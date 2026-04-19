@@ -753,7 +753,7 @@ function save() { localStorage.setItem(KEY, JSON.stringify(sessions)); }
 // ─── UTILS ──────────────────────────────────────
 function addDays(iso, n) {
   const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0,10);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 function fmtShort(iso) {
   const d = new Date(iso + 'T00:00:00');
