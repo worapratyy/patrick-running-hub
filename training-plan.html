@@ -5,3 +5,1068 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patrick — 2026 Race Season</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* ── Dark theme (original) ── */
+  --bg:        #080b0d;
+  --surface:   #0e1215;
+  --surface2:  #141a1f;
+  --border:    #1e2830;
+  --border2:   #263340;
+  --text:      #dde8f0;
+  --muted:     #4a6070;
+  --muted2:    #6a8090;
+  --hdr-bg:    #0a0d0f;
+  --hdr-text:  #dde8f0;
+  --hdr-muted: #4a7060;
+
+  /* accent colours */
+  --green:  #00e5a0;
+  --blue:   #0096ff;
+  --purple: #b060ff;
+  --orange: #ff6b35;
+  --teal:   #6dd96d;
+  --red:    #ff3d5a;
+  --gold:   #f5c842;
+
+  /* session type colours — dark bg, glow border, bright text */
+  --c-rest-bg:    #141c22; --c-rest-bdr:    #263340; --c-rest-txt:    #4a6070;
+  --c-easy-bg:    #071f18; --c-easy-bdr:    #0a4030; --c-easy-txt:    #00e5a0;
+  --c-tempo-bg:   #071525; --c-tempo-bdr:   #0a2545; --c-tempo-txt:   #0096ff;
+  --c-long-bg:    #160d28; --c-long-bdr:    #2a1250; --c-long-txt:    #b060ff;
+  --c-shakeout-bg:#0a1f0f; --c-shakeout-bdr:#143520; --c-shakeout-txt:#6dd96d;
+  --c-race-bg:    #2a0d00; --c-race-bdr:    #4a1a00; --c-race-txt:    #ff6b35;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; }
+
+/* ── TOP ACCENT BAR (matches dashboard purple line) ── */
+body::before {
+  content:''; display:block; height:3px; width:100%;
+  background: linear-gradient(90deg,#7c3aed,#2563eb,#16a34a);
+  position:fixed; top:0; left:0; z-index:100;
+}
+
+/* ── HEADER ───────────────────────────── */
+.hdr {
+  height:62px; margin-top:3px;
+  background:var(--hdr-bg);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:20px; padding:0 20px;
+  position:fixed; top:3px; left:0; right:0; z-index:90;
+}
+.hdr-title { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:var(--green); letter-spacing:.04em; white-space:nowrap; }
+.hdr-sub   { font-size:11px; color:var(--hdr-muted); white-space:nowrap; }
+.hdr-spacer{ flex:1; }
+.hdr-stat  { text-align:right; }
+.hdr-stat span { display:block; }
+.hdr-stat .val { font-family:'DM Mono',monospace; font-size:13px; color:var(--text); }
+.hdr-stat .lbl { font-size:10px; color:var(--muted); }
+
+/* ── LAYOUT ───────────────────────────── */
+.layout {
+  display:flex; height:100%;
+  padding-top:65px; /* hdr height + accent bar */
+}
+
+/* ── SIDEBAR ──────────────────────────── */
+.sidebar {
+  width:320px; min-width:320px;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  overflow-y:auto; padding:16px 12px;
+  display:flex; flex-direction:column; gap:16px;
+}
+
+/* ── CALENDAR ─────────────────────────── */
+.cal-wrap { }
+.cal-hdr  { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.cal-hdr h3 { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--muted2); letter-spacing:.08em; text-transform:uppercase; }
+.cal-nav  { display:flex; gap:4px; }
+.cal-nav button { background:none; border:1px solid var(--border); color:var(--muted2); border-radius:4px; width:22px; height:22px; cursor:pointer; font-size:12px; line-height:1; }
+.cal-nav button:hover { border-color:var(--border2); color:var(--text); }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.cal-dow  { text-align:center; font-size:9px; color:var(--muted); padding:2px 0 4px; font-family:'DM Mono',monospace; }
+.cal-day  {
+  aspect-ratio:1; border-radius:4px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:10px; font-family:'DM Mono',monospace;
+  border:1px solid transparent; transition:border-color .15s;
+  position:relative; overflow:hidden;
+}
+.cal-day:hover { border-color:var(--border2); }
+.cal-day.empty { cursor:default; }
+.cal-day.today { box-shadow:0 0 0 1.5px var(--green); }
+.cal-day.selected { box-shadow:0 0 0 2px var(--blue) !important; }
+
+/* type colours on calendar */
+.cal-day.t-rest     { background:var(--c-rest-bg);     color:var(--c-rest-txt); }
+.cal-day.t-easy     { background:var(--c-easy-bg);     color:var(--c-easy-txt); }
+.cal-day.t-tempo    { background:var(--c-tempo-bg);    color:var(--c-tempo-txt); }
+.cal-day.t-long     { background:var(--c-long-bg);     color:var(--c-long-txt); }
+.cal-day.t-shakeout { background:var(--c-shakeout-bg); color:var(--c-shakeout-txt); }
+.cal-day.t-race     { background:var(--c-race-bg);     color:var(--c-race-txt); }
+
+.cal-day .cd-num  { font-size:11px; font-weight:500; line-height:1; }
+.cal-day .cd-km   { font-size:8px; margin-top:2px; opacity:.75; }
+.cal-day .cd-dot  { width:4px; height:4px; border-radius:50%; margin-top:2px; }
+.cal-day.t-easy .cd-dot     { background:var(--c-easy-txt); }
+.cal-day.t-tempo .cd-dot    { background:var(--c-tempo-txt); }
+.cal-day.t-long .cd-dot     { background:var(--c-long-txt); }
+.cal-day.t-shakeout .cd-dot { background:var(--c-shakeout-txt); }
+.cal-day.t-race .cd-dot     { background:var(--c-race-txt); }
+
+/* status overlays */
+.cal-day.s-done::after    { content:''; position:absolute; inset:0; background:rgba(0,229,160,.07); }
+.cal-day.s-pending::after { content:''; position:absolute; inset:0; background:rgba(255,107,53,.04); }
+.cal-day.s-skipped::after { content:''; position:absolute; inset:0; background:rgba(255,61,90,.08); }
+
+/* ── STATS PANEL ──────────────────────── */
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.stat-card  {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:6px; padding:8px 10px;
+}
+.stat-card .s-val { font-family:'DM Mono',monospace; font-size:16px; color:var(--text); }
+.stat-card .s-lbl { font-size:10px; color:var(--muted); margin-top:2px; }
+.stat-card .s-sub { font-size:9px; color:var(--muted); margin-top:1px; }
+
+/* ── PROGRESS BARS ────────────────────── */
+.prog-wrap { display:flex; flex-direction:column; gap:8px; }
+.prog-item {}
+.prog-top  { display:flex; justify-content:space-between; font-size:10px; color:var(--muted2); margin-bottom:3px; }
+.prog-bar  { height:4px; background:var(--surface2); border-radius:2px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:2px; transition:width .4s ease; }
+
+/* ── LEGEND ───────────────────────────── */
+.legend { display:flex; flex-wrap:wrap; gap:6px; }
+.leg-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--muted2); }
+.leg-dot  { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+
+/* ── SECTION LABELS ───────────────────── */
+.sec-label {
+  font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
+  color:var(--muted); letter-spacing:.08em; text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+/* ── MAIN PANEL ───────────────────────── */
+.main {
+  flex:1; overflow-y:auto;
+  padding:20px 24px;
+  display:flex; flex-direction:column; gap:20px;
+}
+
+/* ── WEEK BLOCK ───────────────────────── */
+.week-block {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; overflow:hidden;
+}
+.week-hdr {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 16px; border-bottom:1px solid var(--border);
+  background:var(--surface2);
+}
+.week-hdr h2 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text); }
+.week-badge {
+  font-size:10px; padding:2px 8px; border-radius:20px;
+  font-family:'DM Mono',monospace;
+}
+.week-badge.current { background:#0a2a1a; color:var(--green); border:1px solid #0a4030; }
+.week-badge.past    { background:var(--surface); color:var(--muted); border:1px solid var(--border); }
+.week-badge.future  { background:#0a1525; color:#0060b0; border:1px solid #0a2545; }
+.week-badge.race    { background:#1a0d00; color:var(--orange); border:1px solid #3a1a00; }
+.week-km   { margin-left:auto; font-family:'DM Mono',monospace; font-size:12px; color:var(--muted2); }
+
+.days-grid {
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-top:1px solid var(--border);
+}
+.day-cell {
+  padding:10px 10px 12px;
+  border-right:1px solid var(--border);
+  min-height:110px;
+  cursor:pointer; transition:background .15s;
+  position:relative;
+}
+.day-cell:last-child { border-right:none; }
+.day-cell:hover { background:var(--surface2); }
+.day-cell.selected { background:#071525 !important; }
+
+/* type theming for day cells */
+.day-cell.t-rest     { }
+.day-cell.t-easy     { border-top:2px solid var(--c-easy-bdr); }
+.day-cell.t-tempo    { border-top:2px solid var(--c-tempo-bdr); }
+.day-cell.t-long     { border-top:2px solid var(--c-long-bdr); }
+.day-cell.t-shakeout { border-top:2px solid var(--c-shakeout-bdr); }
+.day-cell.t-race     { border-top:2px solid var(--c-race-bdr); }
+
+.dc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.dc-dow  { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase; }
+.dc-date { font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; }
+.dc-status { width:6px; height:6px; border-radius:50%; }
+.dc-status.s-done    { background:var(--green); }
+.dc-status.s-pending { background:var(--orange); }
+.dc-status.s-skipped { background:var(--red); }
+.dc-status.s-none    { background:transparent; }
+
+.dc-type {
+  font-size:9px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  margin-bottom:4px; font-family:'DM Mono',monospace;
+}
+.t-rest     .dc-type { color:var(--c-rest-txt); }
+.t-easy     .dc-type { color:var(--c-easy-txt); }
+.t-tempo    .dc-type { color:var(--c-tempo-txt); }
+.t-long     .dc-type { color:var(--c-long-txt); }
+.t-shakeout .dc-type { color:var(--c-shakeout-txt); }
+.t-race     .dc-type { color:var(--c-race-txt); }
+
+.dc-name { font-size:11px; color:var(--text); line-height:1.3; margin-bottom:6px; }
+.dc-metrics { display:flex; flex-wrap:wrap; gap:4px; }
+.dc-m {
+  font-size:9px; font-family:'DM Mono',monospace;
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:3px; padding:1px 5px; color:var(--muted2);
+}
+
+/* ── DETAIL PANEL ─────────────────────── */
+.detail-wrap {
+  position:fixed; right:0; top:65px; bottom:0; width:340px;
+  background:var(--surface); border-left:1px solid var(--border);
+  overflow-y:auto; padding:20px;
+  transform:translateX(100%); transition:transform .25s ease;
+  z-index:80;
+}
+.detail-wrap.open { transform:translateX(0); }
+
+.det-close {
+  position:absolute; top:12px; right:12px;
+  background:none; border:1px solid var(--border); color:var(--muted2);
+  border-radius:4px; width:24px; height:24px; cursor:pointer; font-size:14px; line-height:1;
+}
+.det-close:hover { border-color:var(--border2); color:var(--text); }
+
+.det-date  { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:4px; }
+.det-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.det-type  { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px; }
+.t-rest     .det-type { color:var(--c-rest-txt); }
+.t-easy     .det-type { color:var(--c-easy-txt); }
+.t-tempo    .det-type { color:var(--c-tempo-txt); }
+.t-long     .det-type { color:var(--c-long-txt); }
+.t-shakeout .det-type { color:var(--c-shakeout-txt); }
+.t-race     .det-type { color:var(--c-race-txt); }
+
+.det-metrics { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+.det-m { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:8px 10px; }
+.det-m .dm-val { font-family:'DM Mono',monospace; font-size:15px; color:var(--text); }
+.det-m .dm-lbl { font-size:10px; color:var(--muted); margin-top:2px; }
+
+.det-notes { font-size:12px; color:var(--muted2); line-height:1.6; margin-bottom:16px; }
+
+.det-status-wrap { margin-bottom:16px; }
+.det-status-wrap .sec-label { margin-bottom:8px; }
+.status-btns { display:flex; gap:6px; }
+.status-btn {
+  flex:1; padding:6px; border-radius:5px; cursor:pointer;
+  font-size:11px; font-family:'DM Mono',monospace; font-weight:500;
+  border:1px solid var(--border); background:var(--surface2); color:var(--muted2);
+  transition:all .15s;
+}
+.status-btn:hover { border-color:var(--border2); color:var(--text); }
+.status-btn.active-done    { background:#071f15; border-color:#0a4030; color:var(--green); }
+.status-btn.active-pending { background:#1f1007; border-color:#40200a; color:var(--orange); }
+.status-btn.active-skipped { background:#1f0708; border-color:#40100a; color:var(--red); }
+
+/* edit form */
+.edit-form { display:none; flex-direction:column; gap:10px; }
+.ef-row { display:flex; flex-direction:column; gap:4px; }
+.ef-label { font-size:10px; color:var(--muted); }
+.ef-input, .ef-select, .ef-textarea {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:5px; color:var(--text); font-family:'DM Mono',monospace; font-size:12px;
+  padding:6px 8px; width:100%;
+}
+.ef-input:focus, .ef-select:focus, .ef-textarea:focus {
+  outline:none; border-color:var(--blue);
+}
+.ef-textarea { resize:vertical; min-height:70px; font-family:'DM Sans',sans-serif; }
+.ef-btns { display:flex; gap:6px; margin-top:4px; }
+.ef-btn {
+  flex:1; padding:7px; border-radius:5px; cursor:pointer;
+  font-size:11px; font-weight:600; border:none;
+}
+.ef-btn.save   { background:var(--blue); color:#fff; }
+.ef-btn.cancel { background:var(--surface2); color:var(--muted2); border:1px solid var(--border); }
+.ef-btn:hover  { opacity:.85; }
+
+.det-edit-btn {
+  width:100%; padding:7px; border-radius:5px; cursor:pointer;
+  font-size:11px; font-weight:600;
+  background:var(--surface2); border:1px solid var(--border); color:var(--muted2);
+}
+.det-edit-btn:hover { border-color:var(--border2); color:var(--text); }
+
+/* empty state */
+.det-empty {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:100%; gap:8px; color:var(--muted); text-align:center;
+}
+.det-empty svg { opacity:.3; }
+.det-empty p { font-size:12px; line-height:1.5; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+/* ── RESPONSIVE: shift main when detail open ── */
+body.detail-open .main { padding-right:360px; }
+
+/* ── PHASE DIVIDER ────────────────────── */
+.phase-divider {
+  display:flex; align-items:center; gap:12px;
+  padding:6px 0;
+}
+.phase-divider span {
+  font-family:'Syne',sans-serif; font-size:10px; font-weight:700;
+  color:var(--muted); letter-spacing:.1em; text-transform:uppercase; white-space:nowrap;
+}
+.phase-divider::before,.phase-divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="hdr">
+  <div>
+    <div class="hdr-title">Patrick — 2026 Race Season</div>
+    <div class="hdr-sub">Training Plan · Jul 5 Bangkok Double Bridge HM → Aug 16 10K</div>
+  </div>
+  <div class="hdr-spacer"></div>
+  <div class="hdr-stat" id="hdrWeekly">
+    <span class="val">—</span>
+    <span class="lbl">This Week km</span>
+  </div>
+  <div class="hdr-stat" id="hdrTotal">
+    <span class="val">—</span>
+    <span class="lbl">Total km logged</span>
+  </div>
+  <div class="hdr-stat" id="hdrDone">
+    <span class="val">—</span>
+    <span class="lbl">Sessions done</span>
+  </div>
+</header>
+
+<!-- ── LAYOUT ── -->
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <!-- Calendar -->
+    <div class="cal-wrap">
+      <div class="cal-hdr">
+        <h3 id="calMonthLabel">Month</h3>
+        <div class="cal-nav">
+          <button onclick="calPrev()">‹</button>
+          <button onclick="calNext()">›</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <!-- Stats -->
+    <div>
+      <div class="sec-label">Season Stats</div>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+
+    <!-- Progress -->
+    <div>
+      <div class="sec-label">Phase Progress</div>
+      <div class="prog-wrap" id="progWrap"></div>
+    </div>
+
+    <!-- Legend -->
+    <div>
+      <div class="sec-label">Session Types</div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-rest-txt)"></div>Rest</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-easy-txt)"></div>Easy</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-tempo-txt)"></div>Tempo</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-long-txt)"></div>Long</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-shakeout-txt)"></div>Shakeout</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-race-txt)"></div>Race</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main" id="mainPanel"></main>
+
+  <!-- ── DETAIL PANEL ── -->
+  <div class="detail-wrap" id="detailPanel">
+    <button class="det-close" onclick="closeDetail()">✕</button>
+
+    <div id="detEmpty" class="det-empty">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+      </svg>
+      <p>Click any day<br>to see details</p>
+    </div>
+
+    <div id="detContent" style="display:none">
+      <div class="det-date"  id="detDate"></div>
+      <div class="det-title" id="detTitle"></div>
+      <div class="det-type"  id="detType"></div>
+      <div class="det-metrics" id="detMetrics"></div>
+      <div class="det-notes"   id="detNotes"></div>
+
+      <div class="det-status-wrap">
+        <div class="sec-label">Status</div>
+        <div class="status-btns">
+          <button class="status-btn" id="btnDone"    onclick="setStatus('done')">✓ Done</button>
+          <button class="status-btn" id="btnPending" onclick="setStatus('pending')">◌ Pending</button>
+          <button class="status-btn" id="btnSkipped" onclick="setStatus('skipped')">✕ Skipped</button>
+        </div>
+      </div>
+
+      <button class="det-edit-btn" onclick="toggleEdit()">✎ Edit Session</button>
+
+      <div class="edit-form" id="edForm">
+        <div class="ef-row">
+          <label class="ef-label">Session Name</label>
+          <input  class="ef-input" id="edName" type="text">
+        </div>
+        <div class="ef-row">
+          <label class="ef-label">Type</label>
+          <select class="ef-select" id="edType">
+            <option value="rest">Rest</option>
+            <option value="easy">Easy</option>
+            <option value="tempo">Tempo</option>
+            <option value="long">Long</option>
+            <option value="shakeout">Shakeout</option>
+            <option value="race">Race</option>
+          </select>
+        </div>
+        <div class="ef-row">
+          <label class="ef-label">Distance (km)</label>
+          <input  class="ef-input" id="edKm" type="number" step="0.01">
+        </div>
+        <div class="ef-row">
+          <label class="ef-label">Pace (mm:ss/km)</label>
+          <input  class="ef-input" id="edPace" type="text" placeholder="e.g. 7:30">
+        </div>
+        <div class="ef-row">
+          <label class="ef-label">Avg HR (bpm)</label>
+          <input  class="ef-input" id="edHr" type="text">
+        </div>
+        <div class="ef-row">
+          <label class="ef-label">Notes</label>
+          <textarea class="ef-textarea" id="edNotes"></textarea>
+        </div>
+        <div class="ef-btns">
+          <button class="ef-btn save"   onclick="saveEdit()">Save</button>
+          <button class="ef-btn cancel" onclick="toggleEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="edEmpty" style="display:none; color:var(--muted); font-size:12px; text-align:center; padding:30px 0;">
+        Select a day to edit
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+// Canonical training plan — 2026 Race Season
+// Phases:
+//   W1–W3   : Base rebuild (post-HM recovery, May 10–30)
+//   W4–W8   : Build 1 — aerobic base (Jun 1–Jul 4)
+//   RACE A  : Jul 5 — Bangkok Double Bridge HM
+//   W9–W12  : Build 2 — 10K sharpening (Jul 6 – Aug 1)
+//   W13–W14 : Peak / taper (Aug 2–15)
+//   RACE B  : Aug 16 — 10K Goal Race
+//
+// Each entry: { type, name, km, pace, hr, notes, status }
+// status: "done" | "pending" | "skipped"
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PLAN = {
+  // ══════════════════════════════════════════════════════
+  //  PHASE 0 — POST-HM RECOVERY  (W9 of old plan, May 4–9)
+  // ══════════════════════════════════════════════════════
+  "2026-05-04":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 1 post-race. Full rest — no running, light walking only. Legs up, hydrate, sleep.",                                                                                             status:"done"    },
+  "2026-05-05":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 2 post-race. Continue full rest. No running.",                                                                                                                                  status:"done"    },
+  "2026-05-06":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 3 post-race. Full rest.",                                                                                                                                                       status:"done"    },
+  "2026-05-07":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 4 post-race. Full rest.",                                                                                                                                                       status:"done"    },
+  "2026-05-08":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 5 post-race. Full rest.",                                                                                                                                                       status:"done"    },
+  "2026-05-09":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 6 post-race. Full rest. Return run tomorrow (May 10) — 5 km Z1.",                                                                                                              status:"done"    },
+
+  // ══════════════════════════════════════════════════════
+  //  W1 — BASE REBUILD  (May 10–16)
+  //  Goal: re-engage aerobic system after HM, low intensity
+  //  Target: ~20 km total, Z1–Z2 only
+  // ══════════════════════════════════════════════════════
+  "2026-05-10":{ type:"easy",    name:"Return Run — Easy Z1",         km:5,    pace:"8:00–8:30",  hr:"120–133", notes:"First run after 7-day HM recovery. Keep HR in Z1 (109–133 bpm). No pace pressure — just reactivate the legs. Treadmill or outdoor, flat only.",                             status:"done"    },
+  "2026-05-11":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"done"    },
+  "2026-05-12":{ type:"easy",    name:"Easy Zone 2 Run",               km:7,    pace:"8:10–8:30",  hr:"136–148", notes:"W1 midweek easy. First Z2 session of the rebuild block. HR 136–148 bpm. Controlled effort — don't push pace.",                                                             status:"done"    },
+  "2026-05-13":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"done"    },
+  "2026-05-14":{ type:"easy",    name:"Easy Zone 2 Run",               km:6,    pace:"8:10–8:30",  hr:"136–148", notes:"W1 Thursday easy. HR 136–148 bpm. Focus on breathing rhythm and comfortable stride.",                                                                                    status:"pending" },
+  "2026-05-15":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-16":{ type:"long",    name:"Long Run — Easy Z2",            km:10,   pace:"8:00–8:20",  hr:"136–148", notes:"W1 long run. 10 km at easy Z2 effort. Outdoor preferred — flat loop. This is your first structured long run of the rebuild. Don't race it.",                              status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W2 — BASE REBUILD  (May 17–23)
+  //  Target: ~25 km total, introduce light M-pace strides
+  // ══════════════════════════════════════════════════════
+  "2026-05-17":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-18":{ type:"easy",    name:"Easy Z2 + Strides",             km:7,    pace:"8:00–8:20",  hr:"136–148", notes:"Easy Z2 with 4×20 sec strides at end (M pace ~6:37/km, full recovery between). Strides wake up fast-twitch fibres without fatigue.",                                     status:"pending" },
+  "2026-05-19":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-20":{ type:"easy",    name:"Easy Zone 2",                   km:7,    pace:"8:00–8:20",  hr:"136–148", notes:"Standard midweek easy. HR 136–148. Nothing heroic.",                                                                                                                      status:"pending" },
+  "2026-05-21":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-22":{ type:"easy",    name:"Easy Zone 2",                   km:6,    pace:"8:00–8:20",  hr:"136–148", notes:"Shake-out style easy. Keep it relaxed.",                                                                                                                                  status:"pending" },
+  "2026-05-23":{ type:"long",    name:"Long Run — Z2",                 km:12,   pace:"7:50–8:10",  hr:"136–148", notes:"W2 long run. 12 km easy Z2. Build confidence on longer efforts. Flat outdoor route preferred.",                                                                           status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W3 — BASE REBUILD  (May 24–30)
+  //  Target: ~28 km, first M-pace work
+  // ══════════════════════════════════════════════════════
+  "2026-05-24":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-25":{ type:"easy",    name:"Easy Z2 + Strides",             km:8,    pace:"7:50–8:10",  hr:"136–148", notes:"Easy Z2 with 6×20 sec strides. Preparing legs for first tempo next week.",                                                                                               status:"pending" },
+  "2026-05-26":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-27":{ type:"tempo",   name:"Tempo Intro — M Pace",          km:7,    pace:"6:37–6:50",  hr:"150–160", notes:"First structured tempo of rebuild. 2 km warm-up (E pace) + 3 km at M pace (6:37–6:50/km, ~Z3) + 2 km cool-down. Don't go to T pace yet — this is M effort only.",      status:"pending" },
+  "2026-05-28":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-05-29":{ type:"easy",    name:"Easy Recovery",                 km:5,    pace:"8:10–8:30",  hr:"120–135", notes:"Easy recovery run day after tempo. Keep Z1, flush out any residual fatigue.",                                                                                            status:"pending" },
+  "2026-05-30":{ type:"long",    name:"Long Run — Z2",                 km:13,   pace:"7:45–8:00",  hr:"136–148", notes:"W3 long run. 13 km Z2. Progressive effort — first 8 km very easy, last 5 km at the faster end of Z2.",                                                                   status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W4 — BUILD 1  (Jun 1–7)
+  //  Target: ~32 km, 1 tempo, long 14 km
+  // ══════════════════════════════════════════════════════
+  "2026-06-01":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-02":{ type:"easy",    name:"Easy Z2 + Strides",             km:8,    pace:"7:45–8:00",  hr:"136–148", notes:"Easy with 6×20 sec strides. VDOT 37 E pace = 7:30/km — approach but don't force it.",                                                                                    status:"pending" },
+  "2026-06-03":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-04":{ type:"tempo",   name:"Tempo — M Pace Progression",    km:8,    pace:"6:37–6:45",  hr:"150–160", notes:"2 km warm-up + 4 km M pace (6:37–6:45/km) + 2 km cool-down. Settling into VDOT 37 M pace. HR should land Z3.",                                                           status:"pending" },
+  "2026-06-05":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-06":{ type:"easy",    name:"Easy Z2",                       km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Standard midweek easy. VDOT 37 E pace is 7:30/km — run by feel, HR first.",                                                                                              status:"pending" },
+  "2026-06-07":{ type:"long",    name:"Long Run — Z2",                 km:14,   pace:"7:40–8:00",  hr:"136–148", notes:"W4 long run — 14 km Z2. Aim to match Apr 12 fitness level (14.65 km / 153 bpm). If HR creeps to Z3 that's fine — don't slow down artificially.",                         status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W5 — BUILD 1  (Jun 8–14)
+  //  Target: ~33 km, first T-pace intervals
+  // ══════════════════════════════════════════════════════
+  "2026-06-08":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-09":{ type:"easy",    name:"Easy Z2 + Strides",             km:8,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with 6×20 sec strides.",                                                                                                                                             status:"pending" },
+  "2026-06-10":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-11":{ type:"tempo",   name:"Threshold Intervals — T Pace",  km:8,    pace:"6:04–6:15",  hr:"160–167", notes:"2 km warm-up + 3×1 km at T pace (6:04–6:15/km) with 90 sec jog recovery + 2 km cool-down. First T-pace work of the cycle. Don't go longer than 1 km per rep yet.",      status:"pending" },
+  "2026-06-12":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-13":{ type:"easy",    name:"Easy Z2",                       km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy recovery after threshold work.",                                                                                                                                     status:"pending" },
+  "2026-06-14":{ type:"long",    name:"Long Run — Z2",                 km:15,   pace:"7:30–7:50",  hr:"136–148", notes:"W5 long run — 15 km. Biggest long run since the HM. Stay Z2 throughout.",                                                                                                status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W6 — BUILD 1  (Jun 15–21)
+  //  Target: ~35 km
+  // ══════════════════════════════════════════════════════
+  "2026-06-15":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-16":{ type:"easy",    name:"Easy Z2 + Strides",             km:8,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with 8×20 sec strides.",                                                                                                                                             status:"pending" },
+  "2026-06-17":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-18":{ type:"tempo",   name:"Threshold Intervals",           km:9,    pace:"6:04–6:15",  hr:"160–167", notes:"2 km warm-up + 4×1 km at T pace with 90 sec recovery + 2 km cool-down. Volume step-up from last week.",                                                                   status:"pending" },
+  "2026-06-19":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-20":{ type:"easy",    name:"Easy Z2",                       km:8,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy midweek.",                                                                                                                                                           status:"pending" },
+  "2026-06-21":{ type:"long",    name:"Long Run — Z2/Z3 Progression",  km:16,   pace:"7:20–7:40",  hr:"136–155", notes:"W6 long run — 16 km. First 12 km Z2, last 4 km drift to Z3 naturally. Don't force it — let it come.",                                                                    status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W7 — BUILD 1  (Jun 22–28)
+  //  Target: ~36 km, 2×tempo
+  // ══════════════════════════════════════════════════════
+  "2026-06-22":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-23":{ type:"easy",    name:"Easy Z2 + Strides",             km:8,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with strides.",                                                                                                                                                      status:"pending" },
+  "2026-06-24":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-25":{ type:"tempo",   name:"Threshold — T Cruise Intervals",km:9,    pace:"6:04–6:10",  hr:"160–167", notes:"2 km warm-up + 2×2 km at T pace (6:04/km) with 2 min rest + 2 km cool-down. Cruise intervals — building towards continuous tempo.",                                      status:"pending" },
+  "2026-06-26":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-27":{ type:"tempo",   name:"M Pace Run",                    km:8,    pace:"6:37–6:45",  hr:"150–160", notes:"2nd quality session this week — M pace. 2 km warm + 4 km M pace + 2 km cool. Lighter than Thursday.",                                                                    status:"pending" },
+  "2026-06-28":{ type:"long",    name:"Long Run — Z2",                 km:17,   pace:"7:20–7:40",  hr:"136–150", notes:"W7 long run — 17 km. Match Apr 19 distance at lower HR. This is the fitness benchmark run. Target Z2 throughout.",                                                       status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W8 — PRE-RACE TAPER  (Jun 29 – Jul 4)
+  //  Target: ~22 km, protect legs for Jul 5 race
+  // ══════════════════════════════════════════════════════
+  "2026-06-29":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-06-30":{ type:"easy",    name:"Easy Z2 + Strides",             km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Taper week. Keep volume down, maintain sharpness with strides.",                                                                                                         status:"pending" },
+  "2026-07-01":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-02":{ type:"tempo",   name:"Sharpener — M+T",               km:6,    pace:"6:20–6:37",  hr:"155–165", notes:"2 km warm + 2 km M pace + 1 km T pace + 1 km cool. Final quality session before race. Short and sharp.",                                                                 status:"pending" },
+  "2026-07-03":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest. Hydrate. Sleep early.",                                                                                                                                                      status:"pending" },
+  "2026-07-04":{ type:"shakeout",name:"Race-Eve Shakeout",             km:2.5,  pace:"8:00–8:30",  hr:"<130",    notes:"10 min easy jog + 4×20 sec strides. Legs loose, nothing hard. Eat your carbs, set your alarm — flag-off is 03:30 AM.",                                                   status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  RACE A — Jul 5: Bangkok Double Bridge HM  (Wat Arun)
+  //  Flag-off: 03:30 AM · Cutoff: 07:00 AM (3.5 hr)
+  //  Target: Sub-2:20 moving time (VDOT 37 → 6:37/km)
+  // ══════════════════════════════════════════════════════
+  "2026-07-05":{ type:"race",    name:"Bangkok Double Bridge HM 21K",  km:21.1, pace:"6:37–6:50",  hr:"155–165", notes:"Race day. Flag-off 03:30 AM at Wat Arun. Target sub-2:20 moving time. Strategy: 6:45/km first 10 km (conservative), 6:37/km km 10–17, push final 4 km. Cutoff 07:00 AM — no drama, just execute.",  status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W9 — POST-HM RECOVERY  (Jul 6–12)
+  //  Full rest 6 days, return run Jul 12
+  // ══════════════════════════════════════════════════════
+  "2026-07-06":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 1 post-race. Full rest.",                                                                                                                                                       status:"pending" },
+  "2026-07-07":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 2 post-race. Full rest.",                                                                                                                                                       status:"pending" },
+  "2026-07-08":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 3 post-race. Full rest.",                                                                                                                                                       status:"pending" },
+  "2026-07-09":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 4 post-race. Full rest.",                                                                                                                                                       status:"pending" },
+  "2026-07-10":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 5 post-race. Full rest.",                                                                                                                                                       status:"pending" },
+  "2026-07-11":{ type:"rest",    name:"Rest / Recovery",              km:0,    pace:"",           hr:"",    notes:"Day 6 post-race. Full rest.",                                                                                                                                                       status:"pending" },
+  "2026-07-12":{ type:"easy",    name:"Return Run — Easy Z1",         km:5,    pace:"8:00–8:30",  hr:"120–133", notes:"First run after HM recovery. Z1 only. No pressure.",                                                                                                                       status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W10–W12 — BUILD 2: 10K SHARPENING  (Jul 13 – Aug 1)
+  //  Shift focus: shorter, faster. T pace becomes primary.
+  //  Target: 35–40 km/week, 2 quality sessions/week
+  // ══════════════════════════════════════════════════════
+
+  // W10 (Jul 13–19)
+  "2026-07-13":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-14":{ type:"easy",    name:"Easy Z2 + Strides",             km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Back to training. Easy with 6 strides.",                                                                                                                                  status:"pending" },
+  "2026-07-15":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-16":{ type:"tempo",   name:"T Pace Intervals",              km:8,    pace:"6:04–6:15",  hr:"160–167", notes:"2 km warm + 4×1 km T pace (90 sec recovery) + 2 km cool.",                                                                                                               status:"pending" },
+  "2026-07-17":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-18":{ type:"easy",    name:"Easy Z2",                       km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy.",                                                                                                                                                                    status:"pending" },
+  "2026-07-19":{ type:"long",    name:"Long Run — Z2",                 km:14,   pace:"7:30–7:50",  hr:"136–148", notes:"W10 long run. 14 km Z2. Long runs stay in range for 10K block.",                                                                                                         status:"pending" },
+
+  // W11 (Jul 20–26)
+  "2026-07-20":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-21":{ type:"easy",    name:"Easy Z2 + Strides",             km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with 8 strides.",                                                                                                                                                    status:"pending" },
+  "2026-07-22":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-23":{ type:"tempo",   name:"T Cruise Intervals",            km:9,    pace:"6:04–6:10",  hr:"160–167", notes:"2 km warm + 2×2 km T pace (2 min rest) + 2 km cool. Building towards 4 km continuous T.",                                                                                status:"pending" },
+  "2026-07-24":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-25":{ type:"tempo",   name:"M Pace Run",                    km:8,    pace:"6:37–6:45",  hr:"150–160", notes:"M pace maintenance. 2 warm + 4 M + 2 cool.",                                                                                                                             status:"pending" },
+  "2026-07-26":{ type:"long",    name:"Long Run — Z2",                 km:14,   pace:"7:30–7:50",  hr:"136–148", notes:"W11 long run. 14 km Z2.",                                                                                                                                                status:"pending" },
+
+  // W12 (Jul 27 – Aug 1)
+  "2026-07-27":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-28":{ type:"easy",    name:"Easy Z2 + Strides",             km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with strides.",                                                                                                                                                      status:"pending" },
+  "2026-07-29":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-07-30":{ type:"tempo",   name:"T Intervals — 5×1 km",          km:9,    pace:"6:04–6:10",  hr:"160–167", notes:"2 km warm + 5×1 km T pace (90 sec recovery) + 2 km cool. Peak interval session.",                                                                                        status:"pending" },
+  "2026-07-31":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-08-01":{ type:"easy",    name:"Easy Z2",                       km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy.",                                                                                                                                                                    status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  W13–W14 — PEAK / TAPER  (Aug 2–15)
+  //  Sharpen, reduce volume, maintain speed
+  // ══════════════════════════════════════════════════════
+
+  // W13 (Aug 2–8)
+  "2026-08-02":{ type:"long",    name:"Last Long Run",                  km:12,   pace:"7:30–7:50",  hr:"136–148", notes:"Final long run before taper. 12 km Z2. Comfortable benchmark run — should feel easy.",                                                                                   status:"pending" },
+  "2026-08-03":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-08-04":{ type:"easy",    name:"Easy Z2 + Strides",             km:7,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with 8 strides.",                                                                                                                                                    status:"pending" },
+  "2026-08-05":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-08-06":{ type:"tempo",   name:"Sharpener — T Pace",            km:7,    pace:"6:04–6:10",  hr:"160–167", notes:"2 km warm + 3×1 km T pace (90 sec) + 2 km cool. Keep it crisp, not exhausting.",                                                                                        status:"pending" },
+  "2026-08-07":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-08-08":{ type:"easy",    name:"Easy Z2",                       km:6,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy. Nothing hard.",                                                                                                                                                     status:"pending" },
+
+  // W14 — Final Taper (Aug 9–15)
+  "2026-08-09":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-08-10":{ type:"easy",    name:"Easy Z2 + Strides",             km:6,    pace:"7:30–7:50",  hr:"136–148", notes:"Easy with 6 strides. Feel sharp, not tired.",                                                                                                                            status:"pending" },
+  "2026-08-11":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest.",                                                                                                                                                                             status:"pending" },
+  "2026-08-12":{ type:"tempo",   name:"Final Sharpener",               km:5,    pace:"6:04–6:10",  hr:"160–167", notes:"2 km warm + 2×800 m T pace + 2 km cool. Short and sharp. Last hard effort.",                                                                                             status:"pending" },
+  "2026-08-13":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest. Hydrate.",                                                                                                                                                                   status:"pending" },
+  "2026-08-14":{ type:"rest",    name:"Rest",                          km:0,    pace:"",           hr:"",    notes:"Rest. Eat well. Sleep early.",                                                                                                                                                     status:"pending" },
+  "2026-08-15":{ type:"shakeout",name:"Race-Eve Shakeout",             km:2,    pace:"8:00–8:30",  hr:"<130",    notes:"10 min easy + 4×15 sec strides. Just loosen up. Everything is ready.",                                                                                                   status:"pending" },
+
+  // ══════════════════════════════════════════════════════
+  //  RACE B — Aug 16: 10K Goal Race
+  //  Target: Sub-50:00 (5:00/km) — VDOT 37 → 49:49
+  // ══════════════════════════════════════════════════════
+  "2026-08-16":{ type:"race",    name:"10K Goal Race",                  km:10,   pace:"4:58–5:05",  hr:"165–172", notes:"Race day. Target sub-50:00. Go out at 5:00/km, hold through km 7, empty the tank in final 3 km. VDOT 37 predicts 49:49.",                                               status:"pending" },
+};
+
+// ─── PHASE / WEEK META ───────────────────────────────────────────────────────
+const WEEKS = [
+  { id:"w-rec0",  label:"W0 — Post-HM Recovery",     phase:"recovery", start:"2026-05-04", end:"2026-05-09" },
+  { id:"w1",      label:"W1 — Base Rebuild",          phase:"base",     start:"2026-05-10", end:"2026-05-16" },
+  { id:"w2",      label:"W2 — Base Rebuild",          phase:"base",     start:"2026-05-17", end:"2026-05-23" },
+  { id:"w3",      label:"W3 — Base Rebuild",          phase:"base",     start:"2026-05-24", end:"2026-05-30" },
+  { id:"w4",      label:"W4 — Build 1",               phase:"build1",   start:"2026-06-01", end:"2026-06-07" },
+  { id:"w5",      label:"W5 — Build 1",               phase:"build1",   start:"2026-06-08", end:"2026-06-14" },
+  { id:"w6",      label:"W6 — Build 1",               phase:"build1",   start:"2026-06-15", end:"2026-06-21" },
+  { id:"w7",      label:"W7 — Build 1",               phase:"build1",   start:"2026-06-22", end:"2026-06-28" },
+  { id:"w8",      label:"W8 — Pre-Race Taper",        phase:"taper",    start:"2026-06-29", end:"2026-07-04" },
+  { id:"w-raceA", label:"RACE A — Bangkok Double Bridge HM", phase:"race", start:"2026-07-05", end:"2026-07-05" },
+  { id:"w-rec1",  label:"W9 — Post-HM Recovery",      phase:"recovery", start:"2026-07-06", end:"2026-07-12" },
+  { id:"w10",     label:"W10 — Build 2 / 10K Sharp",  phase:"build2",   start:"2026-07-13", end:"2026-07-19" },
+  { id:"w11",     label:"W11 — Build 2",              phase:"build2",   start:"2026-07-20", end:"2026-07-26" },
+  { id:"w12",     label:"W12 — Build 2",              phase:"build2",   start:"2026-07-27", end:"2026-08-01" },
+  { id:"w13",     label:"W13 — Peak",                 phase:"peak",     start:"2026-08-02", end:"2026-08-08" },
+  { id:"w14",     label:"W14 — Taper",                phase:"taper",    start:"2026-08-09", end:"2026-08-15" },
+  { id:"w-raceB", label:"RACE B — 10K Goal Race",     phase:"race",     start:"2026-08-16", end:"2026-08-16" },
+];
+
+const PHASE_LABELS = {
+  recovery: "Recovery",
+  base:     "Base Rebuild",
+  build1:   "Build 1 — Aerobic Base",
+  build2:   "Build 2 — 10K Sharpening",
+  taper:    "Taper",
+  peak:     "Peak",
+  race:     "Race",
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let overrides = {};   // { "YYYY-MM-DD": { ...partial } }
+let sel = null;       // selected date string
+let calYear, calMonth;
+
+const today = new Date();
+const todayStr = today.toISOString().slice(0,10);
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────────────────
+function load() {
+  try { overrides = JSON.parse(localStorage.getItem('tp_overrides') || '{}'); } catch(e) { overrides = {}; }
+}
+function save() {
+  localStorage.setItem('tp_overrides', JSON.stringify(overrides));
+}
+
+// ─── DATA HELPERS ─────────────────────────────────────────────────────────────
+function getDay(dateStr) {
+  const base = PLAN[dateStr] || { type:"rest", name:"Rest / Off", km:0, pace:"", hr:"", notes:"", status:"pending" };
+  return { ...base, ...(overrides[dateStr] || {}) };
+}
+
+function allDates() {
+  return Object.keys(PLAN).sort();
+}
+
+// ─── DATE UTILS ──────────────────────────────────────────────────────────────
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function fmtDate(ds) {
+  const d = new Date(ds + 'T00:00:00');
+  return `${DOW[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+// ─── RENDER MAIN PANEL ───────────────────────────────────────────────────────
+function renderMain() {
+  const main = document.getElementById('mainPanel');
+  main.innerHTML = '';
+
+  let lastPhase = null;
+
+  WEEKS.forEach(week => {
+    // Phase divider
+    if (week.phase !== lastPhase) {
+      const div = document.createElement('div');
+      div.className = 'phase-divider';
+      div.innerHTML = `<span>${PHASE_LABELS[week.phase]}</span>`;
+      main.appendChild(div);
+      lastPhase = week.phase;
+    }
+
+    const startD = new Date(week.start + 'T00:00:00');
+    const endD   = new Date(week.end   + 'T00:00:00');
+    const todayD = new Date(todayStr   + 'T00:00:00');
+
+    const isCurrent = todayD >= startD && todayD <= endD;
+    const isPast    = todayD > endD;
+    const isRace    = week.phase === 'race';
+
+    let badge = isPast ? 'past' : (isCurrent ? 'current' : 'future');
+    if (isRace) badge = 'race';
+
+    // Collect dates for this week
+    const dates = [];
+    const cur = new Date(startD);
+    while (cur <= endD) {
+      dates.push(cur.toISOString().slice(0,10));
+      cur.setDate(cur.getDate()+1);
+    }
+
+    // Week km total (done only)
+    const weekKm = dates.reduce((s,d) => {
+      const day = getDay(d);
+      return s + (day.status === 'done' ? (day.km || 0) : 0);
+    }, 0);
+
+    const block = document.createElement('div');
+    block.className = 'week-block';
+    block.id = week.id;
+
+    block.innerHTML = `
+      <div class="week-hdr">
+        <h2>${week.label}</h2>
+        <span class="week-badge ${badge}">${badge === 'current' ? 'Current Week' : badge === 'past' ? 'Completed' : badge === 'race' ? 'Race Day' : 'Upcoming'}</span>
+        ${weekKm > 0 ? `<span class="week-km">${weekKm.toFixed(1)} km logged</span>` : ''}
+      </div>
+      <div class="days-grid" id="grid-${week.id}"></div>
+    `;
+    main.appendChild(block);
+
+    const grid = block.querySelector(`#grid-${week.id}`);
+    dates.forEach(dateStr => {
+      const day = getDay(dateStr);
+      const d   = new Date(dateStr + 'T00:00:00');
+      const isToday = dateStr === todayStr;
+      const isSel   = dateStr === sel;
+
+      const cell = document.createElement('div');
+      cell.className = `day-cell t-${day.type} s-${day.status}${isToday ? ' today' : ''}${isSel ? ' selected' : ''}`;
+      cell.onclick = () => selectDay(dateStr);
+
+      const metrics = [];
+      if (day.km)   metrics.push(`<span class="dc-m">${day.km} km</span>`);
+      if (day.pace) metrics.push(`<span class="dc-m">${day.pace}</span>`);
+      if (day.hr)   metrics.push(`<span class="dc-m">${day.hr} bpm</span>`);
+
+      cell.innerHTML = `
+        <div class="dc-head">
+          <span class="dc-dow">${DOW[d.getDay()]}</span>
+          <span class="dc-date">${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}</span>
+          <span class="dc-status s-${day.status}"></span>
+        </div>
+        <div class="dc-type">${day.type}</div>
+        <div class="dc-name">${day.name}</div>
+        <div class="dc-metrics">${metrics.join('')}</div>
+      `;
+      grid.appendChild(cell);
+    });
+  });
+}
+
+// ─── CALENDAR ────────────────────────────────────────────────────────────────
+function renderCal() {
+  if (calYear === undefined) {
+    calYear  = today.getFullYear();
+    calMonth = today.getMonth();
+  }
+
+  document.getElementById('calMonthLabel').textContent = `${MONTHS[calMonth]} ${calYear}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // Day-of-week headers
+  ['S','M','T','W','T','F','S'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-dow';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+  for (let i=0; i<firstDay; i++) {
+    const el = document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el);
+  }
+
+  for (let d=1; d<=daysInMonth; d++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const day = PLAN[ds] ? getDay(ds) : null;
+    const el = document.createElement('div');
+    el.className = `cal-day${day ? ` t-${day.type} s-${day.status}` : ''}${ds===todayStr?' today':''}${ds===sel?' selected':''}`;
+    if (day) el.onclick = () => selectDay(ds);
+    else el.style.cursor = 'default';
+    el.innerHTML = `<span class="cd-num">${d}</span>${day && day.km ? `<span class="cd-km">${day.km}</span>` : (day && day.type !== 'rest' ? `<span class="cd-dot"></span>` : '')}`;
+    grid.appendChild(el);
+  }
+}
+
+function calPrev() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCal(); }
+function calNext() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCal(); }
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+function updateStats() {
+  const dates = allDates();
+
+  const totalKm   = dates.reduce((s,d) => s + (getDay(d).status==='done' ? (getDay(d).km||0) : 0), 0);
+  const totalSess = dates.filter(d => getDay(d).status==='done').length;
+  const totalRuns = dates.filter(d => getDay(d).status==='done' && getDay(d).type!=='rest').length;
+  const skipped   = dates.filter(d => getDay(d).status==='skipped').length;
+
+  // This week
+  const weekStart = new Date(today); weekStart.setDate(today.getDate() - today.getDay());
+  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+6);
+  const weekKm = dates.reduce((s,d) => {
+    const dd = new Date(d+'T00:00:00');
+    return s + (dd >= weekStart && dd <= weekEnd && getDay(d).status==='done' ? (getDay(d).km||0) : 0);
+  }, 0);
+
+  // Header
+  document.querySelector('#hdrWeekly .val').textContent = weekKm.toFixed(1);
+  document.querySelector('#hdrTotal  .val').textContent = totalKm.toFixed(1);
+  document.querySelector('#hdrDone   .val').textContent = totalSess;
+
+  // Stats grid
+  const sg = document.getElementById('statsGrid');
+  sg.innerHTML = `
+    <div class="stat-card"><div class="s-val">${totalKm.toFixed(1)}</div><div class="s-lbl">Total km logged</div></div>
+    <div class="stat-card"><div class="s-val">${weekKm.toFixed(1)}</div><div class="s-lbl">This week km</div></div>
+    <div class="stat-card"><div class="s-val">${totalRuns}</div><div class="s-lbl">Runs completed</div></div>
+    <div class="stat-card"><div class="s-val">${skipped}</div><div class="s-lbl">Skipped</div></div>
+  `;
+
+  // Phase progress
+  const phases = [
+    { label:"Base Rebuild",  ids:["w1","w2","w3"] },
+    { label:"Build 1",       ids:["w4","w5","w6","w7","w8"] },
+    { label:"Build 2",       ids:["w10","w11","w12"] },
+    { label:"Peak/Taper",    ids:["w13","w14"] },
+  ];
+  const colours = ["#00e5a0","#0096ff","#b060ff","#f5c842"];
+
+  const pw = document.getElementById('progWrap');
+  pw.innerHTML = '';
+
+  phases.forEach((ph,i) => {
+    const wks  = WEEKS.filter(w => ph.ids.includes(w.id));
+    const phDates = wks.flatMap(w => {
+      const dates2=[]; const cur=new Date(w.start+'T00:00:00'); const end=new Date(w.end+'T00:00:00');
+      while(cur<=end){dates2.push(cur.toISOString().slice(0,10));cur.setDate(cur.getDate()+1);}
+      return dates2;
+    }).filter(d => PLAN[d]);
+    const done  = phDates.filter(d => getDay(d).status==='done').length;
+    const total = phDates.length;
+    const pct   = total ? Math.round(done/total*100) : 0;
+    pw.innerHTML += `
+      <div class="prog-item">
+        <div class="prog-top"><span>${ph.label}</span><span>${pct}%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${colours[i]}"></div></div>
+      </div>`;
+  });
+}
+
+// ─── SELECT / DETAIL ─────────────────────────────────────────────────────────
+function selectDay(dateStr) {
+  sel = dateStr;
+  renderMain();
+  renderCal();
+  openDetail(dateStr);
+}
+
+function openDetail(dateStr) {
+  const day  = getDay(dateStr);
+  const wrap = document.getElementById('detailPanel');
+  wrap.classList.add('open');
+  document.body.classList.add('detail-open');
+
+  document.getElementById('detEmpty').style.display   = 'none';
+  document.getElementById('detContent').style.display = 'block';
+
+  // Remove old type classes
+  wrap.className = wrap.className.replace(/\bt-\w+/g,'').trim();
+  wrap.classList.add(`t-${day.type}`);
+
+  document.getElementById('detDate').textContent  = fmtDate(dateStr);
+  document.getElementById('detTitle').textContent = day.name;
+  document.getElementById('detType').textContent  = day.type.toUpperCase();
+
+  // Metrics
+  const met = document.getElementById('detMetrics');
+  met.innerHTML = '';
+  if (day.km)   met.innerHTML += `<div class="det-m"><div class="dm-val">${day.km} km</div><div class="dm-lbl">Distance</div></div>`;
+  if (day.pace) met.innerHTML += `<div class="det-m"><div class="dm-val">${day.pace}</div><div class="dm-lbl">Target Pace</div></div>`;
+  if (day.hr)   met.innerHTML += `<div class="det-m"><div class="dm-val">${day.hr}</div><div class="dm-lbl">Target HR</div></div>`;
+
+  document.getElementById('detNotes').textContent = day.notes || '';
+
+  // Status buttons
+  ['Done','Pending','Skipped'].forEach(s => {
+    const btn = document.getElementById('btn'+s);
+    btn.className = 'status-btn' + (day.status === s.toLowerCase() ? ` active-${s.toLowerCase()}` : '');
+  });
+
+  // Reset edit form
+  document.getElementById('edForm').style.display = 'none';
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('open');
+  document.body.classList.remove('detail-open');
+  sel = null;
+  renderMain();
+  renderCal();
+}
+
+// ─── STATUS ──────────────────────────────────────────────────────────────────
+function setStatus(status) {
+  if (!sel) return;
+  overrides[sel] = { ...(overrides[sel]||{}), status };
+  save();
+  renderMain();
+  renderCal();
+  updateStats();
+  openDetail(sel);
+}
+
+// ─── EDIT ─────────────────────────────────────────────────────────────────────
+function toggleEdit() {
+  const form  = document.getElementById('edForm');
+  const empty = document.getElementById('edEmpty');
+  if (!sel) { form.style.display='none'; empty.style.display='block'; return; }
+  if (form.style.display === 'flex') {
+    form.style.display = 'none'; return;
+  }
+  const day = getDay(sel);
+  document.getElementById('edName').value  = day.name  || '';
+  document.getElementById('edType').value  = day.type  || 'rest';
+  document.getElementById('edKm').value    = day.km    || '';
+  document.getElementById('edPace').value  = day.pace  || '';
+  document.getElementById('edHr').value    = day.hr    || '';
+  document.getElementById('edNotes').value = day.notes || '';
+  form.style.display = 'flex';
+}
+
+function saveEdit() {
+  if (!sel) return;
+  overrides[sel] = {
+    ...(overrides[sel]||{}),
+    name:  document.getElementById('edName').value,
+    type:  document.getElementById('edType').value,
+    km:    parseFloat(document.getElementById('edKm').value) || 0,
+    pace:  document.getElementById('edPace').value,
+    hr:    document.getElementById('edHr').value,
+    notes: document.getElementById('edNotes').value,
+  };
+  save();
+  renderMain();
+  renderCal();
+  updateStats();
+  openDetail(sel);
+  document.getElementById('edForm').style.display = 'none';
+}
+
+// ─── RESET (dev helper, not exposed in UI) ───────────────────────────────────
+function resetAll() {
+  overrides = {};
+  localStorage.removeItem('tp_overrides');
+  sel = null;
+  document.getElementById('detailPanel').classList.remove('open');
+  document.body.classList.remove('detail-open');
+  document.getElementById('edForm').style.display = 'none';
+  renderCal(); renderMain(); updateStats();
+}
+
+// ─── CLEAR EDIT FORM on close ────────────────────────────────────────────────
+function closeAndClear() {
+  overrides = {};
+  sel = null;
+  document.getElementById('edEmpty').style.display  = 'flex';
+  document.getElementById('edForm').style.display  = 'none';
+  renderCal(); updateStats();
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+load();
+renderCal();
+updateStats();
+</script>
+</body>
+</html>
