@@ -158,78 +158,110 @@ body::before {
   display:flex; flex-direction:column; gap:20px;
 }
 
-/* ── WEEK BLOCK ───────────────────────── */
-.week-block {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:10px; overflow:hidden;
-}
-.week-hdr {
-  display:flex; align-items:center; gap:12px;
-  padding:10px 16px; border-bottom:1px solid var(--border);
-  background:var(--surface2);
-}
-.week-hdr h2 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text); }
-.week-badge {
-  font-size:10px; padding:2px 8px; border-radius:20px;
-  font-family:'DM Mono',monospace;
-}
-.week-badge.current { background:#0a2a1a; color:var(--green); border:1px solid #0a4030; }
-.week-badge.past    { background:var(--surface); color:var(--muted); border:1px solid var(--border); }
-.week-badge.future  { background:#0a1525; color:#0060b0; border:1px solid #0a2545; }
-.week-badge.race    { background:#1a0d00; color:var(--orange); border:1px solid #3a1a00; }
-.week-km   { margin-left:auto; font-family:'DM Mono',monospace; font-size:12px; color:var(--muted2); }
+/* ── THIS WEEK FOCUS ──────────────────── */
+.twf-wrap { display:flex; flex-direction:column; gap:16px; height:100%; box-sizing:border-box; }
 
-.days-grid {
-  display:grid;
-  grid-template-columns: repeat(7, 1fr);
-  border-top:1px solid var(--border);
+.twf-hdr {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:16px 20px; display:flex; align-items:center; gap:20px; flex-shrink:0;
 }
-.day-cell {
-  padding:10px 10px 12px;
-  border-right:1px solid var(--border);
-  min-height:110px;
-  cursor:pointer; transition:background .15s;
-  position:relative;
+.twf-hdr-left { flex:1; }
+.twf-hdr-left h2 { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--text); }
+.twf-hdr-left p  { font-size:11px; color:var(--muted2); margin-top:3px; }
+.twf-hdr-stats { display:flex; gap:24px; }
+.twf-stat { text-align:right; }
+.twf-stat .tv { font-family:'DM Mono',monospace; font-size:22px; color:var(--green); line-height:1; }
+.twf-stat .tl { font-size:10px; color:var(--muted); margin-top:3px; }
+
+.twf-sessions {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:12px; flex:1; min-height:0;
 }
-.day-cell:last-child { border-right:none; }
-.day-cell:hover { background:var(--surface2); }
-.day-cell.selected { background:#071525 !important; }
 
-/* type theming for day cells */
-.day-cell.t-rest     { }
-.day-cell.t-easy     { border-top:2px solid var(--c-easy-bdr); }
-.day-cell.t-tempo    { border-top:2px solid var(--c-tempo-bdr); }
-.day-cell.t-long     { border-top:2px solid var(--c-long-bdr); }
-.day-cell.t-shakeout { border-top:2px solid var(--c-shakeout-bdr); }
-.day-cell.t-race     { border-top:2px solid var(--c-race-bdr); }
-
-.dc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
-.dc-dow  { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase; }
-.dc-date { font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; }
-.dc-status { width:6px; height:6px; border-radius:50%; }
-.dc-status.s-done    { background:var(--green); }
-.dc-status.s-pending { background:var(--orange); }
-.dc-status.s-skipped { background:var(--red); }
-.dc-status.s-none    { background:transparent; }
-
-.dc-type {
-  font-size:9px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
-  margin-bottom:4px; font-family:'DM Mono',monospace;
+.sc {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:16px; cursor:pointer; transition:border-color .2s, background .2s;
+  display:flex; flex-direction:column; position:relative; overflow:hidden;
 }
-.t-rest     .dc-type { color:var(--c-rest-txt); }
-.t-easy     .dc-type { color:var(--c-easy-txt); }
-.t-tempo    .dc-type { color:var(--c-tempo-txt); }
-.t-long     .dc-type { color:var(--c-long-txt); }
-.t-shakeout .dc-type { color:var(--c-shakeout-txt); }
-.t-race     .dc-type { color:var(--c-race-txt); }
+.sc:hover { border-color:var(--border2); background:var(--surface2); }
+.sc.today-card  { border-color:var(--green); box-shadow:0 0 24px rgba(0,229,160,.1); }
+.sc.sel-card    { border-color:var(--blue) !important; background:#071525 !important; }
+.sc.done-card   { opacity:.75; }
+.sc.rest-card   { cursor:default; }
 
-.dc-name { font-size:11px; color:var(--text); line-height:1.3; margin-bottom:6px; }
-.dc-metrics { display:flex; flex-wrap:wrap; gap:4px; }
-.dc-m {
-  font-size:9px; font-family:'DM Mono',monospace;
-  background:var(--surface2); border:1px solid var(--border);
-  border-radius:3px; padding:1px 5px; color:var(--muted2);
+.sc-bar {
+  position:absolute; top:0; left:0; right:0; height:3px;
 }
+.t-easy     .sc-bar { background:var(--green); }
+.t-tempo    .sc-bar { background:var(--blue); }
+.t-long     .sc-bar { background:var(--purple); }
+.t-shakeout .sc-bar { background:var(--teal); }
+.t-race     .sc-bar { background:var(--orange); }
+.t-rest     .sc-bar { background:var(--border); }
+
+.sc-top { display:flex; justify-content:space-between; align-items:flex-start; margin-top:6px; }
+.sc-dow  { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
+.sc-datestr { font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; }
+.sc-pill {
+  font-size:9px; padding:2px 7px; border-radius:20px; font-family:'DM Mono',monospace; white-space:nowrap;
+}
+.sc-pill.p-today { background:#0a2a1a; color:var(--green); border:1px solid #0a4030; }
+.sc-pill.p-done  { background:rgba(0,229,160,.08); color:var(--green); border:1px solid rgba(0,229,160,.2); }
+.sc-pill.p-next  { background:#0a1525; color:#4090d0; border:1px solid #0a2545; }
+
+.sc-type {
+  font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  font-family:'DM Mono',monospace; margin-top:12px;
+}
+.t-easy     .sc-type { color:var(--green); }
+.t-tempo    .sc-type { color:var(--blue); }
+.t-long     .sc-type { color:var(--purple); }
+.t-shakeout .sc-type { color:var(--teal); }
+.t-race     .sc-type { color:var(--orange); }
+.t-rest     .sc-type { color:var(--muted); }
+
+.sc-name { font-size:13px; color:var(--text); line-height:1.35; font-weight:500; margin-top:4px; }
+.sc-km-big { font-family:'DM Mono',monospace; font-size:32px; font-weight:700; color:var(--text); margin-top:auto; padding-top:16px; line-height:1; }
+.sc-km-big span { font-size:13px; color:var(--muted2); font-weight:400; }
+.sc-meta { display:flex; flex-direction:column; gap:5px; margin-top:10px; }
+.sc-meta-row { display:flex; gap:6px; align-items:center; }
+.sc-meta-lbl { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:.05em; min-width:36px; }
+.sc-meta-val { font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; }
+.sc-venue {
+  margin-top:10px; font-size:10px; padding:4px 8px; border-radius:5px; font-family:'DM Mono',monospace; display:inline-block;
+}
+.sc-venue.tm { background:rgba(0,150,255,.08); color:#4090d0; border:1px solid rgba(0,150,255,.15); }
+.sc-venue.od { background:rgba(109,217,109,.08); color:var(--teal); border:1px solid rgba(109,217,109,.15); }
+.sc-check { font-size:36px; text-align:center; margin-top:auto; padding-top:12px; }
+
+.sc-rest-inner { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:6px; padding:16px 0; }
+.sc-rest-icon  { font-size:28px; opacity:.25; }
+.sc-rest-label { font-size:11px; color:var(--muted); text-align:center; line-height:1.4; }
+
+/* ── NEXT UP STRIP ────────────────────── */
+.nextup-wrap {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:14px 20px; flex-shrink:0;
+}
+.nextup-lbl {
+  font-family:'Syne',sans-serif; font-size:10px; font-weight:700; color:var(--muted);
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px;
+}
+.nextup-list { display:flex; gap:10px; }
+.nu-item {
+  flex:1; background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:10px 12px; cursor:pointer; transition:border-color .15s;
+}
+.nu-item:hover { border-color:var(--border2); }
+.nu-dow  { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase; }
+.nu-date { font-size:10px; color:var(--muted2); font-family:'DM Mono',monospace; }
+.nu-name { font-size:11px; color:var(--text); margin-top:4px; font-weight:500; line-height:1.3; }
+.nu-km   { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted2); margin-top:3px; }
+.nu-type { font-size:9px; font-family:'DM Mono',monospace; font-weight:700; text-transform:uppercase; margin-top:4px; }
+.t-easy   .nu-type { color:var(--green); }
+.t-tempo  .nu-type { color:var(--blue); }
+.t-long   .nu-type { color:var(--purple); }
+.t-race   .nu-type { color:var(--orange); }
+.t-shakeout .nu-type { color:var(--teal); }
 
 /* ── DETAIL PANEL ─────────────────────── */
 .detail-wrap {
@@ -759,91 +791,159 @@ function fmtDate(ds) {
   return `${DOW[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
-// ─── RENDER MAIN PANEL ───────────────────────────────────────────────────────
+// ─── RENDER MAIN PANEL — THIS WEEK FOCUS ────────────────────────────────────
 function renderMain() {
   const main = document.getElementById('mainPanel');
   main.innerHTML = '';
 
-  let lastPhase = null;
+  // Find current week
+  const todayD = new Date(todayStr + 'T00:00:00');
+  let curWeek = WEEKS.find(w => {
+    const s = new Date(w.start + 'T00:00:00');
+    const e = new Date(w.end   + 'T00:00:00');
+    return todayD >= s && todayD <= e;
+  }) || WEEKS.find(w => new Date(w.start + 'T00:00:00') > todayD) || WEEKS[WEEKS.length-1];
 
-  WEEKS.forEach(week => {
-    // Phase divider
-    if (week.phase !== lastPhase) {
-      const div = document.createElement('div');
-      div.className = 'phase-divider';
-      div.innerHTML = `<span>${PHASE_LABELS[week.phase]}</span>`;
-      main.appendChild(div);
-      lastPhase = week.phase;
-    }
+  // Collect this week's dates
+  const wStart = new Date(curWeek.start + 'T00:00:00');
+  const wEnd   = new Date(curWeek.end   + 'T00:00:00');
+  const wDates = [];
+  const wCur = new Date(wStart);
+  while (wCur <= wEnd) { wDates.push(localDateStr(wCur)); wCur.setDate(wCur.getDate()+1); }
 
-    const startD = new Date(week.start + 'T00:00:00');
-    const endD   = new Date(week.end   + 'T00:00:00');
-    const todayD = new Date(todayStr   + 'T00:00:00');
+  // Week stats
+  const runDates  = wDates.filter(d => getDay(d).type !== 'rest');
+  const doneDates = runDates.filter(d => getDay(d).status === 'done');
+  const targetKm  = runDates.reduce((s,d) => s + (getDay(d).km||0), 0);
+  const doneKm    = doneDates.reduce((s,d) => s + (getDay(d).km||0), 0);
 
-    const isCurrent = todayD >= startD && todayD <= endD;
-    const isPast    = todayD > endD;
-    const isRace    = week.phase === 'race';
+  // Phase progress info
+  const totalWeeks = WEEKS.length;
+  const curWeekIdx = WEEKS.indexOf(curWeek) + 1;
+  const phaseName  = PHASE_LABELS[curWeek.phase] || curWeek.phase;
 
-    let badge = isPast ? 'past' : (isCurrent ? 'current' : 'future');
-    if (isRace) badge = 'race';
+  // Build header
+  const hdr = document.createElement('div');
+  hdr.className = 'twf-hdr';
+  hdr.innerHTML = `
+    <div class="twf-hdr-left">
+      <h2>${curWeek.label}</h2>
+      <p>${phaseName} &nbsp;·&nbsp; Week ${curWeekIdx} of ${totalWeeks} &nbsp;·&nbsp; ${wDates[0]} → ${wDates[wDates.length-1]}</p>
+    </div>
+    <div class="twf-hdr-stats">
+      <div class="twf-stat"><div class="tv">${targetKm.toFixed(0)}<span style="font-size:12px;color:var(--muted)"> km</span></div><div class="tl">Target</div></div>
+      <div class="twf-stat"><div class="tv">${doneDates.length}<span style="font-size:12px;color:var(--muted)">/${runDates.length}</span></div><div class="tl">Done</div></div>
+      <div class="twf-stat"><div class="tv">${doneKm.toFixed(1)}<span style="font-size:12px;color:var(--muted)"> km</span></div><div class="tl">Logged</div></div>
+    </div>`;
+  main.appendChild(hdr);
 
-    // Collect dates for this week
-    const dates = [];
-    const cur = new Date(startD);
-    while (cur <= endD) {
-      dates.push(localDateStr(cur));
-      cur.setDate(cur.getDate()+1);
-    }
+  // Session grid — only non-rest days (Tue/Wed/Thu/Sun)
+  const sessionDates = wDates.filter(d => getDay(d).type !== 'rest');
 
-    // Week km total (done only)
-    const weekKm = dates.reduce((s,d) => {
-      const day = getDay(d);
-      return s + (day.status === 'done' ? (day.km || 0) : 0);
-    }, 0);
+  function venueClass(notes) {
+    if (!notes) return '';
+    if (notes.toLowerCase().includes('treadmill')) return 'tm';
+    if (notes.toLowerCase().includes('outdoor'))   return 'od';
+    return '';
+  }
+  function venueTxt(notes) {
+    if (!notes) return '';
+    if (notes.toLowerCase().includes('treadmill')) return '🏃 Treadmill';
+    if (notes.toLowerCase().includes('outdoor'))   return '🌳 Outdoor';
+    return '';
+  }
 
-    const block = document.createElement('div');
-    block.className = 'week-block';
-    block.id = week.id;
+  const grid = document.createElement('div');
+  grid.className = 'twf-sessions';
 
-    block.innerHTML = `
-      <div class="week-hdr">
-        <h2>${week.label}</h2>
-        <span class="week-badge ${badge}">${badge === 'current' ? 'Current Week' : badge === 'past' ? 'Completed' : badge === 'race' ? 'Race Day' : 'Upcoming'}</span>
-        ${weekKm > 0 ? `<span class="week-km">${weekKm.toFixed(1)} km logged</span>` : ''}
-      </div>
-      <div class="days-grid" id="grid-${week.id}"></div>
-    `;
-    main.appendChild(block);
+  sessionDates.forEach(dateStr => {
+    const day  = getDay(dateStr);
+    const d    = new Date(dateStr + 'T00:00:00');
+    const isToday = dateStr === todayStr;
+    const isSel   = dateStr === sel;
+    const isDone  = day.status === 'done';
 
-    const grid = block.querySelector(`#grid-${week.id}`);
-    dates.forEach(dateStr => {
-      const day = getDay(dateStr);
-      const d   = new Date(dateStr + 'T00:00:00');
-      const isToday = dateStr === todayStr;
-      const isSel   = dateStr === sel;
+    const card = document.createElement('div');
+    card.className = [
+      'sc',
+      't-' + day.type,
+      isToday ? 'today-card' : '',
+      isSel   ? 'sel-card'   : '',
+      isDone  ? 'done-card'  : '',
+    ].filter(Boolean).join(' ');
+    card.onclick = () => selectDay(dateStr);
 
-      const cell = document.createElement('div');
-      cell.className = `day-cell t-${day.type} s-${day.status}${isToday ? ' today' : ''}${isSel ? ' selected' : ''}`;
-      cell.onclick = () => selectDay(dateStr);
+    const pill = isToday ? '<span class="sc-pill p-today">TODAY</span>'
+               : isDone  ? '<span class="sc-pill p-done">✓ Done</span>'
+               : '<span class="sc-pill p-next">Upcoming</span>';
 
-      const metrics = [];
-      if (day.km)   metrics.push(`<span class="dc-m">${day.km} km</span>`);
-      if (day.pace) metrics.push(`<span class="dc-m">${day.pace}</span>`);
-      if (day.hr)   metrics.push(`<span class="dc-m">${day.hr} bpm</span>`);
+    const venue = venueTxt(day.notes);
+    const vc    = venueClass(day.notes);
 
-      cell.innerHTML = `
-        <div class="dc-head">
-          <span class="dc-dow">${DOW[d.getDay()]}</span>
-          <span class="dc-date">${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}</span>
-          <span class="dc-status s-${day.status}"></span>
+    card.innerHTML = `
+      <div class="sc-bar"></div>
+      <div class="sc-top">
+        <div>
+          <div class="sc-dow">${DOW[d.getDay()]}</div>
+          <div class="sc-datestr">${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}</div>
         </div>
-        <div class="dc-type">${day.type}</div>
-        <div class="dc-name">${day.name}</div>
-        <div class="dc-metrics">${metrics.join('')}</div>
-      `;
-      grid.appendChild(cell);
-    });
+        ${pill}
+      </div>
+      <div class="sc-type">${day.type}</div>
+      <div class="sc-name">${day.name}</div>
+      ${isDone ? '<div class="sc-check">✅</div>' : `
+        <div class="sc-km-big">${day.km||'—'}<span> km</span></div>
+        <div class="sc-meta">
+          ${day.pace ? `<div class="sc-meta-row"><span class="sc-meta-lbl">Pace</span><span class="sc-meta-val">${day.pace}</span></div>` : ''}
+          ${day.hr   ? `<div class="sc-meta-row"><span class="sc-meta-lbl">HR</span><span class="sc-meta-val">${day.hr}</span></div>` : ''}
+        </div>
+        ${venue ? `<div class="sc-venue ${vc}">${venue}</div>` : ''}
+      `}
+    `;
+    grid.appendChild(card);
   });
+
+  // If no sessions this week (e.g. race recovery), show a message card
+  if (sessionDates.length === 0) {
+    const msg = document.createElement('div');
+    msg.className = 'sc rest-card t-rest';
+    msg.style.gridColumn = '1/-1';
+    msg.innerHTML = `<div class="sc-bar"></div><div class="sc-rest-inner"><div class="sc-rest-icon">😴</div><div class="sc-rest-label">Full recovery week — no runs scheduled.<br>Sleep, eat well, stay hydrated.</div></div>`;
+    grid.appendChild(msg);
+  }
+
+  main.appendChild(grid);
+
+  // ── NEXT UP STRIP ──────────────────────────────────────────────────────────
+  const allFutureDates = Object.keys(PLAN).sort().filter(d => {
+    const day = getDay(d);
+    return d > todayStr && day.type !== 'rest' && day.status === 'pending';
+  });
+  const nextDates = allFutureDates.slice(0, 4);
+
+  if (nextDates.length > 0) {
+    const nu = document.createElement('div');
+    nu.className = 'nextup-wrap';
+    nu.innerHTML = '<div class="nextup-lbl">Next Up</div><div class="nextup-list" id="nuList"></div>';
+    main.appendChild(nu);
+
+    const nuList = nu.querySelector('#nuList');
+    nextDates.forEach(ds => {
+      const day = getDay(ds);
+      const d   = new Date(ds + 'T00:00:00');
+      const item = document.createElement('div');
+      item.className = 'nu-item t-' + day.type;
+      item.onclick = () => selectDay(ds);
+      item.innerHTML = `
+        <div class="nu-dow">${DOW[d.getDay()]}</div>
+        <div class="nu-date">${MONTHS[d.getMonth()]} ${d.getDate()}</div>
+        <div class="nu-name">${day.name}</div>
+        <div class="nu-km">${day.km} km · ${day.pace||'—'}</div>
+        <div class="nu-type">${day.type}</div>
+      `;
+      nuList.appendChild(item);
+    });
+  }
 }
 
 // ─── CALENDAR ────────────────────────────────────────────────────────────────
