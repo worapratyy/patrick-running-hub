@@ -356,6 +356,32 @@ body::before {
 /* ── RESPONSIVE: shift main when detail open ── */
 body.detail-open .main { padding-right:360px; }
 
+/* ── PLAN SHIFT CONTROL ─────────────────── */
+.shift-ctrl {
+  display:flex; align-items:center; gap:6px;
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:5px 10px;
+}
+.shift-ctrl .shift-lbl {
+  font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap;
+}
+.shift-ctrl .shift-val {
+  font-size:13px; font-weight:700; font-family:'DM Mono',monospace;
+  color:var(--orange); min-width:36px; text-align:center;
+}
+.shift-ctrl .shift-val.zero { color:var(--muted2); }
+.shift-ctrl button {
+  background:var(--surface); border:1px solid var(--border2);
+  color:var(--text); border-radius:5px; width:24px; height:24px;
+  font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.shift-ctrl button:hover { background:var(--surface2); border-color:var(--blue); color:var(--blue); }
+.shift-ctrl .shift-reset {
+  font-size:10px; color:var(--muted); cursor:pointer; padding:0 2px;
+  border:none; background:transparent;
+}
+.shift-ctrl .shift-reset:hover { color:var(--red); }
+
 /* ── PHASE DIVIDER ────────────────────── */
 .phase-divider {
   display:flex; align-items:center; gap:12px;
@@ -390,6 +416,13 @@ body.detail-open .main { padding-right:360px; }
   <div class="hdr-stat" id="hdrDone">
     <span class="val">—</span>
     <span class="lbl">Sessions done</span>
+  </div>
+  <div class="shift-ctrl">
+    <span class="shift-lbl">Shift plan</span>
+    <button onclick="shiftPlan(-1)">−</button>
+    <span class="shift-val" id="shiftVal">0d</span>
+    <button onclick="shiftPlan(+1)">+</button>
+    <button class="shift-reset" onclick="resetShift()" title="Reset to original dates">↺</button>
   </div>
 </header>
 
@@ -755,6 +788,7 @@ const PHASE_LABELS = {
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let overrides = {};   // { "YYYY-MM-DD": { ...partial } }
+let planOffset = 0;   // days to shift all future pending sessions
 let sel = null;       // selected date string
 let calYear, calMonth;
 
@@ -767,19 +801,47 @@ const todayStr = localDateStr(today);
 // ─── PERSISTENCE ─────────────────────────────────────────────────────────────
 function load() {
   try { overrides = JSON.parse(localStorage.getItem('tp_overrides') || '{}'); } catch(e) { overrides = {}; }
+  planOffset = parseInt(localStorage.getItem('tp_offset') || '0') || 0;
 }
 function save() {
   localStorage.setItem('tp_overrides', JSON.stringify(overrides));
+  localStorage.setItem('tp_offset', String(planOffset));
 }
 
 // ─── DATA HELPERS ─────────────────────────────────────────────────────────────
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return localDateStr(d);
+}
+
 function getDay(dateStr) {
-  const base = PLAN[dateStr] || { type:"rest", name:"Rest / Off", km:0, pace:"", hr:"", notes:"", status:"pending" };
-  return { ...base, ...(overrides[dateStr] || {}) };
+  const ov = overrides[dateStr] || {};
+  // Sessions already marked done in PLAN stay pinned to their original date
+  const direct = PLAN[dateStr];
+  if (direct && direct.status === 'done') {
+    return { ...direct, ...ov };
+  }
+  // Apply offset: look up what session was planned for (dateStr - offset)
+  const lookupDate = planOffset !== 0 ? addDays(dateStr, -planOffset) : dateStr;
+  const base = PLAN[lookupDate];
+  // Don't show a done session at a shifted position — it already lives at its real date
+  if (base && base.status === 'done' && lookupDate !== dateStr) {
+    return { type:"rest", name:"Rest / Off", km:0, pace:"", hr:"", notes:"", status:"pending", ...ov };
+  }
+  return { ...(base || { type:"rest", name:"Rest / Off", km:0, pace:"", hr:"", notes:"", status:"pending" }), ...ov };
 }
 
 function allDates() {
-  return Object.keys(PLAN).sort();
+  const dates = new Set();
+  for (const [date, session] of Object.entries(PLAN)) {
+    if (session.status === 'done') {
+      dates.add(date); // completed sessions stay at their real date
+    } else {
+      dates.add(addDays(date, planOffset)); // pending sessions shift
+    }
+  }
+  return [...dates].sort();
 }
 
 // ─── DATE UTILS ──────────────────────────────────────────────────────────────
@@ -1149,6 +1211,34 @@ function saveEdit() {
   document.getElementById('edForm').style.display = 'none';
 }
 
+// ─── PLAN SHIFT ──────────────────────────────────────────────────────────────
+function updateShiftUI() {
+  const el = document.getElementById('shiftVal');
+  if (!el) return;
+  el.textContent = planOffset === 0 ? '0d' : (planOffset > 0 ? '+' : '') + planOffset + 'd';
+  el.className = 'shift-val' + (planOffset === 0 ? ' zero' : '');
+}
+
+function shiftPlan(delta) {
+  planOffset += delta;
+  save();
+  updateShiftUI();
+  sel = null;
+  renderMain(); renderCal(); updateStats();
+  document.getElementById('detailPanel').classList.remove('open');
+  document.body.classList.remove('detail-open');
+}
+
+function resetShift() {
+  planOffset = 0;
+  save();
+  updateShiftUI();
+  sel = null;
+  renderMain(); renderCal(); updateStats();
+  document.getElementById('detailPanel').classList.remove('open');
+  document.body.classList.remove('detail-open');
+}
+
 // ─── RESET (dev helper, not exposed in UI) ───────────────────────────────────
 function resetAll() {
   overrides = {};
@@ -1171,6 +1261,7 @@ function closeAndClear() {
 
 // ─── INIT ───────────────────────────────────────────────────────────────────
 load();
+updateShiftUI();
 renderCal();
 updateStats();
 </script>
