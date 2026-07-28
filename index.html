@@ -127,10 +127,8 @@
     .rt .z2hi{color:var(--orange);font-weight:700}
     .rt-empty{font-size:12px;color:var(--gray2);padding:16px 0;text-align:center}
 
-    /* Summary panels */
-    .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
+    /* Summary panel */
     .sum-card{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:0}
-    .sum-card.ai{border-top:3px solid var(--purple)}
     .sum-card.auto{border-top:3px solid var(--teal)}
     .sum-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
     .sum-hdr h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray)}
@@ -146,26 +144,6 @@
     .ss-up{color:var(--green)}.ss-dn{color:var(--red)}.ss-eq{color:var(--gray)}
 
     /* AI summary panel */
-    .ai-body{flex:1;display:flex;flex-direction:column;gap:12px}
-    .ai-text{font-size:12.5px;line-height:1.75;color:var(--text);flex:1;min-height:120px}
-    .ai-text.placeholder{color:var(--gray2);font-style:italic;font-size:12px}
-    .ai-text em{font-style:normal;font-weight:700;color:var(--purple)}
-    .ai-controls{display:flex;flex-direction:column;gap:8px}
-    .ai-key-row{display:flex;gap:6px}
-    .ai-key-input{flex:1;font-size:11px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:#f9fafb;color:var(--text);outline:none}
-    .ai-key-input:focus{border-color:var(--purple);background:#faf5ff}
-    .ai-key-input::placeholder{color:var(--gray2)}
-    .ai-btn{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
-    .ai-btn:hover{background:#6d28d9}
-    .ai-btn:disabled{background:var(--gray2);cursor:not-allowed}
-    .ai-key-hint{font-size:9.5px;color:var(--gray2)}
-    .ai-key-hint a{color:var(--purple);text-decoration:none}
-    .ai-key-hint a:hover{text-decoration:underline}
-    .ai-spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-    .ai-model-badge{font-size:9px;padding:2px 7px;background:#ede9fe;color:#6d28d9;border-radius:8px;font-weight:600}
-    .ai-ts{font-size:9px;color:var(--gray2);margin-top:4px}
-
-    @media(max-width:900px){.sum-grid{grid-template-columns:1fr}}
 
     /* Footer */
     .footer{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:11px;color:#9a3412;margin-top:var(--gap)}
@@ -301,36 +279,12 @@
     </table>
   </div>
 
-  <!-- Summary panels: Auto-computed + AI side by side -->
-  <div class="sum-grid">
-
-    <!-- Left: Auto-computed -->
-    <div class="sum-card auto">
-      <div class="sum-hdr">
-        <div><h3>📊 Auto Summary</h3><p>Computed from your Strava data</p></div>
-      </div>
-      <div id="autoSumBody"></div>
+  <!-- Training Summary -->
+  <div class="sum-card auto" style="margin-bottom:var(--gap)">
+    <div class="sum-hdr">
+      <div><h3>📊 Training Summary</h3><p>Last 4 weeks vs previous 4 weeks · computed from Strava data</p></div>
     </div>
-
-    <!-- Right: AI coaching -->
-    <div class="sum-card ai">
-      <div class="sum-hdr">
-        <div><h3>🤖 AI Coaching Summary</h3><p>Claude reads your stats and gives coaching insight</p></div>
-        <span class="ai-model-badge">Haiku 4.5</span>
-      </div>
-      <div class="ai-body">
-        <div class="ai-text placeholder" id="aiText">Enter your Anthropic API key below and click Generate to get a coaching summary based on your recent training data.</div>
-        <div id="aiTs" class="ai-ts"></div>
-        <div class="ai-controls">
-          <div class="ai-key-row">
-            <input class="ai-key-input" id="aiKey" type="password" placeholder="sk-ant-api03-…" autocomplete="off"/>
-            <button class="ai-btn" id="aiBtn" onclick="generateAiSummary()">✨ Generate</button>
-          </div>
-          <div class="ai-key-hint">Key stored in browser localStorage only · <a href="https://console.anthropic.com/settings/keys" target="_blank">Get key →</a></div>
-        </div>
-      </div>
-    </div>
-
+    <div id="autoSumBody"></div>
   </div>
 
   <!-- Footer -->
@@ -665,72 +619,6 @@ function buildAutoSummary(runs){
     </div>`).join('');
 }
 
-// ── AI SUMMARY ────────────────────────────────────────────
-async function generateAiSummary(){
-  const keyInput=document.getElementById('aiKey');
-  const btn=document.getElementById('aiBtn');
-  const textEl=document.getElementById('aiText');
-  const tsEl=document.getElementById('aiTs');
-
-  let key=keyInput.value.trim()||localStorage.getItem('anthropic_key')||'';
-  if(!key){ textEl.className='ai-text placeholder'; textEl.textContent='Please enter your Anthropic API key first.'; return; }
-  localStorage.setItem('anthropic_key',key);
-  keyInput.value=key;
-
-  btn.disabled=true;
-  btn.innerHTML='<span class="ai-spinner"></span> Thinking…';
-  textEl.className='ai-text placeholder';
-  textEl.textContent='Asking Claude…';
-
-  const s=_summaryStats;
-  const prompt=`You are a running coach. Here is Patrick's training data for the last 4 weeks:
-
-- Runs per week: ${s.runsPerWk}
-- Volume per week: ${s.kmPerWk} km (prev 4 weeks: ${s.kmPerWkPrev} km/wk)
-- Zone 2 rate: ${s.z2Rate!==null?s.z2Rate+'%':'no HR data'} (Z2 = 134–149 bpm)
-- Avg pace last 4 runs: ${s.avgPaceL?s.avgPaceL+' min/km':'no data'} (prev: ${s.avgPaceP||'—'})
-- Avg HR last 4 runs: ${s.avgHrL||'—'} bpm (prev: ${s.avgHrP||'—'} bpm)
-- Avg cadence last 4 runs: ${s.avgCadL||'—'} spm (prev: ${s.avgCadP||'—'} spm)
-- Longest run in last 4 weeks: ${s.longestRun4w||'—'}
-- Training consistency: ${s.consistency}
-- Total runs tracked: ${s.totalRuns}
-- Goal: Half marathon, VDOT 37, LTHR 170 bpm, targeting sub-2:00
-
-Write a 3–4 sentence coaching summary. Be specific to the numbers — call out what's improving, what needs attention, and one concrete next-step recommendation. Use plain English, no bullet points, no markdown.`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'x-api-key':key,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true',
-        'content-type':'application/json'
-      },
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:300,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    if(!res.ok){
-      const err=await res.json().catch(()=>({error:{message:res.statusText}}));
-      throw new Error(err.error?.message||`HTTP ${res.status}`);
-    }
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'No response.';
-    textEl.className='ai-text';
-    textEl.textContent=text;
-    tsEl.textContent=`Generated ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
-  } catch(e){
-    textEl.className='ai-text placeholder';
-    textEl.textContent=`Error: ${e.message}`;
-    tsEl.textContent='';
-  } finally{
-    btn.disabled=false;
-    btn.innerHTML='✨ Generate';
-  }
-}
 
 // ── CHARTS ────────────────────────────────────────────────
 function buildCharts(runs, rec, analyticsWeekly){
@@ -878,9 +766,6 @@ async function manualSync(){
 }
 // ── INIT ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
-  // Restore saved API key
-  const saved=localStorage.getItem('anthropic_key');
-  if(saved){ const el=document.getElementById('aiKey'); if(el) el.value=saved; }
   boot().catch(e=>{ showErr('Unexpected error: '+e.message); });
 });
 </script>
