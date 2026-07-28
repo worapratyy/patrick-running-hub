@@ -1,0 +1,194 @@
+<h2>How should the layout be arranged?</h2>
+<p class="subtitle">All 8 sections included — pick how they sit on the page</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="layout-grid" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f0f0f;padding:14px;border-radius:8px;font-family:system-ui;font-size:9px;color:#888">
+
+      <!-- Hero row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">75</div><div style="color:#444;margin-top:1px">Runs</div></div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">468</div><div style="color:#444;margin-top:1px">km / yr</div></div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">22</div><div style="color:#444;margin-top:1px">km / wk</div></div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">3🔥</div><div style="color:#444;margin-top:1px">Streak</div></div>
+      </div>
+
+      <!-- Race + PBs row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:3px">Next Race</div>
+          <div style="color:#fff;font-size:11px;font-weight:600">ASICS 10K</div>
+          <div style="color:#ef4444;font-size:16px;font-weight:700;margin-top:1px">19 days</div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">Personal Bests</div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#888">5K</span><span style="color:#ef4444;font-weight:600">5:58/km</span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:2px"><span style="color:#888">10K</span><span style="color:#ef4444;font-weight:600">6:12/km</span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:2px"><span style="color:#888">HM</span><span style="color:#ef4444;font-weight:600">6:48/km</span></div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">Weekly Volume</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:24px">
+            <div style="flex:1;background:#333;border-radius:1px;height:40%"></div>
+            <div style="flex:1;background:#333;border-radius:1px;height:60%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:85%"></div>
+            <div style="flex:1;background:#333;border-radius:1px;height:45%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:75%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:90%"></div>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">HR Trend</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:24px">
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:95%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:88%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:80%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:70%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:62%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cadence + Shoes row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">Cadence ↑</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:20px">
+            <div style="flex:1;background:#444;border-radius:1px;height:50%"></div>
+            <div style="flex:1;background:#555;border-radius:1px;height:62%"></div>
+            <div style="flex:1;background:#666;border-radius:1px;height:75%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:88%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:95%"></div>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">Shoes</div>
+          <div style="color:#888;font-size:8px">EVO SL</div>
+          <div style="background:#222;border-radius:2px;height:5px;margin:2px 0"><div style="background:#ef4444;width:65%;height:100%;border-radius:2px"></div></div>
+          <div style="color:#888;font-size:8px;margin-top:3px">MetaSpeed Edge</div>
+          <div style="background:#222;border-radius:2px;height:5px;margin:2px 0"><div style="background:#ef4444;width:15%;height:100%;border-radius:2px"></div></div>
+        </div>
+      </div>
+
+      <!-- Recent runs full width -->
+      <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+        <div style="color:#555;margin-bottom:4px">Recent Runs</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3px;color:#444;padding-bottom:3px;border-bottom:1px solid #222">
+          <span>Date</span><span>Dist</span><span>Pace</span><span>HR</span><span>Cad</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3px;color:#ccc;margin-top:3px">
+          <span>Jul 28</span><span>10km</span><span>7:12</span><span>142</span><span>168</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3px;color:#888;margin-top:2px">
+          <span>Jul 24</span><span>5km</span><span>7:38</span><span>138</span><span>165</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dashboard Grid</h3>
+      <p>Hero row across top. Race + PBs side by side. Charts in pairs. Recent runs full-width at bottom. Dense but organized — everything visible at once on desktop.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="layout-single" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f0f0f;padding:14px;border-radius:8px;font-family:system-ui;font-size:9px;color:#888">
+
+      <!-- Hero -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">75</div><div style="color:#444">Runs</div></div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">468</div><div style="color:#444">km / yr</div></div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">22</div><div style="color:#444">km / wk</div></div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:7px;text-align:center"><div style="color:#ef4444;font-weight:700;font-size:13px">3🔥</div><div style="color:#444">Streak</div></div>
+      </div>
+
+      <!-- Race full width -->
+      <div style="background:#1a1a1a;border-radius:4px;padding:8px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#555">Next Race · ASICS 10K</div>
+          <div style="color:#888;font-size:8px">Aug 16 · Rama 8 Bridge</div>
+        </div>
+        <div style="color:#ef4444;font-size:22px;font-weight:700">19<span style="font-size:9px;color:#555"> days</span></div>
+      </div>
+
+      <!-- Weekly chart full width -->
+      <div style="background:#1a1a1a;border-radius:4px;padding:8px;margin-bottom:5px">
+        <div style="color:#555;margin-bottom:5px">Weekly Volume</div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:28px">
+          <div style="flex:1;background:#333;border-radius:1px;height:35%"></div>
+          <div style="flex:1;background:#333;border-radius:1px;height:55%"></div>
+          <div style="flex:1;background:#333;border-radius:1px;height:45%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:1px;height:80%"></div>
+          <div style="flex:1;background:#333;border-radius:1px;height:40%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:1px;height:70%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:1px;height:90%"></div>
+          <div style="flex:1;background:#333;border-radius:1px;height:50%"></div>
+        </div>
+      </div>
+
+      <!-- HR + Cadence side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">HR Trend ↓</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:20px">
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:95%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:85%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:75%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:65%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:55%"></div>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">Cadence ↑</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:20px">
+            <div style="flex:1;background:#444;border-radius:1px;height:50%"></div>
+            <div style="flex:1;background:#555;border-radius:1px;height:65%"></div>
+            <div style="flex:1;background:#666;border-radius:1px;height:78%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:90%"></div>
+            <div style="flex:1;background:#ef4444;border-radius:1px;height:97%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PBs + Shoes side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px">
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:4px">Personal Bests</div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#888">5K</span><span style="color:#ef4444;font-weight:600">5:58</span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:2px"><span style="color:#888">10K</span><span style="color:#ef4444;font-weight:600">6:12</span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:2px"><span style="color:#888">HM</span><span style="color:#ef4444;font-weight:600">6:48</span></div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+          <div style="color:#555;margin-bottom:5px">Shoes</div>
+          <div style="color:#888;font-size:8px">EVO SL · 325/500km</div>
+          <div style="background:#222;border-radius:2px;height:5px;margin:3px 0"><div style="background:#ef4444;width:65%;height:100%;border-radius:2px"></div></div>
+          <div style="color:#888;font-size:8px;margin-top:4px">MetaSpeed · 62/400km</div>
+          <div style="background:#222;border-radius:2px;height:5px;margin:3px 0"><div style="background:#ef4444;width:15%;height:100%;border-radius:2px"></div></div>
+        </div>
+      </div>
+
+      <!-- Recent runs -->
+      <div style="background:#1a1a1a;border-radius:4px;padding:8px">
+        <div style="color:#555;margin-bottom:4px">Recent Runs</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3px;color:#444;padding-bottom:3px;border-bottom:1px solid #222">
+          <span>Date</span><span>km</span><span>Pace</span><span>HR</span><span>Cad</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3px;color:#ccc;margin-top:3px">
+          <span>Jul 28</span><span>10</span><span>7:12</span><span>142</span><span>168</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3px;color:#888;margin-top:2px">
+          <span>Jul 24</span><span>5</span><span>7:38</span><span>138</span><span>165</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Single Column Flow</h3>
+      <p>Everything stacked top to bottom. Race banner full-width. Charts breathe. Works perfectly on mobile. Feels more like scrolling through a feed than a dashboard.</p>
+    </div>
+  </div>
+
+</div>

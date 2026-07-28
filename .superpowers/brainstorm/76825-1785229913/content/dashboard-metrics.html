@@ -1,0 +1,99 @@
+<h2>Which metrics sections do you want?</h2>
+<p class="subtitle">Select all that feel useful — we'll cut anything that's noise</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="hero-stats" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Hero Stats Row</h3>
+      <p>Top banner: Total runs · Yearly km · This week km · Current streak. Always visible at the top.</p>
+      <div style="background:#1a1a1a;border-radius:6px;padding:10px;margin-top:8px;display:flex;gap:10px;font-family:system-ui">
+        <div style="text-align:center;flex:1"><div style="color:#ef4444;font-weight:700;font-size:16px">75</div><div style="color:#555;font-size:9px;text-transform:uppercase">Runs</div></div>
+        <div style="text-align:center;flex:1"><div style="color:#ef4444;font-weight:700;font-size:16px">468km</div><div style="color:#555;font-size:9px;text-transform:uppercase">This year</div></div>
+        <div style="text-align:center;flex:1"><div style="color:#ef4444;font-weight:700;font-size:16px">22km</div><div style="color:#555;font-size:9px;text-transform:uppercase">This week</div></div>
+        <div style="text-align:center;flex:1"><div style="color:#ef4444;font-weight:700;font-size:16px">3🔥</div><div style="color:#555;font-size:9px;text-transform:uppercase">Streak</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="weekly-chart" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Weekly Volume Chart</h3>
+      <p>Bar chart of km per week — last 16 weeks. Color-coded by volume (low/medium/peak). Already exists, keep it.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="fitness-trend" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Fitness Trend (Pace vs HR)</h3>
+      <p>Are you getting fitter? Plots avg HR over time on easy runs. A downward slope = same pace, lower HR = fitness improving. The most meaningful signal.</p>
+      <div style="background:#1a1a1a;border-radius:6px;padding:8px;margin-top:8px;font-family:system-ui;font-size:9px;color:#555">
+        <div style="color:#888;margin-bottom:4px">Avg HR on easy runs (lower = fitter)</div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:28px">
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:95%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:90%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:85%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:80%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:72%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:68%"></div>
+          <div style="flex:1;background:#ef4444;border-radius:2px;height:62%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="cadence-trend" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Cadence Trend</h3>
+      <p>Steps per minute over time. You've been improving toward 168–170 spm. A line chart showing the upward trend with a 170 target line.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="recent-runs" onclick="toggleSelect(this)">
+    <div class="letter">E</div>
+    <div class="content">
+      <h3>Recent Runs Table</h3>
+      <p>Last 8 runs: date · distance · pace · HR · cadence · zone. Scannable list of what you've actually been doing.</p>
+      <div style="background:#1a1a1a;border-radius:6px;padding:8px;margin-top:8px;font-family:system-ui;font-size:9px">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;color:#555;margin-bottom:4px;padding-bottom:4px;border-bottom:1px solid #222">
+          <span>Date</span><span>Dist</span><span>Pace</span><span>HR</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;color:#ccc">
+          <span>Jul 28</span><span>10km</span><span>7:12</span><span>142</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;color:#ccc;margin-top:3px">
+          <span>Jul 24</span><span>5km</span><span>7:38</span><span>138</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="shoe-mileage" onclick="toggleSelect(this)">
+    <div class="letter">F</div>
+    <div class="content">
+      <h3>Shoe Mileage Tracker</h3>
+      <p>Progress bars for each shoe. EVO SL trainer + MetaSpeed Edge race shoe. Shows km used vs max life (500/400km).</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="next-race" onclick="toggleSelect(this)">
+    <div class="letter">G</div>
+    <div class="content">
+      <h3>Next Race Countdown</h3>
+      <p>Shows days until your next race (Aug 16 ASICS 10K). Can hardcode in the HTML — easy to update each time.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="pace-pb" onclick="toggleSelect(this)">
+    <div class="letter">H</div>
+    <div class="content">
+      <h3>Personal Bests</h3>
+      <p>Best pace ever recorded per distance band (5K, 10K, HM). Pulled automatically from runs.json — no manual entry.</p>
+    </div>
+  </div>
+
+</div>
