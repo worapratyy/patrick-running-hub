@@ -127,6 +127,46 @@
     .rt .z2hi{color:var(--orange);font-weight:700}
     .rt-empty{font-size:12px;color:var(--gray2);padding:16px 0;text-align:center}
 
+    /* Summary panels */
+    .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
+    .sum-card{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:0}
+    .sum-card.ai{border-top:3px solid var(--purple)}
+    .sum-card.auto{border-top:3px solid var(--teal)}
+    .sum-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+    .sum-hdr h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray)}
+    .sum-hdr p{font-size:10px;color:var(--gray2);margin-top:2px}
+
+    /* Auto summary rows */
+    .ss-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+    .ss-row:last-of-type{border-bottom:none}
+    .ss-icon{font-size:14px;flex-shrink:0;width:20px;text-align:center;padding-top:1px}
+    .ss-label{font-size:10px;color:var(--gray);flex-shrink:0;width:130px;padding-top:2px}
+    .ss-val{font-size:12px;font-weight:700;color:var(--text)}
+    .ss-sub{font-size:10px;color:var(--gray2);margin-top:1px}
+    .ss-up{color:var(--green)}.ss-dn{color:var(--red)}.ss-eq{color:var(--gray)}
+
+    /* AI summary panel */
+    .ai-body{flex:1;display:flex;flex-direction:column;gap:12px}
+    .ai-text{font-size:12.5px;line-height:1.75;color:var(--text);flex:1;min-height:120px}
+    .ai-text.placeholder{color:var(--gray2);font-style:italic;font-size:12px}
+    .ai-text em{font-style:normal;font-weight:700;color:var(--purple)}
+    .ai-controls{display:flex;flex-direction:column;gap:8px}
+    .ai-key-row{display:flex;gap:6px}
+    .ai-key-input{flex:1;font-size:11px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:#f9fafb;color:var(--text);outline:none}
+    .ai-key-input:focus{border-color:var(--purple);background:#faf5ff}
+    .ai-key-input::placeholder{color:var(--gray2)}
+    .ai-btn{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
+    .ai-btn:hover{background:#6d28d9}
+    .ai-btn:disabled{background:var(--gray2);cursor:not-allowed}
+    .ai-key-hint{font-size:9.5px;color:var(--gray2)}
+    .ai-key-hint a{color:var(--purple);text-decoration:none}
+    .ai-key-hint a:hover{text-decoration:underline}
+    .ai-spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    .ai-model-badge{font-size:9px;padding:2px 7px;background:#ede9fe;color:#6d28d9;border-radius:8px;font-weight:600}
+    .ai-ts{font-size:9px;color:var(--gray2);margin-top:4px}
+
+    @media(max-width:900px){.sum-grid{grid-template-columns:1fr}}
+
     /* Footer */
     .footer{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:11px;color:#9a3412;margin-top:var(--gap)}
     .footer strong{color:#7c2d12}
@@ -259,6 +299,38 @@
       </thead>
       <tbody id="rtBody"></tbody>
     </table>
+  </div>
+
+  <!-- Summary panels: Auto-computed + AI side by side -->
+  <div class="sum-grid">
+
+    <!-- Left: Auto-computed -->
+    <div class="sum-card auto">
+      <div class="sum-hdr">
+        <div><h3>📊 Auto Summary</h3><p>Computed from your Strava data</p></div>
+      </div>
+      <div id="autoSumBody"></div>
+    </div>
+
+    <!-- Right: AI coaching -->
+    <div class="sum-card ai">
+      <div class="sum-hdr">
+        <div><h3>🤖 AI Coaching Summary</h3><p>Claude reads your stats and gives coaching insight</p></div>
+        <span class="ai-model-badge">Haiku 4.5</span>
+      </div>
+      <div class="ai-body">
+        <div class="ai-text placeholder" id="aiText">Enter your Anthropic API key below and click Generate to get a coaching summary based on your recent training data.</div>
+        <div id="aiTs" class="ai-ts"></div>
+        <div class="ai-controls">
+          <div class="ai-key-row">
+            <input class="ai-key-input" id="aiKey" type="password" placeholder="sk-ant-api03-…" autocomplete="off"/>
+            <button class="ai-btn" id="aiBtn" onclick="generateAiSummary()">✨ Generate</button>
+          </div>
+          <div class="ai-key-hint">Key stored in browser localStorage only · <a href="https://console.anthropic.com/settings/keys" target="_blank">Get key →</a></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Footer -->
@@ -413,6 +485,7 @@ function render(runs){
   checkHolidays();
   buildPR(runs);
   buildRecentTable(runs);
+  buildAutoSummary(runs);
   buildCharts(runs, rec, window._analyticsWeekly||null);
 }
 
@@ -491,6 +564,172 @@ function buildRecentTable(runs){
       <td class="td-num">${timeStr}</td>
     </tr>`;
   });
+}
+
+// ── AUTO SUMMARY ──────────────────────────────────────────
+let _summaryStats = {};
+
+function buildAutoSummary(runs){
+  const sorted = [...runs].sort((a,b)=>a.date.localeCompare(b.date));
+
+  // Last 4 weeks vs previous 4 weeks
+  const now = new Date(TODAY+'T12:00:00');
+  const d28 = d => { const x=new Date(now); x.setDate(x.getDate()-d); return x.toISOString().split('T')[0]; };
+  const cut4=d28(28), cut8=d28(56);
+  const last4wRuns=sorted.filter(r=>r.date>=cut4);
+  const prev4wRuns=sorted.filter(r=>r.date>=cut8&&r.date<cut4);
+
+  const avg=(arr,fn)=>arr.length?arr.reduce((s,r)=>s+fn(r),0)/arr.length:null;
+  const sum=(arr,fn)=>arr.reduce((s,r)=>s+fn(r),0);
+
+  // Km/week last 4 vs prev 4
+  const kmL=sum(last4wRuns,r=>r.dist), kmP=sum(prev4wRuns,r=>r.dist);
+  const kmLw=kmL/4, kmPw=kmP/4;
+  const runsPerWk=last4wRuns.length/4;
+
+  // Cadence trend (last 4 runs with cadence vs prev 4)
+  const withCad=sorted.filter(r=>r.cad&&r.cad>0);
+  const cadL=withCad.slice(-4), cadP=withCad.slice(-8,-4);
+  const avgCadL=avg(cadL,r=>r.cad), avgCadP=avg(cadP,r=>r.cad);
+
+  // Pace trend (last 4 vs prev 4, filter walk-paces)
+  const paceRuns=sorted.filter(r=>r.pM>0&&r.pM<12);
+  const paceL=paceRuns.slice(-4), paceP=paceRuns.slice(-8,-4);
+  const avgPaceL=avg(paceL,r=>pf(r.pM,r.pS)), avgPaceP=avg(paceP,r=>pf(r.pM,r.pS));
+
+  // HR trend (last 4 vs prev 4)
+  const hrRuns=sorted.filter(r=>r.hr&&r.hr>0);
+  const hrL=hrRuns.slice(-4), hrP=hrRuns.slice(-8,-4);
+  const avgHrL=avg(hrL,r=>r.hr), avgHrP=avg(hrP,r=>r.hr);
+
+  // Z2 rate last 4 weeks
+  const hrLast=last4wRuns.filter(r=>r.hr&&r.hr>0);
+  const z2Last=hrLast.filter(r=>r.hr>=Z.z2lo&&r.hr<=Z.z2hi);
+  const z2Rate=hrLast.length?Math.round(z2Last.length/hrLast.length*100):null;
+
+  // Longest run last 4 weeks
+  const lng4=last4wRuns.length?[...last4wRuns].sort((a,b)=>b.dist-a.dist)[0]:null;
+
+  // Consistency: weeks with ≥1 run in last 8 weeks
+  const weeks8=[];
+  for(let i=0;i<8;i++){const d=new Date(now);d.setDate(d.getDate()-i*7);weeks8.push(weekMon(d.toISOString().split('T')[0]));}
+  const activeWks=weeks8.filter(w=>sorted.some(r=>weekMon(r.date)===w)).length;
+
+  // Store for AI
+  _summaryStats={
+    runsPerWk:runsPerWk.toFixed(1), kmPerWk:kmLw.toFixed(1), kmPerWkPrev:kmPw.toFixed(1),
+    z2Rate, avgCadL:avgCadL?avgCadL.toFixed(0):null, avgCadP:avgCadP?avgCadP.toFixed(0):null,
+    avgPaceL:avgPaceL?avgPaceL.toFixed(3):null, avgPaceP:avgPaceP?avgPaceP.toFixed(3):null,
+    avgHrL:avgHrL?avgHrL.toFixed(0):null, avgHrP:avgHrP?avgHrP.toFixed(0):null,
+    longestRun4w:lng4?`${fkm(lng4.dist)} km on ${sdt(lng4.date)}`:null,
+    consistency:`${activeWks}/8 weeks active`,
+    totalRuns:sorted.length, recentRuns:last4wRuns.length
+  };
+
+  // Trend arrow helpers
+  const trendV=(curr,prev,invert=false)=>{
+    if(!curr||!prev) return {arrow:'—',cls:'ss-eq'};
+    const delta=curr-prev;
+    const up=invert?delta<0:delta>0;
+    if(Math.abs(delta)<0.3) return {arrow:'→ stable',cls:'ss-eq'};
+    return up?{arrow:`↑ +${Math.abs(delta).toFixed(1)}`,cls:'ss-up'}:{arrow:`↓ −${Math.abs(delta).toFixed(1)}`,cls:'ss-dn'};
+  };
+
+  const kmTrend=trendV(kmLw,kmPw);
+  const cadTrend=avgCadL&&avgCadP?trendV(parseFloat(avgCadL),parseFloat(avgCadP)):{arrow:'—',cls:'ss-eq'};
+
+  // Pace: lower = better so invert
+  const paceTrend=avgPaceL&&avgPaceP?trendV(parseFloat(avgPaceL),parseFloat(avgPaceP),true):{arrow:'—',cls:'ss-eq'};
+  // For display, format pace properly
+  const fmtPace=v=>{ if(!v) return '—'; const pf=parseFloat(v),m=Math.floor(pf),s=Math.round((pf-m)*60); return `${m}:${String(s).padStart(2,'0')}/km`; };
+
+  const hrTrend=avgHrL&&avgHrP?trendV(parseFloat(avgHrL),parseFloat(avgHrP),true):{arrow:'—',cls:'ss-eq'};
+
+  const rows=[
+    {icon:'📅', label:'Runs / week', val:`${runsPerWk.toFixed(1)} runs`, sub:`${last4wRuns.length} runs over last 4 weeks`},
+    {icon:'📏', label:'Volume / week', val:`${kmLw.toFixed(1)} km`, sub:`<span class="${kmTrend.cls}">${kmTrend.arrow}</span> vs prev 4 weeks (${kmPw.toFixed(1)} km/wk)`},
+    {icon:'❤️', label:'Zone 2 rate', val:z2Rate!==null?`${z2Rate}%`:'No HR data', sub:z2Rate!==null?`${z2Last.length}/${hrLast.length} runs in Z2 (${Z.z2lo}–${Z.z2hi} bpm)`:''},
+    {icon:'⚡', label:'Avg pace', val:fmtPace(avgPaceL), sub:`<span class="${paceTrend.cls}">${paceTrend.arrow}</span> vs prev 4 runs (${fmtPace(avgPaceP)})`},
+    {icon:'💓', label:'Avg HR', val:avgHrL?`${avgHrL} bpm`:'—', sub:`<span class="${hrTrend.cls}">${hrTrend.arrow}</span> vs prev 4 runs${avgHrP?' ('+avgHrP+' bpm)':''}`},
+    {icon:'🦵', label:'Cadence', val:avgCadL?`${avgCadL} spm`:'—', sub:`<span class="${cadTrend.cls}">${cadTrend.arrow}</span> vs prev 4 runs${avgCadP?' ('+avgCadP+' spm)':''}`},
+    {icon:'🏃', label:'Longest (4 wks)', val:lng4?`${fkm(lng4.dist)} km`:'—', sub:lng4?sdt(lng4.date):''},
+    {icon:'📆', label:'Consistency', val:`${activeWks}/8 weeks`, sub:`${Math.round(activeWks/8*100)}% of last 8 weeks had at least one run`},
+  ];
+
+  const body=document.getElementById('autoSumBody');
+  body.innerHTML=rows.map(r=>`
+    <div class="ss-row">
+      <span class="ss-icon">${r.icon}</span>
+      <span class="ss-label">${r.label}</span>
+      <div><div class="ss-val">${r.val}</div><div class="ss-sub">${r.sub}</div></div>
+    </div>`).join('');
+}
+
+// ── AI SUMMARY ────────────────────────────────────────────
+async function generateAiSummary(){
+  const keyInput=document.getElementById('aiKey');
+  const btn=document.getElementById('aiBtn');
+  const textEl=document.getElementById('aiText');
+  const tsEl=document.getElementById('aiTs');
+
+  let key=keyInput.value.trim()||localStorage.getItem('anthropic_key')||'';
+  if(!key){ textEl.className='ai-text placeholder'; textEl.textContent='Please enter your Anthropic API key first.'; return; }
+  localStorage.setItem('anthropic_key',key);
+  keyInput.value=key;
+
+  btn.disabled=true;
+  btn.innerHTML='<span class="ai-spinner"></span> Thinking…';
+  textEl.className='ai-text placeholder';
+  textEl.textContent='Asking Claude…';
+
+  const s=_summaryStats;
+  const prompt=`You are a running coach. Here is Patrick's training data for the last 4 weeks:
+
+- Runs per week: ${s.runsPerWk}
+- Volume per week: ${s.kmPerWk} km (prev 4 weeks: ${s.kmPerWkPrev} km/wk)
+- Zone 2 rate: ${s.z2Rate!==null?s.z2Rate+'%':'no HR data'} (Z2 = 134–149 bpm)
+- Avg pace last 4 runs: ${s.avgPaceL?s.avgPaceL+' min/km':'no data'} (prev: ${s.avgPaceP||'—'})
+- Avg HR last 4 runs: ${s.avgHrL||'—'} bpm (prev: ${s.avgHrP||'—'} bpm)
+- Avg cadence last 4 runs: ${s.avgCadL||'—'} spm (prev: ${s.avgCadP||'—'} spm)
+- Longest run in last 4 weeks: ${s.longestRun4w||'—'}
+- Training consistency: ${s.consistency}
+- Total runs tracked: ${s.totalRuns}
+- Goal: Half marathon, VDOT 37, LTHR 170 bpm, targeting sub-2:00
+
+Write a 3–4 sentence coaching summary. Be specific to the numbers — call out what's improving, what needs attention, and one concrete next-step recommendation. Use plain English, no bullet points, no markdown.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+        'content-type':'application/json'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:300,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok){
+      const err=await res.json().catch(()=>({error:{message:res.statusText}}));
+      throw new Error(err.error?.message||`HTTP ${res.status}`);
+    }
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'No response.';
+    textEl.className='ai-text';
+    textEl.textContent=text;
+    tsEl.textContent=`Generated ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+  } catch(e){
+    textEl.className='ai-text placeholder';
+    textEl.textContent=`Error: ${e.message}`;
+    tsEl.textContent='';
+  } finally{
+    btn.disabled=false;
+    btn.innerHTML='✨ Generate';
+  }
 }
 
 // ── CHARTS ────────────────────────────────────────────────
@@ -639,6 +878,9 @@ async function manualSync(){
 }
 // ── INIT ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
+  // Restore saved API key
+  const saved=localStorage.getItem('anthropic_key');
+  if(saved){ const el=document.getElementById('aiKey'); if(el) el.value=saved; }
   boot().catch(e=>{ showErr('Unexpected error: '+e.message); });
 });
 </script>
