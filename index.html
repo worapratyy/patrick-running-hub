@@ -68,20 +68,6 @@
     .pr-p{font-size:10px;color:var(--gray);margin-top:4px}
     .pr-dt{font-size:9px;color:var(--gray2);margin-top:2px}
 
-    /* Shoe card — full width */
-    .shoe-card{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);border-top:4px solid var(--teal);margin-bottom:var(--gap)}
-    .shoe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:12px}
-    .shoe-item{background:#f8fafc;border-radius:8px;padding:14px 16px;border:1px solid var(--border)}
-    .shoe-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-    .shoe-name{font-size:12px;font-weight:700;color:var(--text)}
-    .shoe-km{font-family:'SF Mono','Fira Code',monospace;font-size:14px;font-weight:800}
-    .shoe-track{height:7px;background:#e5e7eb;border-radius:4px;overflow:hidden;margin-bottom:6px}
-    .shoe-fill{height:100%;border-radius:4px;transition:width .6s ease}
-    .shoe-meta{font-size:9px;color:var(--gray2)}
-    .shoe-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
-    .shoe-badge.race{background:#ede9fe;color:#6d28d9}
-    .shoe-badge.trainer{background:#dcfce7;color:#15803d}
-
     /* Charts */
     .g2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
     .cc{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);margin-bottom:var(--gap)}
@@ -124,6 +110,23 @@
     .rr-days{font-size:11px;color:var(--gray);margin-top:6px}
     @media(max-width:700px){.rr{grid-template-columns:auto 1fr;}.rr-right{grid-column:1/-1;text-align:left;display:flex;gap:16px;align-items:baseline}}
 
+    /* Recent Runs Table */
+    .rt{background:var(--card);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);margin-bottom:var(--gap)}
+    .rt table{width:100%;border-collapse:collapse;margin-top:12px}
+    .rt th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);text-align:left;padding:0 10px 8px 0;border-bottom:1.5px solid var(--border)}
+    .rt th:last-child,.rt td:last-child{text-align:right;padding-right:0}
+    .rt td{font-size:11.5px;padding:9px 10px 9px 0;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+    .rt tr:last-child td{border-bottom:none}
+    .rt tr:hover td{background:#f9fafb}
+    .rt .td-name{font-weight:600;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rt .td-type{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:5px;vertical-align:middle}
+    .rt .td-type.indoor{background:#ede9fe;color:#6d28d9}
+    .rt .td-type.outdoor{background:#dcfce7;color:#15803d}
+    .rt .td-num{font-family:'SF Mono','Fira Code',monospace;font-size:11.5px;font-variant-numeric:tabular-nums}
+    .rt .z2ok{color:var(--green);font-weight:700}
+    .rt .z2hi{color:var(--orange);font-weight:700}
+    .rt-empty{font-size:12px;color:var(--gray2);padding:16px 0;text-align:center}
+
     /* Footer */
     .footer{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:var(--r);padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:11px;color:#9a3412;margin-top:var(--gap)}
     .footer strong{color:#7c2d12}
@@ -164,6 +167,7 @@
       <div class="badge" id="bdgStreak">—</div>
       <div class="badge goal" id="bdgRace">🎯 HM Goal</div>
       <a href="training-plan.html" class="hbtn">📋 Training Plan</a>
+      <a href="workflow.html" class="hbtn">⚡ Stack</a>
       <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
     </div>
   </header>
@@ -215,12 +219,6 @@
   <!-- Personal Records — race distances -->
   <div class="pr-grid" id="prGrid"></div>
 
-  <!-- Shoe Mileage -->
-  <div class="shoe-card">
-    <div class="kpi-l">👟 Shoe Mileage</div>
-    <div class="shoe-grid" id="shoeList"></div>
-  </div>
-
   <!-- Charts: Weekly Mileage + HR Trend -->
   <div class="g2">
     <div class="cc">
@@ -242,6 +240,25 @@
   <!-- Holiday warning -->
   <div class="hw" id="holidayWarn">
     <span>🎉</span><span id="holidayMsg"></span>
+  </div>
+
+  <!-- Recent Runs Table -->
+  <div class="rt">
+    <div class="cch"><h3>🗒️ Recent Runs</h3><p id="rtSub">Last 15 activities</p></div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Run</th>
+          <th>Dist</th>
+          <th>Pace</th>
+          <th>Avg HR</th>
+          <th>Cadence</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="rtBody"></tbody>
+    </table>
   </div>
 
   <!-- Footer -->
@@ -271,12 +288,6 @@ const Z = {
   z3hi: 159,  // Z3 Aerobic upper
   z4hi: 167,  // Z4 Threshold upper
 };
-
-const SHOES = [
-  { name:'ASICS MetaSpeed Edge', startDate:'2026-04-16', maxKm:400, color:'#7c3aed', badge:'race' },
-  { name:'Adidas Adizero EVO SL', startDate:'2026-02-14', maxKm:500, color:'#0d9488', badge:'trainer' },
-];
-
 
 // ── HELPERS ───────────────────────────────────────────────
 function ps(pM,pS){ return `${pM}:${String(pS).padStart(2,'0')}`; }
@@ -399,26 +410,9 @@ function render(runs){
   set('lrTime', moveS>0?secToHMS(moveS):'—');
 
 
-  // ── Shoes ──
-  const sl=document.getElementById('shoeList'); sl.innerHTML='';
-  SHOES.forEach(sh=>{
-    const shoeRuns=sh.startDate?runs.filter(r=>r.date>=sh.startDate):runs;
-    const km=shoeRuns.reduce((s,r)=>s+r.dist,0);
-    const pct=Math.min(100,km/sh.maxKm*100);
-    const col=pct>80?'#dc2626':pct>60?'#ea580c':sh.color;
-    const badgeHtml=sh.badge?`<span class="shoe-badge ${sh.badge}">${sh.badge==='race'?'🏁 Race':'🏃 Trainer'}</span>`:'';
-    sl.innerHTML+=`<div class="shoe-item">
-      <div class="shoe-row">
-        <span class="shoe-name">${sh.name}${badgeHtml}</span>
-        <span class="shoe-km" style="color:${col}">${km.toFixed(0)} km</span>
-      </div>
-      <div class="shoe-track"><div class="shoe-fill" style="width:${pct.toFixed(1)}%;background:${col}"></div></div>
-      <div class="shoe-meta">${pct.toFixed(1)}% of ${sh.maxKm} km · ${Math.max(0,sh.maxKm-km).toFixed(0)} km remaining${sh.startDate?' · since '+sdt(sh.startDate):''}</div>
-    </div>`;
-  });
-
   checkHolidays();
   buildPR(runs);
+  buildRecentTable(runs);
   buildCharts(runs, rec, window._analyticsWeekly||null);
 }
 
@@ -472,13 +466,41 @@ function buildPR(runs){
   });
 }
 
+// ── RECENT RUNS TABLE ─────────────────────────────────────
+function buildRecentTable(runs){
+  const recent=[...runs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15);
+  const tb=document.getElementById('rtBody'); tb.innerHTML='';
+  set('rtSub',`Last ${recent.length} activities · newest first`);
+  recent.forEach(r=>{
+    const typeHtml=r.indoor
+      ?`<span class="td-type indoor">Treadmill</span>`
+      :`<span class="td-type outdoor">Outdoor</span>`;
+    const paceStr=r.pM>0&&r.pM<15?ps(r.pM,r.pS):'—';
+    const hrStr=r.hr?r.hr:'—';
+    const hrClass=r.hr?(r.hr>=Z.z2lo&&r.hr<=Z.z2hi?'z2ok':'z2hi'):'';
+    const cadStr=r.cad?Math.round(r.cad):'—';
+    const moveS=r.pM>0?(r.pM*60+r.pS)*r.dist:0;
+    const timeStr=moveS>0?secToHMS(moveS):'—';
+    tb.innerHTML+=`<tr>
+      <td class="td-num">${sdt(r.date)}</td>
+      <td><span class="td-name">${r.name||'Run'}</span>${typeHtml}</td>
+      <td class="td-num">${fkm(r.dist)} km</td>
+      <td class="td-num">${paceStr}/km</td>
+      <td class="td-num ${hrClass}">${hrStr}${r.hr?' bpm':''}</td>
+      <td class="td-num">${cadStr}${r.cad?' spm':''}</td>
+      <td class="td-num">${timeStr}</td>
+    </tr>`;
+  });
+}
+
 // ── CHARTS ────────────────────────────────────────────────
 function buildCharts(runs, rec, analyticsWeekly){
-  // 1. Weekly mileage — actual Strava runs only
-  const wStart=runs[0].date<'2025-10-01'?'2025-10-01':runs[0].date;
-  const wkD=weekRange(runs.filter(r=>r.date>=wStart),wStart,TODAY);
+  // 1. Weekly mileage — last 16 weeks
+  const w16ago=new Date(TODAY); w16ago.setDate(w16ago.getDate()-16*7);
+  const wStart=w16ago.toISOString().split('T')[0];
+  const wkD=weekRange(runs,wStart,TODAY);
   const wkMax=Math.max(...wkD.map(w=>w.km),10);
-  set('wkSub',`${sdt(wStart)} – now · by week · ${runs.length} total runs`);
+  set('wkSub',`Last 16 weeks · by week · ${runs.filter(r=>r.date>=wStart).length} runs`);
   mkChart('cWeekly',{type:'bar',data:{
     labels:wkD.map(w=>{ const d=new Date(w.wk+'T12:00:00'); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); }),
     datasets:[{
