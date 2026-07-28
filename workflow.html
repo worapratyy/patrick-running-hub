@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Stack Workflow — Patrick Running Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@600;700;800&display=swap');
+
+:root {
+  --bg: #080f0a;
+  --surface: #0d1a10;
+  --surface2: #122016;
+  --green: #22c55e;
+  --green-dim: #16a34a;
+  --green-glow: rgba(34,197,94,.18);
+  --green-faint: rgba(34,197,94,.06);
+  --orange: #fb923c;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --yellow: #facc15;
+  --text: #f0fdf4;
+  --text-dim: #6b7280;
+  --text-mid: #9ca3af;
+  --border: rgba(34,197,94,.15);
+  --border-bright: rgba(34,197,94,.35);
+  --mono: 'JetBrains Mono', monospace;
+  --display: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(34,197,94,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,197,94,.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 56px;
+  animation: fadeUp .6s ease both;
+}
+
+.header-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.header h1 {
+  font-family: var(--display);
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.header h1 span {
+  color: var(--green);
+}
+
+.header-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* Nav back */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 40px;
+  animation: fadeUp .4s ease both;
+}
+
+.nav a {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color .15s;
+}
+
+.nav a:hover { color: var(--green); }
+.nav-sep { color: var(--text-dim); font-size: 11px; opacity: .4; }
+
+/* ── FLOW ── */
+.flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Node card */
+.node {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  align-items: start;
+  animation: fadeUp .5s ease both;
+  transition: border-color .2s, background .2s;
+  cursor: default;
+}
+
+.node:hover {
+  border-color: var(--border-bright);
+  background: var(--surface2);
+}
+
+/* Animated left border glow on hover */
+.node::before {
+  content: '';
+  position: absolute;
+  left: -1px; top: 20%; bottom: 20%;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--green);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.node:hover::before { opacity: 1; }
+
+/* Icon bubble */
+.node-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.node-icon.orange { background: rgba(251,146,60,.12); border: 1px solid rgba(251,146,60,.25); }
+.node-icon.green  { background: rgba(34,197,94,.1);   border: 1px solid rgba(34,197,94,.25); }
+.node-icon.blue   { background: rgba(96,165,250,.1);  border: 1px solid rgba(96,165,250,.25); }
+.node-icon.purple { background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.25); }
+.node-icon.yellow { background: rgba(250,204,21,.1);  border: 1px solid rgba(250,204,21,.25); }
+.node-icon.teal   { background: rgba(20,184,166,.1);  border: 1px solid rgba(20,184,166,.25); }
+
+/* Step number badge */
+.step-badge {
+  position: absolute;
+  top: -5px; right: -5px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border-bright);
+  font-size: 8px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green);
+}
+
+.node-body {}
+
+.node-title {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.node-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+  letter-spacing: .3px;
+}
+
+.node-desc {
+  font-size: 11.5px;
+  color: var(--text-mid);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+/* Code-style detail chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.chip {
+  font-size: 10px;
+  font-family: var(--mono);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+  font-weight: 600;
+}
+
+.chip.orange { color: var(--orange); border-color: rgba(251,146,60,.3); background: rgba(251,146,60,.08); }
+.chip.green  { color: var(--green);  border-color: rgba(34,197,94,.3);  background: rgba(34,197,94,.08); }
+.chip.blue   { color: var(--blue);   border-color: rgba(96,165,250,.3); background: rgba(96,165,250,.08); }
+.chip.purple { color: var(--purple); border-color: rgba(167,139,250,.3);background: rgba(167,139,250,.08); }
+.chip.yellow { color: var(--yellow); border-color: rgba(250,204,21,.3); background: rgba(250,204,21,.08); }
+.chip.teal   { color: #2dd4bf;       border-color: rgba(20,184,166,.3); background: rgba(20,184,166,.08); }
+.chip.gray   { color: var(--text-dim);border-color: rgba(107,114,128,.3);background: rgba(107,114,128,.06); }
+
+/* Connector between nodes */
+.connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  position: relative;
+}
+
+.connector-line {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--border-bright), transparent 30%, transparent 70%, var(--border-bright));
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated pulse dot travelling down the line */
+.connector-pulse {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px 2px var(--green);
+  animation: travel 2s ease-in-out infinite;
+  top: -6px;
+}
+
+.connector-label {
+  position: absolute;
+  left: calc(50% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  font-family: var(--mono);
+}
+
+.connector-label .method {
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+.connector-label .method.post { color: var(--orange); }
+.connector-label .method.get  { color: var(--blue); }
+.connector-label .method.api  { color: var(--purple); }
+.connector-label .method.git  { color: var(--yellow); }
+.connector-label .method.gh   { color: var(--green); }
+
+@keyframes travel {
+  0%   { top: -6px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: calc(100% + 6px); opacity: 0; }
+}
+
+/* ── LEGEND ── */
+.legend {
+  margin-top: 48px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  animation: fadeUp .5s .4s ease both;
+  opacity: 0;
+}
+
+.legend-title {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-mid);
+  margin-bottom: 14px;
+  letter-spacing: .5px;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  color: var(--text-dim);
+}
+
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── SUMMARY BANNER ── */
+.summary {
+  margin-top: 20px;
+  padding: 16px 22px;
+  background: rgba(34,197,94,.06);
+  border: 1px solid rgba(34,197,94,.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeUp .5s .5s ease both;
+  opacity: 0;
+}
+
+.summary-icon { font-size: 20px; }
+.summary-text { font-size: 11px; color: var(--text-mid); line-height: 1.6; }
+.summary-text strong { color: var(--green); }
+
+/* Stagger animation delays */
+.node:nth-child(1)  { animation-delay: .05s; }
+.node:nth-child(3)  { animation-delay: .12s; }
+.node:nth-child(5)  { animation-delay: .19s; }
+.node:nth-child(7)  { animation-delay: .26s; }
+.node:nth-child(9)  { animation-delay: .33s; }
+.node:nth-child(11) { animation-delay: .40s; }
+
+.connector:nth-child(2)  { animation-delay: .08s; }
+.connector:nth-child(4)  { animation-delay: .15s; }
+.connector:nth-child(6)  { animation-delay: .22s; }
+.connector:nth-child(8)  { animation-delay: .29s; }
+.connector:nth-child(10) { animation-delay: .36s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECRETS SECTION ── */
+.secrets-section {
+  margin-top: 20px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  animation: fadeUp .5s .45s ease both;
+  opacity: 0;
+}
+
+.secrets-title {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-mid);
+  margin-bottom: 14px;
+}
+
+.secrets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.secret-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+
+.secret-key {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.secret-key.cf   { color: var(--orange); }
+.secret-key.gh   { color: var(--purple); }
+.secret-key.str  { color: var(--yellow); }
+
+.secret-where {
+  font-size: 9.5px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 600px) {
+  .secrets-grid { grid-template-columns: 1fr; }
+  .connector-label { display: none; }
+  .node { grid-template-columns: 40px 1fr; gap: 12px; padding: 16px; }
+  .node-icon { width: 40px; height: 40px; font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <nav class="nav">
+    <a href="index.html">← Dashboard</a>
+    <span class="nav-sep">/</span>
+    <a href="training-plan.html">Training Plan</a>
+  </nav>
+
+  <header class="header">
+    <div class="header-eyebrow">System Architecture</div>
+    <h1>How the <span>Running Hub</span> Works</h1>
+    <p class="header-sub">From finishing a run to seeing it in the dashboard — every step explained.</p>
+  </header>
+
+  <!-- ── FLOW ── -->
+  <div class="flow">
+
+    <!-- 1. Strava App -->
+    <div class="node">
+      <div class="node-icon orange">
+        🏃
+        <span class="step-badge">1</span>
+      </div>
+      <div class="node-body">
+        <div class="node-title">Patrick Finishes a Run</div>
+        <div class="node-sub">Strava Mobile App · GPS Watch</div>
+        <div class="node-desc">You finish your run and save it in the Strava app. Strava records the full activity — distance, pace, heart rate, cadence, splits — and marks it as a new activity in its system.</div>
+        <div class="chips">
+          <span class="chip orange">Strava App</span>
+          <span class="chip gray">object_type: activity</span>
+          <span class="chip gray">aspect_type: create</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">
+      <div class="connector-line">
+        <div class="connector-pulse"></div>
+      </div>
+      <div class="connector-label"><span class="method post">POST</span>webhook event fired automatically</div>
+    </div>
+
+    <!-- 2. Cloudflare Worker -->
+    <div class="node">
+      <div class="node-icon blue">
+        ⚡
+        <span class="step-badge">2</span>
+      </div>
+      <div class="node-body">
+        <div class="node-title">Cloudflare Worker receives the webhook</div>
+        <div class="node-sub">patrick-strava-webhook.phadbq.workers.dev</div>
+        <div class="node-desc">
+          Strava fires a POST request to this Cloudflare Worker within seconds of the activity being saved.
+          The Worker checks <code style="color:var(--orange);font-size:10.5px">object_type === "activity"</code> and <code style="color:var(--orange);font-size:10.5px">aspect_type === "create"</code> — ignoring updates, deletes, and athlete events.
+          It always returns <strong style="color:var(--green)">HTTP 200</strong> to Strava so Strava never retries.
+        </div>
+        <div class="chips">
+          <span class="chip blue">Cloudflare Workers</span>
+          <span class="chip gray">cloudflare-worker/index.js</span>
+          <span class="chip orange">STRAVA_VERIFY_TOKEN</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">
+      <div class="connector-line">
+        <div class="connector-pulse" style="animation-delay:.7s"></div>
+      </div>
+      <div class="connector-label"><span class="method gh">POST</span>repository_dispatch → event_type: strava-activity</div>
+    </div>
+
+    <!-- 3. GitHub Actions -->
+    <div class="node">
+      <div class="node-icon purple">
+        🔄
+        <span class="step-badge">3</span>
+      </div>
+      <div class="node-body">
+        <div class="node-title">GitHub Actions workflow triggers</div>
+        <div class="node-sub">.github/workflows/sync-strava.yml</div>
+        <div class="node-desc">
+          The Worker calls the GitHub API to fire a <code style="color:var(--purple);font-size:10.5px">repository_dispatch</code> event. GitHub Actions picks this up and starts a fresh Ubuntu runner. The workflow also runs on a daily cron at midnight Bangkok time as a fallback.
+        </div>
+        <div class="chips">
+          <span class="chip purple">GitHub Actions</span>
+          <span class="chip gray">ubuntu-latest</span>
+          <span class="chip yellow">GH_PAT (repo + workflow)</span>
+          <span class="chip gray">cron: 0 17 * * * (UTC)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">
+      <div class="connector-line">
+        <div class="connector-pulse" style="animation-delay:1.1s"></div>
+      </div>
+      <div class="connector-label"><span class="method api">API</span>Strava v3 — fetch all activities</div>
+    </div>
+
+    <!-- 4. sync_strava.py -->
+    <div class="node">
+      <div class="node-icon green">
+        🐍
+        <span class="step-badge">4</span>
+      </div>
+      <div class="node-body">
+        <div class="node-title">sync_strava.py runs</div>
+        <div class="node-sub">scripts/sync_strava.py · Python 3.12</div>
+        <div class="node-desc">
+          The script exchanges the refresh token for a fresh access token, pulls all activities from the Strava API, and writes them to <code style="color:var(--green);font-size:10.5px">data/runs.json</code>. It then prints the new refresh token so the workflow can rotate the secret — keeping OAuth alive without manual intervention.
+        </div>
+        <div class="chips">
+          <span class="chip green">STRAVA_CLIENT_ID</span>
+          <span class="chip green">STRAVA_CLIENT_SECRET</span>
+          <span class="chip green">STRAVA_REFRESH_TOKEN</span>
+          <span class="chip gray">token rotation → GH secret</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">
+      <div class="connector-line">
+        <div class="connector-pulse" style="animation-delay:1.5s"></div>
+      </div>
+      <div class="connector-label"><span class="method git">GIT</span>commit data/runs.json + push to main</div>
+    </div>
+
+    <!-- 5. runs.json committed -->
+    <div class="node">
+      <div class="node-icon yellow">
+        📦
+        <span class="step-badge">5</span>
+      </div>
+      <div class="node-body">
+        <div class="node-title">runs.json committed to GitHub</div>
+        <div class="node-sub">worapratyy/patrick-running-hub · data/runs.json</div>
+        <div class="node-desc">
+          GitHub Actions commits the updated <code style="color:var(--yellow);font-size:10.5px">data/runs.json</code> back to the <code style="color:var(--yellow);font-size:10.5px">main</code> branch with a timestamped commit message. If nothing changed (no new runs), the commit is skipped cleanly.
+        </div>
+        <div class="chips">
+          <span class="chip yellow">data/runs.json</span>
+          <span class="chip gray">github-actions[bot]</span>
+          <span class="chip gray">~75 activities · ~60 KB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">
+      <div class="connector-line">
+        <div class="connector-pulse" style="animation-delay:1.9s"></div>
+      </div>
+      <div class="connector-label"><span class="method get">GET</span>fetch('./data/runs.json') on page load</div>
+    </div>
+
+    <!-- 6. Dashboard -->
+    <div class="node">
+      <div class="node-icon teal">
+        📊
+        <span class="step-badge">6</span>
+      </div>
+      <div class="node-body">
+        <div class="node-title">Dashboard renders the data</div>
+        <div class="node-sub">index.html · dashboard.html · training-plan.html</div>
+        <div class="node-desc">
+          The dashboard pages are plain HTML/JS hosted on GitHub Pages. On load they fetch <code style="color:#2dd4bf;font-size:10.5px">data/runs.json</code> directly from the repo and compute KPIs, charts, and training status — no server, no database, no build step required.
+        </div>
+        <div class="chips">
+          <span class="chip teal">GitHub Pages</span>
+          <span class="chip gray">Chart.js 4.5</span>
+          <span class="chip gray">zero dependencies</span>
+          <span class="chip teal">VDOT · HR zones · pace</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- end flow -->
+
+  <!-- Secrets reference -->
+  <div class="secrets-section">
+    <div class="secrets-title">🔑 Secrets &amp; Where They Live</div>
+    <div class="secrets-grid">
+      <div class="secret-row">
+        <span class="secret-key str">STRAVA_CLIENT_ID</span>
+        <span class="secret-where">GitHub repo secret · used by sync_strava.py</span>
+      </div>
+      <div class="secret-row">
+        <span class="secret-key str">STRAVA_CLIENT_SECRET</span>
+        <span class="secret-where">GitHub repo secret · used by sync_strava.py</span>
+      </div>
+      <div class="secret-row">
+        <span class="secret-key str">STRAVA_REFRESH_TOKEN</span>
+        <span class="secret-where">GitHub repo secret · auto-rotated every sync</span>
+      </div>
+      <div class="secret-row">
+        <span class="secret-key gh">GH_PAT</span>
+        <span class="secret-where">GitHub repo secret · rotates STRAVA_REFRESH_TOKEN via gh CLI</span>
+      </div>
+      <div class="secret-row">
+        <span class="secret-key cf">STRAVA_VERIFY_TOKEN</span>
+        <span class="secret-where">Cloudflare Worker secret · verifies Strava handshake</span>
+      </div>
+      <div class="secret-row">
+        <span class="secret-key cf">GH_PAT (CF copy)</span>
+        <span class="secret-where">Cloudflare Worker secret · triggers repository_dispatch</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="summary-icon">⚡</div>
+    <div class="summary-text">
+      From saving a run to seeing it on the dashboard takes roughly <strong>60–90 seconds</strong>.
+      The entire pipeline is <strong>serverless</strong> — Cloudflare Worker + GitHub Actions + GitHub Pages.
+      Monthly cost: <strong>$0</strong>.
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-title">Components at a glance</div>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--orange)"></div>
+        Strava — activity source &amp; webhook sender
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--blue)"></div>
+        Cloudflare Worker — webhook receiver &amp; relay
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--purple)"></div>
+        GitHub Actions — orchestrator &amp; runner
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--green)"></div>
+        sync_strava.py — data fetcher &amp; token manager
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--yellow)"></div>
+        runs.json — the single source of truth
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#2dd4bf"></div>
+        GitHub Pages — zero-cost static hosting
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Stagger the connector pulse delays so they feel sequential
+document.querySelectorAll('.connector').forEach((c, i) => {
+  c.style.animationDelay = (i * 0.07 + 0.08) + 's';
+});
+
+// Intersection observer — re-trigger pulse animation when node scrolls into view
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animationPlayState = 'running';
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.node, .legend, .summary, .secrets-section').forEach(el => {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
