@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patrick's Running Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f0f;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    #lastSync {
+      font-size: 0.78rem;
+      color: #555;
+      background: #1a1a1a;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    #error {
+      color: #ef4444;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      min-height: 20px;
+    }
+
+    .outer-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    /* Row 1: Hero stats */
+    .hero-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* Row 2: Next Race + PBs */
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Row 3: Weekly volume */
+    .row3 { display: grid; }
+
+    /* Row 4: HR + Cadence */
+    .row4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Row 5: Shoe mileage */
+    .row5 { display: grid; }
+
+    /* Row 6: Recent runs */
+    .row6 { display: grid; }
+
+    .card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .card-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    /* Hero stat tiles */
+    .stat-value {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    .streak-fire {
+      font-size: 1.4rem;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    /* Chart containers */
+    .chart-wrap {
+      position: relative;
+      height: 200px;
+      margin-top: 8px;
+    }
+
+    /* HR chart taller */
+    .chart-wrap-tall {
+      position: relative;
+      height: 220px;
+      margin-top: 8px;
+    }
+
+    /* Weekly volume chart */
+    .chart-wrap-vol {
+      position: relative;
+      height: 160px;
+      margin-top: 8px;
+    }
+
+    /* Next Race */
+    .race-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .race-venue {
+      font-size: 0.78rem;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .race-countdown {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .race-days {
+      font-size: 3.6rem;
+      font-weight: 900;
+      color: #ef4444;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .race-days-label {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* Personal Bests */
+    .pb-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .pb-item {
+      background: #111;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .pb-dist {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .pb-pace {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ef4444;
+      letter-spacing: -0.02em;
+    }
+
+    .pb-unit {
+      font-size: 0.65rem;
+      color: #444;
+      margin-top: 3px;
+    }
+
+    /* Shoe mileage */
+    .shoes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 4px;
+    }
+
+    .shoe-item { }
+
+    .shoe-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .shoe-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .shoe-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: #222;
+      color: #888;
+    }
+
+    .shoe-km {
+      font-size: 0.75rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 6px;
+      background: #2a2a2a;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* Recent Runs table */
+    .runs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 8px;
+    }
+
+    .runs-table th {
+      text-align: left;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #444;
+      padding: 6px 10px 10px;
+      border-bottom: 1px solid #222;
+    }
+
+    .runs-table td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #1f1f1f;
+      color: #ccc;
+      vertical-align: middle;
+    }
+
+    .runs-table tr:last-child td { border-bottom: none; }
+
+    .runs-table tr:hover td { background: #1f1f1f; }
+
+    .zone-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .z1 { background: #222; color: #666; }
+    .z2 { background: rgba(22,163,74,0.2); color: #4ade80; }
+    .z3 { background: rgba(202,138,4,0.2); color: #fbbf24; }
+    .z4, .z5 { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+    /* Section titles */
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    /* Accent dot */
+    .accent { color: #ef4444; }
+
+    @media (max-width: 768px) {
+      body { padding: 16px; }
+      .hero-row { grid-template-columns: 1fr 1fr; }
+      .row2 { grid-template-columns: 1fr; }
+      .row4 { grid-template-columns: 1fr; }
+      .shoes-grid { grid-template-columns: 1fr; }
+      .pb-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 420px) {
+      .hero-row { grid-template-columns: 1fr 1fr; }
+      .stat-value { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏃 Patrick's Running Dashboard</h1>
+    <span id="lastSync">Loading...</span>
+  </header>
+
+  <div id="error"></div>
+
+  <div class="outer-grid">
+    <!-- Row 1: Hero Stats -->
+    <div class="hero-row">
+      <div class="card">
+        <div class="card-label">Total Runs</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">all time</div>
+      </div>
+      <div class="card">
+        <div class="card-label">km This Year</div>
+        <div class="stat-value" id="stat-year">—</div>
+        <div class="stat-sub" id="stat-year-sub">2026</div>
+      </div>
+      <div class="card">
+        <div class="card-label">km This Week</div>
+        <div class="stat-value" id="stat-week">—</div>
+        <div class="stat-sub">current week</div>
+      </div>
+      <div class="card" style="position:relative;">
+        <span class="streak-fire">🔥</span>
+        <div class="card-label">Weekly Streak</div>
+        <div class="stat-value accent" id="stat-streak">—</div>
+        <div class="stat-sub">weeks in a row</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Next Race + PBs -->
+    <div class="row2">
+      <div class="card">
+        <div class="section-title">Next Race</div>
+        <div class="race-name" id="race-name">Loading...</div>
+        <div class="race-venue" id="race-venue"></div>
+        <div class="race-countdown">
+          <div class="race-days" id="race-days">—</div>
+          <div class="race-days-label" id="race-days-label">days to go</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Personal Bests</div>
+        <div class="pb-grid">
+          <div class="pb-item">
+            <div class="pb-dist">5K</div>
+            <div class="pb-pace" id="pb-5k">—</div>
+            <div class="pb-unit">/km</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-dist">10K</div>
+            <div class="pb-pace" id="pb-10k">—</div>
+            <div class="pb-unit">/km</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-dist">Half</div>
+            <div class="pb-pace" id="pb-hm">—</div>
+            <div class="pb-unit">/km</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Weekly Volume -->
+    <div class="row3">
+      <div class="card">
+        <div class="section-title">Weekly Volume — Last 16 Weeks</div>
+        <div class="chart-wrap-vol">
+          <canvas id="chartVolume"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: HR Trend + Cadence Trend -->
+    <div class="row4">
+      <div class="card">
+        <div class="section-title">Aerobic Fitness — HR Trend</div>
+        <div class="chart-wrap-tall">
+          <canvas id="chartHR"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Cadence Trend</div>
+        <div class="chart-wrap-tall">
+          <canvas id="chartCad"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 5: Shoe Mileage -->
+    <div class="row5">
+      <div class="card">
+        <div class="section-title">Shoe Mileage</div>
+        <div class="shoes-grid" id="shoes-grid"></div>
+      </div>
+    </div>
+
+    <!-- Row 6: Recent Runs -->
+    <div class="row6">
+      <div class="card">
+        <div class="section-title">Recent Runs</div>
+        <table class="runs-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Dist</th>
+              <th>Pace</th>
+              <th>HR</th>
+              <th>Cadence</th>
+              <th>Zone</th>
+            </tr>
+          </thead>
+          <tbody id="runs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Config ──────────────────────────────────────────────────────────────────
+    const NEXT_RACE = {
+      name: 'ASICS META Time Trials 10K',
+      date: '2026-08-16',
+      venue: 'Rama 8 Bridge · 5:00 AM'
+    };
+
+    const SHOES = [
+      { name: 'Adidas EVO SL', startDate: '2026-02-14', maxKm: 500, color: '#0d9488', badge: 'trainer' },
+      { name: 'ASICS MetaSpeed Edge', startDate: '2026-04-16', maxKm: 400, color: '#7c3aed', badge: 'race' },
+    ];
+
+    // ── HR Zone ──────────────────────────────────────────────────────────────────
+    function hrZone(hr) {
+      if (!hr) return '—';
+      if (hr < 134) return 'Z1';
+      if (hr <= 149) return 'Z2 ✓';
+      if (hr <= 159) return 'Z3';
+      if (hr <= 167) return 'Z4';
+      return 'Z5';
+    }
+
+    function zoneClass(zone) {
+      if (!zone || zone === '—') return '';
+      const z = zone.replace(' ✓', '').toLowerCase();
+      return z;
+    }
+
+    // ── Date helpers ─────────────────────────────────────────────────────────────
+    function getMondayOfWeek(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      const day = d.getDay(); // 0=Sun
+      const diff = (day === 0) ? -6 : 1 - day;
+      d.setDate(d.getDate() + diff);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function getThisMonday() {
+      return getMondayOfWeek(new Date().toISOString().slice(0, 10));
+    }
+
+    function addDays(dateStr, n) {
+      const d = new Date(dateStr + 'T00:00:00');
+      d.setDate(d.getDate() + n);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function isoWeekKey(dateStr) {
+      return getMondayOfWeek(dateStr);
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    }
+
+    function formatPace(pM, pS) {
+      return `${pM}:${String(pS).padStart(2, '0')}`;
+    }
+
+    function paceDec(pM, pS) {
+      return pM + pS / 60;
+    }
+
+    function decToPace(dec) {
+      const m = Math.floor(dec);
+      const s = Math.round((dec - m) * 60);
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    // ── Hero Stats ───────────────────────────────────────────────────────────────
+    function computeHeroStats(runs) {
+      const currentYear = new Date().getFullYear().toString();
+      const thisMonday = getThisMonday();
+      const nextSunday = addDays(thisMonday, 6);
+
+      const total = runs.length;
+
+      const kmYear = runs
+        .filter(r => r.date.startsWith(currentYear))
+        .reduce((s, r) => s + r.dist, 0);
+
+      const kmWeek = runs
+        .filter(r => r.date >= thisMonday && r.date <= nextSunday)
+        .reduce((s, r) => s + r.dist, 0);
+
+      // Weekly streak: consecutive weeks going backward from current week that have ≥1 run
+      const weekMap = {};
+      runs.forEach(r => {
+        const w = isoWeekKey(r.date);
+        weekMap[w] = true;
+      });
+
+      let streak = 0;
+      let checkWeek = thisMonday;
+      // If this week has a run, start counting, otherwise check previous
+      while (true) {
+        if (weekMap[checkWeek]) {
+          streak++;
+          checkWeek = addDays(checkWeek, -7);
+        } else {
+          break;
+        }
+      }
+
+      return { total, kmYear, kmWeek, streak, currentYear };
+    }
+
+    // ── Weekly Volume ────────────────────────────────────────────────────────────
+    function computeWeeklyVolume(runs) {
+      const thisMonday = getThisMonday();
+      const weeks = [];
+      for (let i = 15; i >= 0; i--) {
+        const mon = addDays(thisMonday, -i * 7);
+        const sun = addDays(mon, 6);
+        const label = formatDate(mon);
+        const km = runs
+          .filter(r => r.date >= mon && r.date <= sun)
+          .reduce((s, r) => s + r.dist, 0);
+        weeks.push({ label, km, mon });
+      }
+      return weeks;
+    }
+
+    function volumeColor(km) {
+      if (km === 0) return '#2a2a2a';
+      if (km <= 15) return '#4ade80';
+      if (km <= 25) return '#16a34a';
+      return '#14532d';
+    }
+
+    // ── HR Trend (last 6 months, outdoor only) ───────────────────────────────────
+    function computeHRTrend(runs) {
+      const cutoff = addDays(new Date().toISOString().slice(0, 10), -180);
+      return runs
+        .filter(r => r.indoor === false && r.hr != null && r.date >= cutoff)
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .map(r => ({ x: r.date, y: r.hr }));
+    }
+
+    // ── Cadence Trend ────────────────────────────────────────────────────────────
+    function computeCadTrend(runs) {
+      const cutoff = addDays(new Date().toISOString().slice(0, 10), -180);
+      return runs
+        .filter(r => r.cad != null && r.date >= cutoff)
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .map(r => ({ x: r.date, y: r.cad, high: r.cad >= 170 }));
+    }
+
+    // ── Personal Bests ───────────────────────────────────────────────────────────
+    function computePBs(runs) {
+      function best(filter) {
+        const candidates = runs.filter(filter);
+        if (!candidates.length) return null;
+        return candidates.reduce((b, r) => {
+          const p = paceDec(r.pM, r.pS);
+          const bp = paceDec(b.pM, b.pS);
+          return p < bp ? r : b;
+        });
+      }
+      return {
+        fiveK: best(r => r.dist >= 4.5 && r.dist <= 5.5),
+        tenK: best(r => r.dist >= 9.0 && r.dist <= 11.0),
+        hm: best(r => r.dist >= 19.0 && r.dist <= 22.5),
+      };
+    }
+
+    // ── Shoe Mileage ─────────────────────────────────────────────────────────────
+    function computeShoeMileage(runs) {
+      return SHOES.map(shoe => {
+        const km = runs
+          .filter(r => r.date >= shoe.startDate)
+          .reduce((s, r) => s + r.dist, 0);
+        return { ...shoe, usedKm: km };
+      });
+    }
+
+    // ── Next Race ────────────────────────────────────────────────────────────────
+    function computeRaceCountdown() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const race = new Date(NEXT_RACE.date + 'T00:00:00');
+      const diff = Math.round((race - today) / (1000 * 60 * 60 * 24));
+      return diff;
+    }
+
+    // ── Render ───────────────────────────────────────────────────────────────────
+    function render(runs) {
+      // Sort descending
+      runs = [...runs].sort((a, b) => b.date.localeCompare(a.date));
+
+      // Last sync
+      const lastRun = runs[0];
+      document.getElementById('lastSync').textContent =
+        lastRun ? `Last run: ${formatDate(lastRun.date)}` : 'No runs yet';
+
+      // Hero stats
+      const { total, kmYear, kmWeek, streak, currentYear } = computeHeroStats(runs);
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-year').textContent = kmYear.toFixed(0);
+      document.getElementById('stat-year-sub').textContent = currentYear;
+      document.getElementById('stat-week').textContent = kmWeek.toFixed(1);
+      document.getElementById('stat-streak').textContent = streak;
+
+      // Race countdown
+      const days = computeRaceCountdown();
+      document.getElementById('race-name').textContent = NEXT_RACE.name;
+      document.getElementById('race-venue').textContent = NEXT_RACE.venue;
+      if (days < 0) {
+        document.getElementById('race-days').textContent = '—';
+        document.getElementById('race-days-label').textContent = 'No upcoming race';
+      } else {
+        document.getElementById('race-days').textContent = days;
+        document.getElementById('race-days-label').textContent = days === 1 ? 'day to go' : 'days to go';
+      }
+
+      // Personal bests
+      const pbs = computePBs(runs);
+      document.getElementById('pb-5k').textContent =
+        pbs.fiveK ? decToPace(paceDec(pbs.fiveK.pM, pbs.fiveK.pS)) : '—';
+      document.getElementById('pb-10k').textContent =
+        pbs.tenK ? decToPace(paceDec(pbs.tenK.pM, pbs.tenK.pS)) : '—';
+      document.getElementById('pb-hm').textContent =
+        pbs.hm ? decToPace(paceDec(pbs.hm.pM, pbs.hm.pS)) : '—';
+
+      // Shoe mileage
+      const shoes = computeShoeMileage(runs);
+      const shoesEl = document.getElementById('shoes-grid');
+      shoesEl.innerHTML = shoes.map(s => {
+        const pct = Math.min(100, (s.usedKm / s.maxKm) * 100);
+        const barColor = pct > 80 ? '#ef4444' : s.color;
+        return `
+          <div class="shoe-item">
+            <div class="shoe-header">
+              <div class="shoe-name">${s.name}</div>
+              <div class="shoe-badge">${s.badge}</div>
+            </div>
+            <div class="shoe-km">${s.usedKm.toFixed(0)} / ${s.maxKm} km · ${pct.toFixed(0)}%</div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${pct}%;background:${barColor};"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Recent runs table
+      const recent = runs.slice(0, 10);
+      const tbody = document.getElementById('runs-tbody');
+      tbody.innerHTML = recent.map(r => {
+        const zone = hrZone(r.hr);
+        const zClass = zoneClass(zone);
+        return `
+          <tr>
+            <td>${formatDate(r.date)}</td>
+            <td>${r.dist.toFixed(2)} km${r.indoor ? ' <span title="Indoor">🏠</span>' : ''}</td>
+            <td>${formatPace(r.pM, r.pS)} /km</td>
+            <td>${r.hr ? r.hr.toFixed(0) + ' bpm' : '—'}</td>
+            <td>${r.cad ? r.cad.toFixed(0) + ' spm' : '—'}</td>
+            <td><span class="zone-pill ${zClass}">${zone}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      // Charts
+      buildVolumeChart(runs);
+      buildHRChart(runs);
+      buildCadChart(runs);
+    }
+
+    // ── Charts ────────────────────────────────────────────────────────────────────
+    function buildVolumeChart(runs) {
+      const weeks = computeWeeklyVolume(runs);
+      const ctx = document.getElementById('chartVolume').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: weeks.map(w => w.label),
+          datasets: [{
+            data: weeks.map(w => w.km),
+            backgroundColor: weeks.map(w => volumeColor(w.km)),
+            borderRadius: 4,
+            borderSkipped: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 400 },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.parsed.y.toFixed(1)} km`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#444', font: { size: 10 }, maxRotation: 45 }
+            },
+            y: {
+              grid: { color: '#1f1f1f' },
+              ticks: { color: '#444', font: { size: 10 }, callback: v => v + ' km' },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    function buildHRChart(runs) {
+      const data = computeHRTrend(runs);
+      const ctx = document.getElementById('chartHR').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              data: data,
+              borderColor: '#ef4444',
+              backgroundColor: 'rgba(239,68,68,0.08)',
+              fill: true,
+              tension: 0.35,
+              spanGaps: true,
+              pointRadius: 3,
+              pointBackgroundColor: '#ef4444',
+              pointBorderColor: '#0f0f0f',
+              pointBorderWidth: 1,
+            },
+            {
+              // Z2 upper reference line
+              data: data.length ? [
+                { x: data[0].x, y: 149 },
+                { x: data[data.length - 1].x, y: 149 }
+              ] : [],
+              borderColor: 'rgba(239,68,68,0.4)',
+              borderDash: [5, 4],
+              borderWidth: 1.5,
+              pointRadius: 0,
+              fill: false,
+              tension: 0,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 400 },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              filter: item => item.datasetIndex === 0,
+              callbacks: {
+                title: ctx => formatDate(ctx[0].raw.x),
+                label: ctx => `${ctx.parsed.y.toFixed(0)} bpm`
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'time',
+              time: { unit: 'month', tooltipFormat: 'yyyy-MM-dd' },
+              grid: { display: false },
+              ticks: { color: '#444', font: { size: 10 } }
+            },
+            y: {
+              grid: { color: '#1f1f1f' },
+              ticks: { color: '#444', font: { size: 10 }, callback: v => v + ' bpm' }
+            }
+          }
+        }
+      });
+    }
+
+    function buildCadChart(runs) {
+      const data = computeCadTrend(runs);
+      const ctx = document.getElementById('chartCad').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              data: data.map(d => ({ x: d.x, y: d.y })),
+              borderColor: '#6366f1',
+              backgroundColor: 'rgba(99,102,241,0.08)',
+              fill: true,
+              tension: 0.35,
+              spanGaps: true,
+              pointRadius: 4,
+              pointBackgroundColor: data.map(d => d.high ? '#ef4444' : '#666'),
+              pointBorderColor: '#0f0f0f',
+              pointBorderWidth: 1,
+            },
+            {
+              // 170 target line
+              data: data.length ? [
+                { x: data[0].x, y: 170 },
+                { x: data[data.length - 1].x, y: 170 }
+              ] : [],
+              borderColor: 'rgba(239,68,68,0.4)',
+              borderDash: [5, 4],
+              borderWidth: 1.5,
+              pointRadius: 0,
+              fill: false,
+              tension: 0,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 400 },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              filter: item => item.datasetIndex === 0,
+              callbacks: {
+                title: ctx => formatDate(ctx[0].raw.x),
+                label: ctx => `${ctx.parsed.y.toFixed(0)} spm`
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'time',
+              time: { unit: 'month', tooltipFormat: 'yyyy-MM-dd' },
+              grid: { display: false },
+              ticks: { color: '#444', font: { size: 10 } }
+            },
+            y: {
+              grid: { color: '#1f1f1f' },
+              ticks: { color: '#444', font: { size: 10 }, callback: v => v + ' spm' },
+              min: 150
+            }
+          }
+        }
+      });
+    }
+
+    // ── Boot ──────────────────────────────────────────────────────────────────────
+    async function boot() {
+      try {
+        const res = await fetch('data/runs.json?_=' + Date.now());
+        const d = await res.json();
+        render(d.runs);
+      } catch (e) {
+        document.getElementById('error').textContent = 'Could not load run data.';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', boot);
+  </script>
+</body>
+</html>
