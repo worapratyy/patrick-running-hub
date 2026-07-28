@@ -257,8 +257,6 @@
 <script>
 'use strict';
 // ── CONFIG ────────────────────────────────────────────────
-const API_URL = 'https://web-production-02724.up.railway.app';
-const USER_ID = 1;
 const TODAY   = new Date().toISOString().split('T')[0];
 const MAX_HR          = 185;
 const GARMIN_HM_PRED  = '2:00:26'; // update weekly from Garmin Connect
@@ -597,29 +595,12 @@ async function boot(){
   document.getElementById('overlay').style.display='flex';
   document.getElementById('err').classList.remove('show');
   try{
-    const [uRes, rRes, aRes, rrRes] = await Promise.all([
-      fetch(`${API_URL}/api/users`),
-      fetch(`${API_URL}/api/runs/${USER_ID}`),
-      fetch(`${API_URL}/api/analytics/${USER_ID}`),
-      fetch(`${API_URL}/api/readiness/${USER_ID}`)
-    ]);
-    if(!rRes.ok) throw new Error(`HTTP ${rRes.status}`);
-    if(uRes.ok){
-      const uData = await uRes.json();
-      const user = uData.users?.find(u=>u.id===USER_ID) || uData.users?.[0];
-      if(user?.full_name){
-        const firstName = user.full_name.split(' ')[0];
-        set('hdName', firstName);
-        document.title = `🏃 ${firstName} — Running Dashboard`;
-      }
-    }
-    if(aRes.ok){
-      const aData = await aRes.json();
-      window._analyticsWeekly = aData.weekly || [];
-    }
-    if(rrRes.ok){ /* readiness card removed */ }
-    const d = await rRes.json();
+    const res = await fetch('data/runs.json?_=' + Date.now());
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const d = await res.json();
     if(!d.runs||!d.runs.length) throw new Error('No runs found');
+    set('hdName', 'Patrick');
+    document.title = '🏃 Patrick — Running Dashboard';
     render(d.runs);
   } catch(e){
     showErr(`Cannot load data: ${e.message}`);
@@ -629,9 +610,9 @@ async function boot(){
 }
 async function manualSync(){
   const btn=document.getElementById('syncBtn');
-  btn.disabled=true; btn.textContent='↻ Syncing…';
-  try{ await fetch(`${API_URL}/sync-daily`); await boot(); }
-  catch(e){ showErr('Sync failed: '+e.message); }
+  btn.disabled=true; btn.textContent='↻ Reloading…';
+  try{ await boot(); }
+  catch(e){ showErr('Reload failed: '+e.message); }
   btn.disabled=false; btn.textContent='↻ Sync';
 }
 // ── INIT ──────────────────────────────────────────────────
