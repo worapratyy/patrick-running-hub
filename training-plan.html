@@ -827,26 +827,52 @@ const PLAN = {
   "2026-09-19":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
   "2026-09-20":{ type:"long",    name:"Long Run Z2",           km:15, pace:"7:00–7:20", hr:"136–151", notes:"15 km Z2. Peak long run of this block. Easy and controlled — aerobic base work.", status:"pending" },
 
-  // Week 5 — Sep 21–27 (Pre-race taper if race ~Oct 5, otherwise continue build)
-  "2026-09-21":{ type:"rest",    name:"Leg Day (Gym) — Light", km:0,  pace:"",          hr:"",        notes:"Gym — light session: bodyweight squat 2×15, hip thrust 2×12, calf raise 2×20. No max effort — begin taper if race is Oct 5.", status:"pending" },
-  "2026-09-22":{ type:"easy",    name:"Easy Z2 + Strides",     km:7,  pace:"7:00–7:20", hr:"136–151", notes:"7 km Z2 + 4 strides. Volume drops for taper week.", status:"pending" },
-  "2026-09-23":{ type:"easy",    name:"Recovery 4K",           km:4,  pace:"7:30–8:00", hr:"<136",    notes:"4 km easy Z1.", status:"pending" },
-  "2026-09-24":{ type:"rest",    name:"Stretch + Mobility",    km:0,  pace:"",          hr:"",        notes:"Full stretch. Rest focus.", status:"pending" },
-  "2026-09-25":{ type:"tempo",   name:"Race-Prep Sharpener",   km:6,  pace:"5:55–6:05", hr:"155–170", notes:"2 km warm + 3 km at race pace (5:55–6:05/km) + 1 km cool. Last quality session before race — confirm fitness, don't build it.", status:"pending" },
-  "2026-09-26":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-27":{ type:"long",    name:"Long Run — Taper",      km:10, pace:"7:00–7:20", hr:"136–151", notes:"10 km easy. Shorter long run — confidence run, not fitness builder. Legs should feel good.", status:"pending" },
+  // Week 5 — Sep 21–27 (continue build — taper starts Sep 28)
+  "2026-09-21":{ type:"rest",    name:"Leg Day (Gym)",          km:0,  pace:"",          hr:"",        notes:"Gym — strength: squat 3×10, RDL 3×10, hip thrust 3×15. Last hard gym session before taper.", status:"pending" },
+  "2026-09-22":{ type:"easy",    name:"Easy Z2 + Strides",      km:8,  pace:"7:00–7:20", hr:"136–151", notes:"8 km Z2 + 6 strides at 11.0 km/h.", status:"pending" },
+  "2026-09-23":{ type:"easy",    name:"Recovery 5K",            km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km Z1 recovery.", status:"pending" },
+  "2026-09-24":{ type:"rest",    name:"Stretch + Mobility",     km:0,  pace:"",          hr:"",        notes:"Full stretch + foam roll.", status:"pending" },
+  "2026-09-25":{ type:"tempo",   name:"Race-Prep Sharpener",    km:7,  pace:"5:55–6:05", hr:"155–170", notes:"2 km warm + 4 km at race pace (5:55–6:05/km) + 1 km cool. Last quality session before taper.", status:"pending" },
+  "2026-09-26":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-09-27":{ type:"long",    name:"Long Run Z2",            km:15, pace:"7:00–7:20", hr:"136–151", notes:"15 km Z2. Final big long run before taper. Easy and controlled.", status:"pending" },
 
-  // Race week placeholders (dates TBD — confirm Saucony BKK10K and EMS RUN dates)
-  "2026-09-28":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest. Sleep well.", status:"pending" },
-  "2026-09-29":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-30":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest. Eat well.", status:"pending" },
-  "2026-10-01":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest. Lay out race kit.", status:"pending" },
-  "2026-10-02":{ type:"shakeout",name:"Race-Eve Shakeout",     km:2,  pace:"8:00–8:30", hr:"<130",    notes:"10 min easy jog + 4×15 sec strides. Loosen the legs. Everything is ready.", status:"pending" },
-  "2026-10-03":{ type:"race",    name:"RACE C — Saucony BKK10K (date TBD)", km:10, pace:"5:45–5:55", hr:"162–172", notes:"🏁 Saucony BKK10K — date TBD, update when confirmed.\nTarget: Sub-58:00 (building from Aug 16 result).\nSame pacing strategy as Aug 16 — even pace, negative split last 2 km.", status:"pending" },
+  // ── TAPER WEEK 1 (2 weeks out from EMS RUN Oct 18) — Sep 28–Oct 4
+  "2026-09-28":{ type:"rest",    name:"Rest — Taper Begins",    km:0,  pace:"",          hr:"",        notes:"Taper starts. Gym is done for now. Sleep, eat, recover.", status:"pending" },
+  "2026-09-29":{ type:"easy",    name:"Easy Z2",                km:6,  pace:"7:00–7:20", hr:"136–151", notes:"6 km easy. Volume drops — keep HR controlled.", status:"pending" },
+  "2026-09-30":{ type:"easy",    name:"Recovery 4K",            km:4,  pace:"7:30–8:00", hr:"<136",    notes:"4 km easy Z1.", status:"pending" },
+  "2026-10-01":{ type:"rest",    name:"Stretch + Mobility",     km:0,  pace:"",          hr:"",        notes:"Full stretch routine. No gym.", status:"pending" },
+  "2026-10-02":{ type:"tempo",   name:"Sharpener",              km:6,  pace:"5:55–6:05", hr:"155–170", notes:"2 km warm + 3 km at race pace (5:55–6:00/km) + 1 km cool. Short and sharp — wake up the legs.", status:"pending" },
+  "2026-10-03":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-10-04":{ type:"long",    name:"Long Run — Taper",       km:10, pace:"7:00–7:20", hr:"136–151", notes:"10 km easy. Confidence run — fitness is locked. Don't push.", status:"pending" },
 
-  "2026-10-18":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Pre-race rest.", status:"pending" },
-  "2026-10-19":{ type:"shakeout",name:"Race-Eve Shakeout",     km:2,  pace:"8:00–8:30", hr:"<130",    notes:"10 min easy jog + 4×15 sec strides.", status:"pending" },
-  "2026-10-20":{ type:"race",    name:"RACE D — Thailand Post EMS RUN 2026 10K (date TBD)", km:10, pace:"5:45–5:55", hr:"162–172", notes:"🏁 Thailand Post EMS RUN 2026 — date TBD, update when confirmed.\nRegistration: TH343UVR · Age cat: M 30–39 · Shirt: L short sleeve.\nTarget: Sub-58:00 or better depending on Aug 16 result.", status:"pending" },
+  // ── RACE WEEK — EMS RUN Oct 18 (1 week out) — Oct 5–17
+  "2026-10-05":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Race week starts.", status:"pending" },
+  "2026-10-06":{ type:"easy",    name:"Easy Z1",                km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km easy Z1. Just keep the legs moving.", status:"pending" },
+  "2026-10-07":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-10-08":{ type:"rest",    name:"Stretch + Mobility",     km:0,  pace:"",          hr:"",        notes:"Full stretch. Hip flexor + piriformis focus.", status:"pending" },
+  "2026-10-09":{ type:"easy",    name:"Strides Only",           km:3,  pace:"7:30",      hr:"<136",    notes:"2 km easy + 4×15 sec strides at race pace. Keep it brief.", status:"pending" },
+  "2026-10-10":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-10-11":{ type:"easy",    name:"Easy Shake-Out",         km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km easy. Last run before race week rest.", status:"pending" },
+  "2026-10-12":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Hydrate. Sleep well.", status:"pending" },
+  "2026-10-13":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Eat well.", status:"pending" },
+  "2026-10-14":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-10-15":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Lay out race kit.", status:"pending" },
+  "2026-10-16":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Eat well. Sleep early.", status:"pending" },
+  "2026-10-17":{ type:"shakeout",name:"Race-Eve Shakeout",      km:2,  pace:"8:00–8:30", hr:"<130",    notes:"10 min easy jog + 4×15 sec strides. Everything is ready.", status:"pending" },
+
+  // ── RACE C — Thailand Post EMS RUN 2026 — Oct 18
+  "2026-10-18":{ type:"race",    name:"Thailand Post EMS RUN 2026 — 10K", km:10, pace:"5:45–5:55", hr:"162–172", notes:"🏁 RACE DAY — Thailand Post EMS RUN 2026\n📍 ไปรษณีย์กลาง บางรัก\nRegistration: TH343UVR · M 30–39 · Shirt L\n\nTarget: Sub-58:00 (building on Aug 16 result)\n\nPACING: 5:45–5:55/km even pace → negative split last 2 km\nkm 1–7: 5:50/km · HR 162–168 · controlled\nkm 8–9: 5:40–5:45 · begin push\nkm 10: 5:20–5:30 · empty the tank\n\nNote: One week before Saucony — race hard but don't destroy yourself.", status:"pending" },
+
+  // ── BETWEEN RACES (Oct 19–24) — 6 days to Saucony
+  "2026-10-19":{ type:"rest",    name:"Post-Race Rest",          km:0,  pace:"",          hr:"",        notes:"Rest + stretch. Eat and sleep well. The Oct 18 race is now prep for Oct 25.", status:"pending" },
+  "2026-10-20":{ type:"easy",    name:"Easy Shake-Out",          km:4,  pace:"7:30–8:00", hr:"<136",    notes:"4 km easy Z1 — flush the legs, not a workout.", status:"pending" },
+  "2026-10-21":{ type:"rest",    name:"Rest",                    km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-10-22":{ type:"easy",    name:"Strides + Easy",          km:4,  pace:"7:00–7:30", hr:"<136",    notes:"3 km easy + 4×15 sec strides at 5:50/km. Wake up race-pace feel. Keep HR low.", status:"pending" },
+  "2026-10-23":{ type:"rest",    name:"Rest",                    km:0,  pace:"",          hr:"",        notes:"Rest. Hydrate. Eat well.", status:"pending" },
+  "2026-10-24":{ type:"shakeout",name:"Race-Eve Shakeout",       km:2,  pace:"8:00–8:30", hr:"<130",    notes:"10 min easy + 4×15 sec strides. EMS race gave you the sharpness — trust it.", status:"pending" },
+
+  // ── RACE D — Saucony BKK10K — Oct 25
+  "2026-10-25":{ type:"race",    name:"Saucony BKK10K — 10K",   km:10, pace:"5:40–5:50", hr:"162–172", notes:"🏁 RACE DAY — Saucony BKK10K\nTarget: Sub-57:30 (legs are race-sharp from Oct 18)\n\nStrategy: Oct 18 race did your sharpening. Use the race fitness — go 5 sec/km faster than EMS.\nkm 1–6: 5:45–5:50/km controlled\nkm 7–8: 5:40–5:45 push\nkm 9–10: 5:20–5:30 empty the tank\n\nThis is the second race in 7 days. Legs will feel different — trust the fitness, not the feeling.", status:"pending" },
 };
 
 // ─── PHASE / WEEK META ───────────────────────────────────────────────────────
@@ -873,9 +899,11 @@ const WEEKS = [
   { id:"w17",     label:"W17 — New Block W2",         phase:"build1",   start:"2026-08-31", end:"2026-09-06" },
   { id:"w18",     label:"W18 — New Block W3",         phase:"build2",   start:"2026-09-07", end:"2026-09-13" },
   { id:"w19",     label:"W19 — New Block W4",         phase:"build2",   start:"2026-09-14", end:"2026-09-20" },
-  { id:"w20",     label:"W20 — Pre-Race Taper",       phase:"taper",    start:"2026-09-21", end:"2026-09-27" },
-  { id:"w-raceC", label:"RACE C — Saucony BKK10K (TBD)", phase:"race", start:"2026-10-03", end:"2026-10-03" },
-  { id:"w-raceD", label:"RACE D — EMS RUN 10K (TBD)", phase:"race",   start:"2026-10-20", end:"2026-10-20" },
+  { id:"w20",     label:"W20 — Build Peak",            phase:"build2",   start:"2026-09-21", end:"2026-09-27" },
+  { id:"w21",     label:"W21 — Taper 1",               phase:"taper",    start:"2026-09-28", end:"2026-10-04" },
+  { id:"w22",     label:"W22 — Race Week (EMS RUN)",   phase:"taper",    start:"2026-10-05", end:"2026-10-17" },
+  { id:"w-raceC", label:"RACE C — Thailand Post EMS RUN 2026", phase:"race", start:"2026-10-18", end:"2026-10-18" },
+  { id:"w-raceD", label:"RACE D — Saucony BKK10K",    phase:"race",     start:"2026-10-25", end:"2026-10-25" },
 ];
 
 const PHASE_LABELS = {
