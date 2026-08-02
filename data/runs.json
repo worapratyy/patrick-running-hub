@@ -824,6 +824,17 @@
       "name": "Morning Run | Tempo",
       "indoor": true,
       "sport_type": "Run"
+    },
+    {
+      "date": "2026-08-02",
+      "dist": 12.03,
+      "pM": 6,
+      "pS": 51,
+      "hr": 143.6,
+      "cad": 165.2,
+      "name": "Morning Run",
+      "indoor": true,
+      "sport_type": "Run"
     }
   ]
 }
