@@ -178,12 +178,12 @@
   <header class="hdr">
     <div>
       <h1>🏃 <span id="hdName">…</span>'s Running Dashboard</h1>
-      <div class="hdr-sub" id="hdrSub">Half Marathon Training · Garmin Forerunner 570 · Live from Strava</div>
+      <div class="hdr-sub" id="hdrSub">10K Training · ASICS META Aug 16 · Garmin Forerunner 570 · Live from Strava</div>
     </div>
     <div class="hdr-right">
       <div class="badge org">🟠 Strava Live</div>
       <div class="badge" id="bdgStreak">—</div>
-      <div class="badge goal" id="bdgRace">🎯 HM Goal</div>
+      <div class="badge goal" id="bdgRace">🎯 10K Goal</div>
       <a href="training-plan.html" class="hbtn">📋 Training Plan</a>
       <a href="workflow.html" class="hbtn">⚡ Stack</a>
       <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
@@ -302,17 +302,17 @@
 // ── CONFIG ────────────────────────────────────────────────
 const TODAY   = new Date().toISOString().split('T')[0];
 const MAX_HR          = 185;
-const GARMIN_HM_PRED  = '2:00:26'; // update weekly from Garmin Connect
-const RACE_DATE       = '2026-05-03'; // your target race date
+const GARMIN_10K_PRED = '58:30'; // target: Sub-60:00 · updated Aug 4
+const RACE_DATE       = '2026-08-16'; // ASICS META 10K
 
-// Garmin LTHR auto-detected 2026-03-27: 168 bpm @ 5:24/km
-const LTHR = 168;
+// LTHR confirmed 170 bpm · VDOT 37
+const LTHR = 170;
 const Z = {
   z1:   109,  // Z1 Warm Up
-  z2lo: 134,  // Z2 Easy lower
-  z2hi: 149,  // Z2 Easy upper
-  z3hi: 159,  // Z3 Aerobic upper
-  z4hi: 167,  // Z4 Threshold upper
+  z2lo: 136,  // Z2 Easy lower
+  z2hi: 151,  // Z2 Easy upper
+  z3hi: 161,  // Z3 Aerobic upper
+  z4hi: 169,  // Z4 Threshold upper
 };
 
 // ── HELPERS ───────────────────────────────────────────────
@@ -418,8 +418,8 @@ function render(runs){
   const raceDate=new Date(RACE_DATE+'T00:00:00');
   const daysToRace=Math.ceil((raceDate-new Date())/86400000);
   const raceCountdown=daysToRace>0?`${daysToRace}d to race day`:'Race day!';
-  set('bdgRace', `🎯 HM ${GARMIN_HM_PRED} goal · ${raceCountdown}`);
-  set('hdrSub', `Half Marathon Training · Garmin Forerunner 570 · ${runs.length} runs · ${raceCountdown}`);
+  set('bdgRace', `🎯 10K ${GARMIN_10K_PRED} goal · ${raceCountdown}`);
+  set('hdrSub', `10K Training · ASICS META Aug 16 · Garmin Forerunner 570 · ${runs.length} runs · ${raceCountdown}`);
 
   // ── Last run banner ──
   document.getElementById('lrb').classList.add('show');
