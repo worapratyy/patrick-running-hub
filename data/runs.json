@@ -857,6 +857,17 @@
       "name": "Recovery Run",
       "indoor": true,
       "sport_type": "Run"
+    },
+    {
+      "date": "2026-08-07",
+      "dist": 8.21,
+      "pM": 6,
+      "pS": 28,
+      "hr": 159.9,
+      "cad": 162.4,
+      "name": "Evening Run",
+      "indoor": false,
+      "sport_type": "Run"
     }
   ]
 }
