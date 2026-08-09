@@ -868,6 +868,17 @@
       "name": "Evening Tempo Run",
       "indoor": false,
       "sport_type": "Run"
+    },
+    {
+      "date": "2026-08-09",
+      "dist": 15.02,
+      "pM": 7,
+      "pS": 28,
+      "hr": 155.0,
+      "cad": 160.8,
+      "name": "Morning Run",
+      "indoor": false,
+      "sport_type": "Run"
     }
   ]
 }
