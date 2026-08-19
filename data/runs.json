@@ -901,6 +901,17 @@
       "name": "asics META:Time:Trials THAILAND 2026",
       "indoor": false,
       "sport_type": "Run"
+    },
+    {
+      "date": "2026-08-19",
+      "dist": 5.03,
+      "pM": 6,
+      "pS": 48,
+      "hr": 140.1,
+      "cad": 166.2,
+      "name": "Morning Run",
+      "indoor": true,
+      "sport_type": "Run"
     }
   ]
 }
