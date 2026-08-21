@@ -912,6 +912,17 @@
       "name": "Morning Run",
       "indoor": true,
       "sport_type": "Run"
+    },
+    {
+      "date": "2026-08-21",
+      "dist": 7.07,
+      "pM": 6,
+      "pS": 14,
+      "hr": 156.9,
+      "cad": 168.0,
+      "name": "Evening Run",
+      "indoor": false,
+      "sport_type": "Run"
     }
   ]
 }
