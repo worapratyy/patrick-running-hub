@@ -411,7 +411,7 @@ body.detail-open .main { padding-right:360px; }
 <header class="hdr">
   <div class="hdr-brand">PATRICK · 2026</div>
   <div class="hdr-div"></div>
-  <div class="hdr-sub">Race Season · Aug 16 → Oct 18 → Oct 25</div>
+  <div class="hdr-sub">Jack Daniels 10K Block · VDOT 34.5 · Oct 18 → Oct 25</div>
   <div class="hdr-spacer"></div>
   <div class="hdr-stat" id="hdrWeekly">
     <div class="hv">—</div>
@@ -767,93 +767,102 @@ const PLAN = {
   "2026-08-23":{ type:"long",    name:"Long Run — Recovery",   km:20.01, pace:"6:29", hr:"Z3", notes:"✅ COMPLETED — August 23\n20.01 km · 6:29/km · HR 152.4 bpm · 163 spm\nZ3 — black hole (Fitzgerald). Aim for Z2 next time. Doubled the planned 8 km — strong fitness but HR drifted Z3 from km 8+. Long stop at km 11.", status:"done" },
 
   // ══════════════════════════════════════════════════════
-  //  NEW 4-DAY WEEK STRUCTURE — Aug 24 onwards
-  //  Sun: Long run · Mon: Leg day · Tue: Easy Z2 · Wed: Recovery 5K
-  //  Thu: Stretch + mobility · Fri: Tempo/Speed · Sat: Rest
+  //  JACK DANIELS 9-WEEK 10K BLOCK — Aug 24 → Oct 25
+  //  VDOT 34.5 (Aug 16 race: 59:15 @ 5:55/km)
+  //  Mon: Stretch · Tue: Easy 8km · Wed: Easy 5km
+  //  Thu: Leg Strength · Fri: Quality · Sat: Rest · Sun: Long Run
+  //
+  //  Pace guide (VDOT 34.5):
+  //  E Easy:     7:10–7:30/km outdoor | treadmill 9.0 km/h (6:40/km), HR<152
+  //  T Tempo:    6:05–6:15/km, HR ~162–168, feel 7/10
+  //  I Interval: 5:45–5:55/km, HR ~168–174, hard reps with equal rest
+  //  R Reps:     5:10–5:20/km, very fast, full recovery
   // ══════════════════════════════════════════════════════
 
-  // Week 1 — Aug 24–30
-  "2026-08-24":{ type:"rest",    name:"Leg Day (Gym)",         km:0,  pace:"",          hr:"",        notes:"Gym — strength focus: goblet squat 3×10, Romanian deadlift 3×10, hip thrust 3×15, calf raise 3×20. Moderate weight. Not max effort — this is running support, not powerlifting.", status:"pending" },
-  "2026-08-25":{ type:"easy",    name:"Easy Z2 + Strides",     km:8,  pace:"7:00–7:20", hr:"136–151", notes:"8 km Z2 on treadmill at 8.5 km/h. Last 2 km: 6×15 sec strides at 10.5 km/h with 90 sec recovery. Hold back on pace — cadence drill focus.", status:"pending" },
-  "2026-08-26":{ type:"easy",    name:"Recovery 5K",           km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km recovery run. Z1 only — conversational, no pushing. Shakeout for Friday tempo.", status:"pending" },
-  "2026-08-27":{ type:"rest",    name:"Stretch + Mobility",    km:0,  pace:"",          hr:"",        notes:"Full routine: piriformis, hip flexor, hamstring, calf. Glute bridge 2×15. Foam roll.", status:"pending" },
-  "2026-08-28":{ type:"tempo",   name:"Tempo / Speed Work",    km:7,  pace:"5:50–6:00", hr:"152–167", notes:"2 km warm-up + 4 km T pace (5:50–6:00/km) + 1 km cool. Option B: 2 km warm + 5×800 m at 5:30–5:45/km (90 sec rest) + 1 km cool.\n\nUpdated to VDOT 32.9 T pace. This is faster than the old plan — trust it. Should feel comfortably hard, not maxed out.", status:"pending" },
-  "2026-08-29":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-08-30":{ type:"long",    name:"Long Run Z2",           km:12, pace:"7:00–7:20", hr:"136–151", notes:"12 km Z2. HR cap 151 bpm. Treadmill incline 1.0%. This is the base long run — build to 15+ km over the coming weeks.", status:"pending" },
+  // ── WEEK 1 (Aug 24–30) — Re-establish base, no quality yet
+  "2026-08-24":{ type:"rest",    name:"Stretch + Recovery",      km:0,  pace:"",          hr:"",        notes:"Monday recovery after Sunday long run. Full routine: piriformis figure-4 3×60s each side, hip flexor lunge 3×45s, hamstring 3×30s, calf stretch 2×30s. Glute bridge 2×15. Foam roll quads and IT band.", status:"pending" },
+  "2026-08-25":{ type:"easy",    name:"Easy Z2 — 8km",           km:8,  pace:"6:40–7:10", hr:"136–151", notes:"Treadmill: 9.0 km/h (6:40/km). Outdoor: 7:10–7:30/km. HR must stay under 152 — if HR climbs above 150 on treadmill, drop to 8.8 km/h. Last 10 min: 6×20 sec strides at 10.5 km/h with 60 sec easy recovery. Focus on cadence — aim 172+ spm during strides.", status:"pending" },
+  "2026-08-26":{ type:"easy",    name:"Easy Z1 — 5km",           km:5,  pace:"7:10–7:30", hr:"<145",    notes:"Treadmill: 8.5 km/h (7:04/km). Short recovery run — flush legs from Tuesday, keep HR well inside Z1-Z2. Conversational effort only. No pushing.", status:"pending" },
+  "2026-08-27":{ type:"rest",    name:"Leg Strength (Gym)",       km:0,  pace:"",          hr:"",        notes:"Running-support strength session. Goblet squat 3×10, Romanian deadlift 3×10, hip thrust 3×15, single-leg calf raise 3×15 each side, side-lying clamshell 2×20. Moderate weight — this is injury prevention, not powerlifting. Leave 2 reps in reserve on every set.", status:"pending" },
+  "2026-08-28":{ type:"easy",    name:"Easy 8km + Strides",       km:8,  pace:"7:10–7:30", hr:"136–151", notes:"Week 1: no quality session yet — just strides to reactivate turnover.\n8 km easy Z2 + 6×100m strides at controlled effort (not sprinting). Full recovery walk between strides. Focus on form: tall posture, quick feet, relaxed shoulders.", status:"pending" },
+  "2026-08-29":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest. Hydrate well. Sleep 7–8 hrs to support Sunday long run.", status:"pending" },
+  "2026-08-30":{ type:"long",    name:"Long Run — 14km Z2",        km:14, pace:"7:10–7:30", hr:"136–151", notes:"Jack Daniels Long Run rule: must stay Z2 (HR 136–151). Pace will feel embarrassingly slow — that is correct.\n\nOutdoor: 7:10–7:30/km. Bangkok heat will push HR — slow down, don't chase pace.\nTreadmill option: 9.0 km/h, incline 0.5%.\n\nIf HR hits 152+, slow down immediately. The long run trains aerobic base — Z3 here is wasted effort.", status:"pending" },
 
-  // Week 2 — Aug 31–Sep 6
-  "2026-08-31":{ type:"rest",    name:"Leg Day (Gym)",         km:0,  pace:"",          hr:"",        notes:"Gym — strength: goblet squat 3×12, RDL 3×12, hip thrust 3×15, single-leg calf raise 3×15 each side.", status:"pending" },
-  "2026-09-01":{ type:"easy",    name:"Easy Z2 + Strides",     km:8,  pace:"7:00–7:20", hr:"136–151", notes:"8 km Z2 + 6 strides at 10.5–11.0 km/h. Lock treadmill at 8.5 km/h for the easy portion.", status:"pending" },
-  "2026-09-02":{ type:"easy",    name:"Recovery 5K",           km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km Z1 recovery. Flush the legs from Tuesday.", status:"pending" },
-  "2026-09-03":{ type:"rest",    name:"Stretch + Mobility",    km:0,  pace:"",          hr:"",        notes:"Full stretch + foam roll. Hip flexor focus.", status:"pending" },
-  "2026-09-04":{ type:"tempo",   name:"Tempo / Speed Work",    km:8,  pace:"5:45–5:57", hr:"152–167", notes:"2 km warm + 5 km T pace (5:45–5:57/km) + 1 km cool. Progression from Aug 28 — 5 km continuous tempo at VDOT 32.9 T pace.", status:"pending" },
-  "2026-09-05":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-06":{ type:"long",    name:"Long Run Z2",           km:13, pace:"7:00–7:20", hr:"136–151", notes:"13 km Z2. Same easy effort — HR controls. +1 km from last week.", status:"pending" },
+  // ── WEEK 2 (Aug 31–Sep 6) — First real quality (Tempo)
+  "2026-08-31":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday recovery. Full stretch routine. Add sciatic nerve floss if any tightness from Sunday long run.", status:"pending" },
+  "2026-09-01":{ type:"easy",    name:"Easy Z2 — 8km",            km:8,  pace:"6:40–7:10", hr:"136–151", notes:"Treadmill 9.0 km/h or outdoor 7:10/km. HR<152. Same as last Tuesday — keep it honest.", status:"pending" },
+  "2026-09-02":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<145",    notes:"5 km recovery flush. Treadmill 8.5 km/h. Z1 only — shakeout before Friday Tempo.", status:"pending" },
+  "2026-09-03":{ type:"rest",    name:"Leg Strength (Gym)",        km:0,  pace:"",          hr:"",        notes:"Goblet squat 3×12, RDL 3×12, hip thrust 3×15, step-up 2×10 each leg, calf raise 3×20. Keep moderate weight — hard leg session 24 hrs before Tempo is fine at this stage.", status:"pending" },
+  "2026-09-04":{ type:"tempo",   name:"Tempo — 3×8min T Pace",    km:9,  pace:"6:05–6:15", hr:"162–168", notes:"Jack Daniels T Pace session. VDOT 34.5 → T = 6:05–6:15/km.\n\nStructure:\n• 2 km warm-up @ easy pace (7:15/km)\n• 3×8 min @ 6:05–6:15/km with 90 sec easy jog recovery between\n• 1 km cool-down\n\nTreadmill: set to 9.8–10.0 km/h for the T reps.\nThis should feel 7/10 — comfortably hard, controlled breathing. NOT gasping. If you can't speak a short sentence, slow down.", status:"pending" },
+  "2026-09-05":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest. Let the tempo session absorb.", status:"pending" },
+  "2026-09-06":{ type:"long",    name:"Long Run — 16km Z2",        km:16, pace:"7:10–7:30", hr:"136–151", notes:"16 km. Same rule as W1: HR cap 151 bpm, no exceptions. +2 km from last week.\n\nIf HR drifts above 152 after km 10 (cardiac drift in heat), slow to 7:30–7:45/km. Do not push through drift.", status:"pending" },
 
-  // Week 3 — Sep 7–13
-  "2026-09-07":{ type:"rest",    name:"Leg Day (Gym)",         km:0,  pace:"",          hr:"",        notes:"Gym — strength progression: goblet squat 3×12 (add weight), RDL 3×10 (heavier), hip thrust 3×15, jump squat 2×8.", status:"pending" },
-  "2026-09-08":{ type:"easy",    name:"Easy Z2 + Strides",     km:8,  pace:"7:00–7:20", hr:"136–151", notes:"8 km Z2 + 6 strides. Focus on cadence — target 175 spm during strides.", status:"pending" },
-  "2026-09-09":{ type:"easy",    name:"Recovery 5K",           km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km Z1 recovery run.", status:"pending" },
-  "2026-09-10":{ type:"rest",    name:"Stretch + Mobility",    km:0,  pace:"",          hr:"",        notes:"Full stretch + foam roll.", status:"pending" },
-  "2026-09-11":{ type:"tempo",   name:"Tempo / Intervals",     km:8,  pace:"5:27–5:40", hr:"155–170", notes:"2 km warm + 4×1 km at 5:27–5:40/km (90 sec rest) + 2 km cool. I pace (98% VO2max) — harder than T. Full recovery between reps.", status:"pending" },
-  "2026-09-12":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-13":{ type:"long",    name:"Long Run Z2",           km:14, pace:"7:00–7:20", hr:"136–151", notes:"14 km Z2. Building toward 16 km long run by end of this block.", status:"pending" },
+  // ── WEEK 3 (Sep 7–13) — Intervals introduced
+  "2026-09-07":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Hip flexor + piriformis focus. Light glute bridge.", status:"pending" },
+  "2026-09-08":{ type:"easy",    name:"Easy Z2 — 8km",            km:8,  pace:"6:40–7:10", hr:"136–151", notes:"8 km Z2. Treadmill 9.0 km/h or outdoor 7:10/km. Cadence focus — target 170+ spm throughout.", status:"pending" },
+  "2026-09-09":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<145",    notes:"5 km Z1 flush. Keep HR well inside zone — legs fresh for Friday intervals.", status:"pending" },
+  "2026-09-10":{ type:"rest",    name:"Leg Strength (Gym)",        km:0,  pace:"",          hr:"",        notes:"Strength: goblet squat 3×12 (add small weight vs W2), RDL 3×10, hip thrust 3×15, jump squat 2×8 (bodyweight only). Intervals tomorrow — moderate intensity only.", status:"pending" },
+  "2026-09-11":{ type:"tempo",   name:"Intervals — 5×1000m @ I Pace", km:10, pace:"5:45–5:55", hr:"168–175", notes:"Jack Daniels I Pace session. VDOT 34.5 → I = 5:45–5:55/km.\n\nStructure:\n• 2 km warm-up @ easy pace\n• 5×1000m @ 5:45–5:55/km with 90 sec easy jog recovery\n• 1 km cool-down\n\nOutdoor track preferred (easier to pace). Treadmill: 10.2–10.5 km/h.\nThese are HARD. Each rep should feel controlled but challenging. If you blow up on rep 3, you started too fast — aim for even splits.", status:"pending" },
+  "2026-09-12":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest. Interval sessions need 48 hrs to absorb.", status:"pending" },
+  "2026-09-13":{ type:"long",    name:"Long Run — 18km Z2",        km:18, pace:"7:10–7:30", hr:"136–151", notes:"18 km. Longest run of the block. HR 136–151, no drift. Go even slower in first 6 km to bank energy.\n\nBangkok heat tip: if running morning outdoor, start before 6 AM. If treadmill, 9.0 km/h incline 0.5%.", status:"pending" },
 
-  // Week 4 — Sep 14–20
-  "2026-09-14":{ type:"rest",    name:"Leg Day (Gym)",         km:0,  pace:"",          hr:"",        notes:"Gym — strength: squat 3×10, deadlift 3×8, hip thrust 4×12, calf raise 3×20.", status:"pending" },
-  "2026-09-15":{ type:"easy",    name:"Easy Z2 + Strides",     km:9,  pace:"7:00–7:20", hr:"136–151", notes:"9 km Z2 + 6 strides at 11.0 km/h. Volume tick up +1 km.", status:"pending" },
-  "2026-09-16":{ type:"easy",    name:"Recovery 5K",           km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km Z1 recovery.", status:"pending" },
-  "2026-09-17":{ type:"rest",    name:"Stretch + Mobility",    km:0,  pace:"",          hr:"",        notes:"Full stretch + foam roll.", status:"pending" },
-  "2026-09-18":{ type:"tempo",   name:"Tempo / Intervals",     km:8,  pace:"5:27–5:44", hr:"155–170", notes:"2 km warm + 5×800 m at 5:27–5:44/km (75 sec rest) + 2 km cool. I pace 800s — short and sharp, race sharpening.", status:"pending" },
-  "2026-09-19":{ type:"rest",    name:"Rest",                  km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-20":{ type:"long",    name:"Long Run Z2",           km:15, pace:"7:00–7:20", hr:"136–151", notes:"15 km Z2. Peak long run of this block. Easy and controlled — aerobic base work.", status:"pending" },
+  // ── WEEK 4 (Sep 14–20) — Cut week (volume down, sharpness maintained)
+  "2026-09-14":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Let the 18 km long run from Sunday fully recover.", status:"pending" },
+  "2026-09-15":{ type:"easy",    name:"Easy Z2 — 6km",            km:6,  pace:"6:40–7:10", hr:"136–151", notes:"Cut week: 6 km only. Same easy effort — volume drops, intensity stays. Don't try to make up for the shorter distance.", status:"pending" },
+  "2026-09-16":{ type:"easy",    name:"Easy Z1 — 4km",            km:4,  pace:"7:10–7:30", hr:"<145",    notes:"4 km only. Recovery flush — short and honest.", status:"pending" },
+  "2026-09-17":{ type:"rest",    name:"Leg Strength (Gym)",        km:0,  pace:"",          hr:"",        notes:"Lighter strength session — cut week. Goblet squat 2×10, hip thrust 2×15, calf raise 2×20. No new maxes. Body is consolidating fitness.", status:"pending" },
+  "2026-09-18":{ type:"tempo",   name:"Tempo — 2×15min T Pace",   km:9,  pace:"6:05–6:15", hr:"162–168", notes:"Jack Daniels T Pace. Sharper than W2 — same pace, longer continuous blocks.\n\nStructure:\n• 2 km warm-up\n• 15 min @ 6:05–6:15/km, 3 min easy jog\n• 15 min @ 6:05–6:15/km\n• 1 km cool-down\n\nTreadmill: 9.8–10.0 km/h. This should feel the same effort as W2 tempo but more sustained. Controlled.", status:"pending" },
+  "2026-09-19":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-09-20":{ type:"long",    name:"Long Run — 12km Z2",        km:12, pace:"7:10–7:30", hr:"136–151", notes:"Cut week long run — 12 km only. HR cap strictly 151 bpm. Short and clean. Let the body absorb weeks 1–3.", status:"pending" },
 
-  // Week 5 — Sep 21–27 (continue build — taper starts Sep 28)
-  "2026-09-21":{ type:"rest",    name:"Leg Day (Gym)",          km:0,  pace:"",          hr:"",        notes:"Gym — strength: squat 3×10, RDL 3×10, hip thrust 3×15. Last hard gym session before taper.", status:"pending" },
-  "2026-09-22":{ type:"easy",    name:"Easy Z2 + Strides",      km:8,  pace:"7:00–7:20", hr:"136–151", notes:"8 km Z2 + 6 strides at 11.0 km/h.", status:"pending" },
-  "2026-09-23":{ type:"easy",    name:"Recovery 5K",            km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km Z1 recovery.", status:"pending" },
-  "2026-09-24":{ type:"rest",    name:"Stretch + Mobility",     km:0,  pace:"",          hr:"",        notes:"Full stretch + foam roll.", status:"pending" },
-  "2026-09-25":{ type:"tempo",   name:"Race-Prep Sharpener",    km:7,  pace:"5:44–5:55", hr:"155–170", notes:"2 km warm + 4 km at race pace (5:44–5:55/km) + 1 km cool. Last quality session before taper. T pace feel — controlled and sharp.", status:"pending" },
-  "2026-09-26":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-27":{ type:"long",    name:"Long Run Z2",            km:15, pace:"7:00–7:20", hr:"136–151", notes:"15 km Z2. Final big long run before taper. Easy and controlled.", status:"pending" },
+  // ── WEEK 5 (Sep 21–27) — Peak quality week 1
+  "2026-09-21":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Hip flexor + piriformis + hamstring. Light glute bridge.", status:"pending" },
+  "2026-09-22":{ type:"easy",    name:"Easy Z2 — 8km",            km:8,  pace:"6:40–7:10", hr:"136–151", notes:"8 km Z2. Back to peak volume after cut week. Treadmill 9.0 km/h or outdoor 7:10/km.", status:"pending" },
+  "2026-09-23":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<145",    notes:"5 km Z1 flush. Save legs for Friday 6×1000m.", status:"pending" },
+  "2026-09-24":{ type:"rest",    name:"Leg Strength (Gym — Moderate)", km:0, pace:"",      hr:"",        notes:"Moderate strength only from here — peak quality weeks. Goblet squat 2×10, hip thrust 3×12, calf raise 2×20. No heavy loading — intervals on Friday take priority.", status:"pending" },
+  "2026-09-25":{ type:"tempo",   name:"Intervals — 6×1000m @ I Pace", km:11, pace:"5:45–5:55", hr:"168–175", notes:"Main 10k weapon. Jack Daniels I Pace — VDOT 34.5 → 5:45–5:55/km.\n\nStructure:\n• 2 km warm-up\n• 6×1000m @ 5:45–5:55/km with 90 sec easy jog recovery\n• 1 km cool-down\n\nOne more rep than W3 — same pace. If pace slips on rep 5–6, shorten rest to 60 sec rather than slowing pace.\nThis session builds VO2max — the engine for 10k racing.", status:"pending" },
+  "2026-09-26":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-09-27":{ type:"long",    name:"Long Run — 18km Z2",        km:18, pace:"7:10–7:30", hr:"136–151", notes:"18 km. Same as W3 long run — must stay Z2. The long run builds fat-burning base and mental endurance. Do not drift Z3 even if you feel good.", status:"pending" },
 
-  // ── TAPER WEEK 1 (2 weeks out from EMS RUN Oct 18) — Sep 28–Oct 4
-  "2026-09-28":{ type:"rest",    name:"Rest — Taper Begins",    km:0,  pace:"",          hr:"",        notes:"Taper starts. Gym is done for now. Sleep, eat, recover.", status:"pending" },
-  "2026-09-29":{ type:"easy",    name:"Easy Z2",                km:6,  pace:"7:00–7:20", hr:"136–151", notes:"6 km easy. Volume drops — keep HR controlled.", status:"pending" },
-  "2026-09-30":{ type:"easy",    name:"Recovery 4K",            km:4,  pace:"7:30–8:00", hr:"<136",    notes:"4 km easy Z1.", status:"pending" },
-  "2026-10-01":{ type:"rest",    name:"Stretch + Mobility",     km:0,  pace:"",          hr:"",        notes:"Full stretch routine. No gym.", status:"pending" },
-  "2026-10-02":{ type:"tempo",   name:"Sharpener",              km:6,  pace:"5:44–5:55", hr:"155–170", notes:"2 km warm + 3 km at race pace (5:44–5:55/km) + 1 km cool. Short and sharp — wake up the legs. Taper sharpener, not max effort.", status:"pending" },
-  "2026-10-03":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-10-04":{ type:"long",    name:"Long Run — Taper",       km:10, pace:"7:00–7:20", hr:"136–151", notes:"10 km easy. Confidence run — fitness is locked. Don't push.", status:"pending" },
+  // ── WEEK 6 (Sep 28–Oct 4) — Peak quality week 2
+  "2026-09-28":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Peak weeks mean recovery is extra important. Full routine.", status:"pending" },
+  "2026-09-29":{ type:"easy",    name:"Easy Z2 — 8km",            km:8,  pace:"6:40–7:10", hr:"136–151", notes:"8 km Z2. Keep easy days truly easy — R+T combo on Friday is demanding.", status:"pending" },
+  "2026-09-30":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<145",    notes:"5 km Z1. Short and honest — legs fresh for Friday.", status:"pending" },
+  "2026-10-01":{ type:"rest",    name:"Leg Strength (Gym — Light)", km:0, pace:"",         hr:"",        notes:"Light strength only. Hip thrust 2×12, calf raise 2×15, single-leg glute bridge 2×10. No squats or deadlifts this week — R+T combo Friday is the priority.", status:"pending" },
+  "2026-10-02":{ type:"tempo",   name:"R+T Combo — Speed + Threshold", km:10, pace:"5:10–6:15", hr:"162–175", notes:"Advanced session: speed then threshold.\n\nStructure:\n• 2 km warm-up\n• 8×200m @ 5:10–5:20/km with full 2 min walk recovery (R Reps)\n• 5 min easy jog transition\n• 2×10 min @ 6:05–6:15/km T Pace with 3 min easy jog rest\n• 1 km cool-down\n\nThe 200m reps wake up neuromuscular speed before you hit threshold. You'll feel the fatigue in the T blocks — that's the point. Start T sections controlled, don't die on rep 2.", status:"pending" },
+  "2026-10-03":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest. The hardest week is done.", status:"pending" },
+  "2026-10-04":{ type:"long",    name:"Long Run — 16km Z2",        km:16, pace:"7:10–7:30", hr:"136–151", notes:"16 km. Back off from 18 km — taper begins next week. HR cap 151 strictly. Easy and confident.", status:"pending" },
 
-  // ── RACE WEEK — EMS RUN Oct 18 (1 week out) — Oct 5–17
-  "2026-10-05":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Race week starts.", status:"pending" },
-  "2026-10-06":{ type:"easy",    name:"Easy Z1",                km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km easy Z1. Just keep the legs moving.", status:"pending" },
-  "2026-10-07":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-10-08":{ type:"rest",    name:"Stretch + Mobility",     km:0,  pace:"",          hr:"",        notes:"Full stretch. Hip flexor + piriformis focus.", status:"pending" },
-  "2026-10-09":{ type:"easy",    name:"Strides Only",           km:3,  pace:"7:30",      hr:"<136",    notes:"2 km easy + 4×15 sec strides at race pace. Keep it brief.", status:"pending" },
-  "2026-10-10":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-10-11":{ type:"easy",    name:"Easy Shake-Out",         km:5,  pace:"7:30–8:00", hr:"<136",    notes:"5 km easy. Last run before race week rest.", status:"pending" },
-  "2026-10-12":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Hydrate. Sleep well.", status:"pending" },
-  "2026-10-13":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Eat well.", status:"pending" },
-  "2026-10-14":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-10-15":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Lay out race kit.", status:"pending" },
-  "2026-10-16":{ type:"rest",    name:"Rest",                   km:0,  pace:"",          hr:"",        notes:"Rest. Eat well. Sleep early.", status:"pending" },
-  "2026-10-17":{ type:"shakeout",name:"Race-Eve Shakeout",      km:2,  pace:"8:00–8:30", hr:"<130",    notes:"10 min easy jog + 4×15 sec strides. Everything is ready.", status:"pending" },
+  // ── WEEK 7 (Oct 5–11) — Taper begins
+  "2026-10-05":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Taper start. Stretch + foam roll. No gym from here.", status:"pending" },
+  "2026-10-06":{ type:"easy",    name:"Easy Z2 — 6km",            km:6,  pace:"6:40–7:10", hr:"136–151", notes:"6 km — volume drops. Same easy effort. Fitness is locked — no fitness gains happen in taper, only freshness.", status:"pending" },
+  "2026-10-07":{ type:"easy",    name:"Easy Z1 — 4km",            km:4,  pace:"7:10–7:30", hr:"<145",    notes:"4 km very easy. Legs should feel heavy in taper — this is normal. Trust the process.", status:"pending" },
+  "2026-10-08":{ type:"rest",    name:"Stretch Only",             km:0,  pace:"",          hr:"",        notes:"No gym. Full stretch routine only. Piriformis, hip flexor, hamstring, calf. Light foam roll.", status:"pending" },
+  "2026-10-09":{ type:"tempo",   name:"Sharpener — 4×1000m @ I Pace", km:8, pace:"5:40–5:50", hr:"168–175", notes:"Taper sharpener — volume down, pace maintained.\n\nStructure:\n• 2 km warm-up\n• 4×1000m @ 5:40–5:50/km with 2 min easy jog rest (slightly faster than earlier I sessions)\n• 2 km cool-down\n\nGoal: keep race-pace feel in the legs without accumulating fatigue. These should feel controlled and smooth — not maximal effort.", status:"pending" },
+  "2026-10-10":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
+  "2026-10-11":{ type:"easy",    name:"Easy 10km + Strides",       km:10, pace:"7:10–7:30", hr:"136–151", notes:"Last moderate-length run before race week. 10 km easy Z2 + 4×100m strides at end. Strides at 5:30/km effort — feel the speed, stay relaxed. This is your final confidence run.", status:"pending" },
 
-  // ── RACE C — Thailand Post EMS RUN 2026 — Oct 18
-  "2026-10-18":{ type:"race",    name:"Thailand Post EMS RUN 2026 — 10K", km:10, pace:"5:30–5:50", hr:"162–172", notes:"🏁 RACE DAY — Thailand Post EMS RUN 2026\n📍 ไปรษณีย์กลาง บางรัก\nRegistration: TH343UVR · M 30–39 · Shirt L\n\nTarget A: Sub-55:00 (5:30/km) — needs VDOT 35.8, aggressive push\nTarget B: Sub-57:00 (5:42/km) — needs VDOT 34.3, realistic after 8 wks\nFloor: Sub-60:00 — guaranteed based on Aug 16 fitness\n\nPACING PLAN (aim for B, push for A if feeling strong at km 5):\nkm 1: 5:40–5:45 · controlled start\nkm 2–5: 5:35–5:45 · lock rhythm · HR 162–168\nkm 6–7: hold pace · don't let HR spike above 170\nkm 8: 5:30–5:35 · begin push if legs have it\nkm 9: 5:20–5:30 · surge\nkm 10: 5:10–5:20 · empty the tank\n\nNote: One week before Saucony — race hard but control the damage.", status:"pending" },
+  // ── WEEK 8 (Oct 12–18) — Race Week 1: EMS RUN Oct 18
+  "2026-10-12":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Race week. Just stretch. No gym. Sleep 8 hrs.", status:"pending" },
+  "2026-10-13":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<140",    notes:"5 km very easy. Legs moving, nothing more. HR cap 140. Treadmill 8.5 km/h.", status:"pending" },
+  "2026-10-14":{ type:"easy",    name:"Easy Z1 — 3km",            km:3,  pace:"7:10–7:30", hr:"<140",    notes:"3 km easy. Short shake-out only.", status:"pending" },
+  "2026-10-15":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest. Eat well. Hydrate. Sleep.", status:"pending" },
+  "2026-10-16":{ type:"shakeout",name:"Shakeout — 3km + 4×200m",  km:4,  pace:"7:00–5:30", hr:"<155",    notes:"3 km easy jog + 4×200m @ R pace (5:10–5:20/km) with full 2 min walk recovery. Short and sharp — wake up the legs, don't tire them.\nFitness is completely locked. Taper makes you feel flat — that is normal. Trust the training.", status:"pending" },
+  "2026-10-17":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Race eve. Rest. Lay out race kit. Eat a proper dinner. Sleep early. No last-minute exercise.", status:"pending" },
 
-  // ── BETWEEN RACES (Oct 19–24) — 6 days to Saucony
-  "2026-10-19":{ type:"rest",    name:"Post-Race Rest",          km:0,  pace:"",          hr:"",        notes:"Rest + stretch. Eat and sleep well. The Oct 18 race is now prep for Oct 25.", status:"pending" },
-  "2026-10-20":{ type:"easy",    name:"Easy Shake-Out",          km:4,  pace:"7:30–8:00", hr:"<136",    notes:"4 km easy Z1 — flush the legs, not a workout.", status:"pending" },
-  "2026-10-21":{ type:"rest",    name:"Rest",                    km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-10-22":{ type:"easy",    name:"Strides + Easy",          km:4,  pace:"7:00–7:30", hr:"<136",    notes:"3 km easy + 4×15 sec strides at 5:50/km. Wake up race-pace feel. Keep HR low.", status:"pending" },
-  "2026-10-23":{ type:"rest",    name:"Rest",                    km:0,  pace:"",          hr:"",        notes:"Rest. Hydrate. Eat well.", status:"pending" },
-  "2026-10-24":{ type:"shakeout",name:"Race-Eve Shakeout",       km:2,  pace:"8:00–8:30", hr:"<130",    notes:"10 min easy + 4×15 sec strides. EMS race gave you the sharpness — trust it.", status:"pending" },
+  // ── RACE A — EMS RUN Oct 18
+  "2026-10-18":{ type:"race",    name:"Thailand Post EMS RUN 2026 — 10K", km:10, pace:"5:40–5:45", hr:"162–170", notes:"🏁 RACE DAY — Thailand Post EMS RUN 2026\n📍 ไปรษณีย์กลาง บางรัก\nRegistration: TH343UVR · M 30–39 · Shirt L\n\nTarget A: Sub-57:00 (5:42/km) — 9 weeks of work, realistic\nTarget B: Sub-58:30 (5:51/km) — conservative floor\n\nPACING PLAN:\nkm 1: 5:45–5:50 — controlled, don't go out too fast in crowd\nkm 2–6: 5:40–5:45 — lock rhythm, HR 162–168\nkm 7–8: hold — if HR goes above 170 slow to 5:50\nkm 9: begin push if legs have it\nkm 10: empty the tank — 5:20–5:30\n\nNote: Race B is Oct 25 — run hard but respect recovery.", status:"pending" },
 
-  // ── RACE D — Saucony BKK10K — Oct 25
-  "2026-10-25":{ type:"race",    name:"Saucony BKK10K — 10K",   km:10, pace:"5:25–5:45", hr:"162–172", notes:"🏁 RACE DAY — Saucony BKK10K\nTarget A: Sub-55:00 — go for it if Oct 18 went well\nTarget B: Sub-57:00 — solid result off one week recovery\nFloor: Sub-60:00 — guaranteed\n\nStrategy: Oct 18 race sharpened you. Legs may feel heavy day 1–3, then bounce back. Trust the fitness — go 5–10 sec/km faster than EMS result.\nkm 1–6: 5:35–5:45/km controlled\nkm 7–8: 5:30–5:40 push\nkm 9–10: 5:10–5:25 empty the tank\n\nSecond race in 7 days — legs feel different, that's normal. Trust the fitness, not the feeling.", status:"pending" },
+  // ── WEEK 9 (Oct 19–25) — Race Week 2: Saucony BKK10K Oct 25
+  "2026-10-19":{ type:"rest",    name:"Post-Race Rest + Stretch",  km:0,  pace:"",          hr:"",        notes:"Full rest. Stretch gently — calf, quad, hip flexor. Eat a real meal. Sleep as long as you can. Don't analyse the race until tomorrow.", status:"pending" },
+  "2026-10-20":{ type:"easy",    name:"Easy Recovery — 5km",       km:5,  pace:"7:30–8:00", hr:"<140",    notes:"Z1 only — flush the legs from race day. Treadmill 8.0–8.3 km/h. HR cap 140. If legs feel dead, shorten to 3 km. This is recovery, not training.", status:"pending" },
+  "2026-10-21":{ type:"easy",    name:"Easy — 3km",                km:3,  pace:"7:15–7:30", hr:"<145",    notes:"3 km easy. Short and relaxed.", status:"pending" },
+  "2026-10-22":{ type:"rest",    name:"Rest",                      km:0,  pace:"",          hr:"",        notes:"Rest. Eat well. Hydrate.", status:"pending" },
+  "2026-10-23":{ type:"easy",    name:"Easy + 4×200m Strides",     km:4,  pace:"7:00–5:20", hr:"<152",    notes:"3 km easy + 4×200m strides @ 5:15–5:25/km with full recovery. Wake up race-pace feel without taxing the body. The Oct 18 race already sharpened you — trust it.", status:"pending" },
+  "2026-10-24":{ type:"rest",    name:"Rest",                      km:0,  pace:"",          hr:"",        notes:"Race eve. Rest. Eat well. Lay out kit. Sleep early.", status:"pending" },
+
+  // ── RACE B — Saucony BKK10K Oct 25
+  "2026-10-25":{ type:"race",    name:"Saucony BKK10K — 10K",      km:10, pace:"5:35–5:45", hr:"162–172", notes:"🏁 RACE DAY — Saucony BKK10K\n\nTarget A: Sub-57:00 — match or beat EMS result\nTarget B: Sub-58:00 — solid result off 7-day recovery\n\nStrategy: Oct 18 race gave you real race sharpness. Legs may feel slightly heavier than race 1 — that's normal, don't panic. Trust the fitness, not the feeling.\n\nkm 1–2: 5:45–5:50 — warm up into pace\nkm 3–7: 5:35–5:45 — locked rhythm\nkm 8–9: push if HR allows (under 172)\nkm 10: empty the tank\n\nYou're fitter than Aug 16. This race is your PR opportunity.", status:"pending" },
 };
 
 // ─── PHASE / WEEK META ───────────────────────────────────────────────────────
@@ -875,17 +884,18 @@ const WEEKS = [
   { id:"w13",     label:"W13 — Peak",                 phase:"peak",     start:"2026-08-02", end:"2026-08-08" },
   { id:"w14",     label:"W14 — Taper",                phase:"taper",    start:"2026-08-09", end:"2026-08-15" },
   { id:"w-raceB", label:"RACE B — 10K Goal Race",     phase:"race",     start:"2026-08-16", end:"2026-08-16" },
-  { id:"w-rec2",  label:"W15 — Post-Race Recovery",   phase:"recovery", start:"2026-08-17", end:"2026-08-23" },
-  { id:"w16",     label:"W16 — New Block W1",         phase:"build1",   start:"2026-08-24", end:"2026-08-30" },
-  { id:"w17",     label:"W17 — New Block W2",         phase:"build1",   start:"2026-08-31", end:"2026-09-06" },
-  { id:"w18",     label:"W18 — New Block W3",         phase:"build2",   start:"2026-09-07", end:"2026-09-13" },
-  { id:"w19",     label:"W19 — New Block W4",         phase:"build2",   start:"2026-09-14", end:"2026-09-20" },
-  { id:"w20",     label:"W20 — Build Peak",           phase:"build2",   start:"2026-09-21", end:"2026-09-27" },
-  { id:"w21",     label:"W21 — Taper 1",              phase:"taper",    start:"2026-09-28", end:"2026-10-04" },
-  { id:"w22",     label:"W22 — Race Week (EMS RUN)",  phase:"taper",    start:"2026-10-05", end:"2026-10-17" },
-  { id:"w-raceC", label:"RACE C — Thailand Post EMS RUN 2026", phase:"race", start:"2026-10-18", end:"2026-10-18" },
-  { id:"w-between",label:"Between Races",             phase:"recovery", start:"2026-10-19", end:"2026-10-24" },
-  { id:"w-raceD", label:"RACE D — Saucony BKK10K",   phase:"race",     start:"2026-10-25", end:"2026-10-25" },
+  { id:"w-rec2",  label:"W15 — Post-Race Recovery",          phase:"recovery", start:"2026-08-17", end:"2026-08-23" },
+  { id:"w16",     label:"W1 — Base (JD 10K Block)",          phase:"build1",   start:"2026-08-24", end:"2026-08-30" },
+  { id:"w17",     label:"W2 — First Tempo",                  phase:"build1",   start:"2026-08-31", end:"2026-09-06" },
+  { id:"w18",     label:"W3 — Intervals Introduced",         phase:"build2",   start:"2026-09-07", end:"2026-09-13" },
+  { id:"w19",     label:"W4 — Cut Week",                     phase:"build2",   start:"2026-09-14", end:"2026-09-20" },
+  { id:"w20",     label:"W5 — Peak Quality 1 (6×1000m)",     phase:"peak",     start:"2026-09-21", end:"2026-09-27" },
+  { id:"w21",     label:"W6 — Peak Quality 2 (R+T Combo)",   phase:"peak",     start:"2026-09-28", end:"2026-10-04" },
+  { id:"w22",     label:"W7 — Taper Begins",                 phase:"taper",    start:"2026-10-05", end:"2026-10-11" },
+  { id:"w23",     label:"W8 — Race Week 1 (EMS RUN Oct 18)", phase:"taper",    start:"2026-10-12", end:"2026-10-17" },
+  { id:"w-raceC", label:"RACE A — EMS RUN 10K",              phase:"race",     start:"2026-10-18", end:"2026-10-18" },
+  { id:"w-between",label:"W9 — Race Week 2 (Saucony Oct 25)",phase:"recovery", start:"2026-10-19", end:"2026-10-24" },
+  { id:"w-raceD", label:"RACE B — Saucony BKK10K",           phase:"race",     start:"2026-10-25", end:"2026-10-25" },
 ];
 
 const PHASE_LABELS = {
@@ -964,9 +974,9 @@ function renderMain() {
 
   // 1. Race Countdown
   const RACES = [
-    { date:'2026-08-16', short:'10K #1',      target:'Sub-60:00', color:'var(--orange)' },
-    { date:'2026-10-18', short:'EMS RUN 10K', target:'Sub-58:00', color:'var(--blue)' },
-    { date:'2026-10-25', short:'Saucony BKK10K', target:'Sub-57:30', color:'var(--purple)' },
+    { date:'2026-08-16', short:'10K — ASICS', target:'59:15 ✓ Sub-60', color:'var(--orange)' },
+    { date:'2026-10-18', short:'EMS RUN 10K', target:'Target: Sub-57:00', color:'var(--blue)' },
+    { date:'2026-10-25', short:'Saucony BKK10K', target:'Target: Sub-57:00 PR', color:'var(--purple)' },
   ];
   const todayMs = new Date(todayStr + 'T00:00:00').getTime();
   const futureRaces = RACES.filter(r => new Date(r.date + 'T00:00:00').getTime() >= todayMs);
@@ -1177,10 +1187,10 @@ function updateStats() {
   `;
 
   const phases = [
-    { label:"Base",    ids:["w1","w2","w3"] },
-    { label:"Build 1", ids:["w4","w5","w6","w7","w8"] },
-    { label:"Build 2", ids:["w10","w11","w12","w13","w14"] },
-    { label:"10K Block",ids:["w16","w17","w18","w19","w20"] },
+    { label:"Pre-Block",  ids:["w1","w2","w3","w4","w5","w6","w7","w8","w10","w11","w12","w13","w14"] },
+    { label:"JD Base",    ids:["w16","w17"] },
+    { label:"JD Quality", ids:["w18","w19","w20","w21"] },
+    { label:"Taper+Race", ids:["w22","w23"] },
   ];
   const colours = ["#00e5a0","#3b82f6","#a855f7","#f97316"];
   const pw = document.getElementById('progWrap');
