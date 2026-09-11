@@ -60,6 +60,23 @@
     .lr-s{font-size:10px;color:#166534}
     .lr-div{width:1px;height:36px;background:#86efac;flex-shrink:0}
 
+    /* Race notes */
+    .race-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap);margin-bottom:var(--gap)}
+    .race-card{background:linear-gradient(135deg,#fff7ed,#ffffff);border:1.5px solid #fed7aa;border-radius:var(--r);padding:16px 20px;box-shadow:var(--shadow);border-top:4px solid var(--orange)}
+    .race-card.b{background:linear-gradient(135deg,#f5f3ff,#ffffff);border-color:#ddd6fe;border-top-color:var(--purple)}
+    .race-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+    .race-date{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:#9a3412;font-weight:800}
+    .race-card.b .race-date{color:#6d28d9}
+    .race-days{font-size:11px;font-weight:800;color:var(--orange);white-space:nowrap}
+    .race-card.b .race-days{color:var(--purple)}
+    .race-name{font-size:15px;font-weight:800;color:var(--text);line-height:1.25}
+    .race-goal{font-size:11px;color:var(--gray);margin-top:5px;line-height:1.4}
+    .race-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+    .race-link{font-size:11px;font-weight:700;color:#fff;background:var(--orange);border-radius:14px;padding:5px 11px;text-decoration:none}
+    .race-card.b .race-link{background:var(--purple)}
+    .race-link.secondary{background:#fff;color:var(--orange);border:1px solid #fed7aa}
+    .race-card.b .race-link.secondary{color:var(--purple);border-color:#ddd6fe}
+
     /* PR row — 4 race-distance cards */
     .pr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:var(--gap)}
     .pr-item{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow);border-top:4px solid var(--purple)}
@@ -161,6 +178,7 @@
     @media(max-width:600px){
       .kpi-row{grid-template-columns:repeat(2,1fr)}
       .pr-grid{grid-template-columns:repeat(2,1fr)}
+      .race-grid{grid-template-columns:1fr}
       .lrb{gap:14px}
       .kpi-l,.pr-d,.cch h3,.rr-lbl,.ss-label{font-size:11px}
       .kpi-s,.pr-p,.pr-dt,.cch p,.ss-sub{font-size:11px}
@@ -182,7 +200,7 @@
   <header class="hdr">
     <div>
       <h1>🏃 <span id="hdName">…</span>'s Running Dashboard</h1>
-      <div class="hdr-sub" id="hdrSub">10K Training · ASICS META Aug 16 · Garmin Forerunner 570 · Live from Strava</div>
+      <div class="hdr-sub" id="hdrSub">10K Training · EMS RUN Oct 18 · Saucony BKK10K Oct 25 · Live from Strava</div>
     </div>
     <div class="hdr-right">
       <div class="badge org">🟠 Strava Live</div>
@@ -238,6 +256,9 @@
     <div class="lr-div"></div>
     <div class="lr-bl"><div class="lr-l">Duration</div><div class="lr-v" id="lrTime">—</div><div class="lr-s">h:mm:ss</div></div>
   </div>
+
+  <!-- Upcoming races -->
+  <div class="race-grid" id="raceGrid"></div>
 
   <!-- Personal Records — race distances -->
   <div class="pr-grid" id="prGrid"></div>
@@ -297,7 +318,7 @@
     <span>🟠</span>
     <div>
       <strong>Strava Webhook</strong> — runs sync automatically within seconds of finishing ·
-      Use <strong>↻ Sync</strong> after your next run to update the dashboard
+      Use <strong>↻ Refresh Data</strong> after your next run to reload the dashboard data
     </div>
   </div>
 
@@ -307,8 +328,10 @@
 // ── CONFIG ────────────────────────────────────────────────
 const TODAY   = new Date().toISOString().split('T')[0];
 const MAX_HR          = 185;
-const GARMIN_10K_PRED = '58:30'; // target: Sub-60:00 · updated Aug 4
-const RACE_DATE       = '2026-08-16'; // ASICS META 10K
+const UPCOMING_RACES = [
+  { date:'2026-10-18', name:'Thailand Post EMS RUN 2026 — 10K', short:'EMS RUN 10K', goal:'Target A: Sub-57:00 · Target B: Sub-58:30', klass:'a' },
+  { date:'2026-10-25', name:'Saucony BKK10K — 10K', short:'Saucony BKK10K', goal:'Target A: Sub-57:00 PR · Target B: Sub-58:00', klass:'b' },
+];
 
 // LTHR confirmed 170 bpm · VDOT 37
 const LTHR = 170;
@@ -337,6 +360,21 @@ function formatSyncTime(s){
     day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit',
     timeZone:'Asia/Bangkok', hour12:false
   }) + ' BKK';
+}
+function daysUntil(dateStr){
+  const target = new Date(dateStr+'T00:00:00');
+  const today = new Date(TODAY+'T00:00:00');
+  return Math.ceil((target-today)/86400000);
+}
+function raceCountdownLabel(dateStr){
+  const d = daysUntil(dateStr);
+  if(d>1) return `${d} days`;
+  if(d===1) return 'tomorrow';
+  if(d===0) return 'today';
+  return 'completed';
+}
+function nextRaceInfo(){
+  return UPCOMING_RACES.map(r=>({...r, days:daysUntil(r.date), countdown:raceCountdownLabel(r.date)})).find(r=>r.days>=0);
 }
 function weekMon(s){
   const d=new Date(s+'T12:00:00'),dy=d.getDay();
@@ -429,12 +467,14 @@ function render(runs){
 
   // ── Header badges ──
   set('bdgStreak', streak>0?`🔥 ${streak}-Week Streak`:'🏃 Start your streak!');
-  const raceDate=new Date(RACE_DATE+'T00:00:00');
-  const todayDate=new Date(TODAY+'T00:00:00');
-  const daysToRace=Math.ceil((raceDate-todayDate)/86400000);
-  const raceCountdown=daysToRace>0?`${daysToRace}d to race day`:daysToRace===0?'Race day!':'Race completed · set next goal';
-  set('bdgRace', `🎯 10K ${GARMIN_10K_PRED} goal · ${raceCountdown}`);
-  set('hdrSub', `10K Training · ASICS META Aug 16 · Garmin Forerunner 570 · ${runs.length} runs · ${raceCountdown}`);
+  const raceInfo = nextRaceInfo();
+  if(raceInfo){
+    set('bdgRace', `🎯 ${raceInfo.short} · ${raceInfo.countdown}`);
+    set('hdrSub', `10K Training · ${raceInfo.short} · ${runs.length} runs · ${raceInfo.countdown}`);
+  } else {
+    set('bdgRace', '🎯 Race block complete · set next goal');
+    set('hdrSub', `10K Training · ${runs.length} runs · race block complete`);
+  }
 
   // ── Last run banner ──
   document.getElementById('lrb').classList.add('show');
@@ -452,6 +492,7 @@ function render(runs){
 
 
   checkHolidays();
+  buildRaceCards();
   buildPR(runs);
   buildRecentTable(runs);
   buildAutoSummary(runs);
@@ -476,6 +517,25 @@ function checkHolidays(){
     document.getElementById('holidayMsg').innerHTML = `<strong>${h.name} (${sdt(h.date)})</strong> — ${h.tip}`;
     document.getElementById('holidayWarn').classList.add('show');
   }
+}
+
+// ── Upcoming race notes ────────────────────────────────────
+function buildRaceCards(){
+  const el=document.getElementById('raceGrid');
+  if(!el) return;
+  el.innerHTML = UPCOMING_RACES.map(r=>{
+    const label = raceCountdownLabel(r.date);
+    const status = label === 'completed' ? 'Completed' : label === 'today' ? 'Race day!' : label === 'tomorrow' ? 'Tomorrow' : `${label} out`;
+    return `<div class="race-card ${r.klass==='b'?'b':''}">
+      <div class="race-top"><div class="race-date">${sdt(r.date)}</div><div class="race-days">${status}</div></div>
+      <div class="race-name">${r.name}</div>
+      <div class="race-goal">${r.goal}</div>
+      <div class="race-actions">
+        <a class="race-link" href="training-plan.html">View training plan</a>
+        <a class="race-link secondary" href="training-plan.html#${r.date}">Race notes</a>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── PR Records — race distances ───────────────────────────
