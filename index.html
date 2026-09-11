@@ -162,6 +162,10 @@
       .kpi-row{grid-template-columns:repeat(2,1fr)}
       .pr-grid{grid-template-columns:repeat(2,1fr)}
       .lrb{gap:14px}
+      .kpi-l,.pr-d,.cch h3,.rr-lbl,.ss-label{font-size:11px}
+      .kpi-s,.pr-p,.pr-dt,.cch p,.ss-sub{font-size:11px}
+      .rt{overflow-x:auto}
+      .rt table{min-width:680px}
     }
   </style>
 </head>
@@ -182,11 +186,12 @@
     </div>
     <div class="hdr-right">
       <div class="badge org">🟠 Strava Live</div>
+      <div class="badge" id="bdgSync">Last sync: —</div>
       <div class="badge" id="bdgStreak">—</div>
       <div class="badge goal" id="bdgRace">🎯 10K Goal</div>
       <a href="training-plan.html" class="hbtn">📋 Training Plan</a>
       <a href="workflow.html" class="hbtn">⚡ Stack</a>
-      <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Sync</button>
+      <button class="hbtn" id="syncBtn" onclick="manualSync()">↻ Refresh Data</button>
     </div>
   </header>
 
@@ -324,6 +329,15 @@ function secToHMS(s){
 }
 function fkm(k){ return k>=100?k.toFixed(1):k.toFixed(2); }
 function sdt(s){ return new Date(s+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); }
+function formatSyncTime(s){
+  if(!s) return 'Last sync: unknown';
+  const d = new Date(s);
+  if(Number.isNaN(d.getTime())) return 'Last sync: unknown';
+  return 'Last sync: ' + d.toLocaleString('en-GB', {
+    day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit',
+    timeZone:'Asia/Bangkok', hour12:false
+  }) + ' BKK';
+}
 function weekMon(s){
   const d=new Date(s+'T12:00:00'),dy=d.getDay();
   d.setDate(d.getDate()+(dy===0?-6:1-dy));
@@ -416,8 +430,9 @@ function render(runs){
   // ── Header badges ──
   set('bdgStreak', streak>0?`🔥 ${streak}-Week Streak`:'🏃 Start your streak!');
   const raceDate=new Date(RACE_DATE+'T00:00:00');
-  const daysToRace=Math.ceil((raceDate-new Date())/86400000);
-  const raceCountdown=daysToRace>0?`${daysToRace}d to race day`:'Race day!';
+  const todayDate=new Date(TODAY+'T00:00:00');
+  const daysToRace=Math.ceil((raceDate-todayDate)/86400000);
+  const raceCountdown=daysToRace>0?`${daysToRace}d to race day`:daysToRace===0?'Race day!':'Race completed · set next goal';
   set('bdgRace', `🎯 10K ${GARMIN_10K_PRED} goal · ${raceCountdown}`);
   set('hdrSub', `10K Training · ASICS META Aug 16 · Garmin Forerunner 570 · ${runs.length} runs · ${raceCountdown}`);
 
@@ -749,6 +764,7 @@ async function boot(){
     const d = await res.json();
     if(!d.runs||!d.runs.length) throw new Error('No runs found');
     set('hdName', 'Patrick');
+    set('bdgSync', formatSyncTime(d.last_synced_at));
     document.title = '🏃 Patrick — Running Dashboard';
     render(d.runs);
   } catch(e){
@@ -759,10 +775,10 @@ async function boot(){
 }
 async function manualSync(){
   const btn=document.getElementById('syncBtn');
-  btn.disabled=true; btn.textContent='↻ Reloading…';
+  btn.disabled=true; btn.textContent='↻ Refreshing…';
   try{ await boot(); }
-  catch(e){ showErr('Reload failed: '+e.message); }
-  btn.disabled=false; btn.textContent='↻ Sync';
+  catch(e){ showErr('Refresh failed: '+e.message); }
+  btn.disabled=false; btn.textContent='↻ Refresh Data';
 }
 // ── INIT ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{

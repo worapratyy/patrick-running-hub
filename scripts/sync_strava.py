@@ -18,6 +18,7 @@ import os
 import sys
 import urllib.request
 import urllib.parse
+from datetime import datetime, timezone
 from pathlib import Path
 
 CLIENT_ID     = os.environ["STRAVA_CLIENT_ID"]
@@ -93,8 +94,13 @@ def main():
     runs.sort(key=lambda r: r["date"] or "")
     print(f"   Run activities: {len(runs)}")
 
+    payload = {
+        "last_synced_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        "runs": runs,
+    }
+
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(json.dumps({"runs": runs}, indent=2))
+    OUTPUT_PATH.write_text(json.dumps(payload, indent=2) + "\n")
     print(f"✅ Written to {OUTPUT_PATH}")
 
     # GitHub Actions reads this line to rotate the secret
