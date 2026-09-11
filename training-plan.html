@@ -1213,8 +1213,9 @@ function updateStats() {
 }
 
 // ─── SELECT / DETAIL ─────────────────────────────────────────────────────────
-function selectDay(dateStr) {
+function selectDay(dateStr, updateHash=true) {
   sel = dateStr;
+  if(updateHash && PLAN[dateStr]) history.replaceState(null, '', `#${dateStr}`);
   renderMain(); renderCal();
   openDetail(dateStr);
 }
@@ -1338,6 +1339,10 @@ updateShiftUI();
 renderCal();
 renderMain();
 updateStats();
+const initialHashDate = location.hash.replace('#','');
+if(/^\d{4}-\d{2}-\d{2}$/.test(initialHashDate) && PLAN[initialHashDate]) {
+  selectDay(initialHashDate, false);
+}
 </script>
 </body>
 </html>
