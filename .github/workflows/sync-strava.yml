@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: strava-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -36,6 +40,7 @@ jobs:
           echo "new_refresh_token=$new_token" >> $GITHUB_OUTPUT
 
       - name: Rotate refresh token secret
+        if: ${{ steps.sync.outputs.new_refresh_token != '' }}
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
