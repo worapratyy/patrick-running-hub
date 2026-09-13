@@ -411,7 +411,7 @@ body.detail-open .main { padding-right:360px; }
 <header class="hdr">
   <div class="hdr-brand">PATRICK · 2026</div>
   <div class="hdr-div"></div>
-  <div class="hdr-sub">Jack Daniels 10K Block · VDOT 34.5 · Oct 18 → Oct 25</div>
+  <div class="hdr-sub">Jack Daniels 10K Block · VDOT 34.5 · LTHR 172 · Oct 18 → Oct 25</div>
   <div class="hdr-spacer"></div>
   <div class="hdr-stat" id="hdrWeekly">
     <div class="hv">—</div>
@@ -768,7 +768,7 @@ const PLAN = {
 
   // ══════════════════════════════════════════════════════
   //  JACK DANIELS 9-WEEK 10K BLOCK — Aug 24 → Oct 25
-  //  VDOT 34.5 (Aug 16 race: 59:15 @ 5:55/km)
+  //  VDOT 34.5 · Garmin LTHR 172 (Aug 16 race: 59:15 @ 5:55/km)
   //  Mon: Stretch · Tue: Easy 8km · Wed: Easy 5km
   //  Thu: Leg Strength · Fri: Quality · Sat: Rest · Sun: Long Run
   //
@@ -807,37 +807,37 @@ const PLAN = {
   "2026-09-13":{ type:"long",    name:"Long Run — 18km Z2",        km:17.02, pace:"6:25", hr:"Z3", notes:"✅ COMPLETED — September 13\n17.02 km · 6:25/km · HR 155 bpm · 167 spm\nZ3 — black hole (Fitzgerald). Aim for Z2 next time. (Outdoor Lumphini Park. 1 km short of target — good effort. HR drifted to Z4 km 15–17. Bangkok heat: slow to 7:30+/km outdoors to stay Z2.)", status:"done" },
 
   // ── WEEK 4 (Sep 14–20) — Cut week (volume down, sharpness maintained)
-  "2026-09-14":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Let the 18 km long run from Sunday fully recover.", status:"pending" },
+  "2026-09-14":{ type:"rest",    name:"Strength Day B — Glutes/Core", km:0, pace:"", hr:"", notes:"Post-long-run injury-prevention strength. Keep it controlled, not heavy.\n\nStrength Day B — glutes, core, injury prevention:\n• Hip thrust or glute bridge: 3×8–10\n• Single-leg RDL: 2–3×8 each side\n• Clamshell or band walk: 2–3×12–15\n• Dead bug or Pallof press: 3 sets\n• Piriformis/hip mobility: 5–8 min", status:"pending" },
   "2026-09-15":{ type:"easy",    name:"Easy Z2 — 6km",            km:6,  pace:"6:40–7:10", hr:"136–151", notes:"Cut week: 6 km only. Same easy effort — volume drops, intensity stays. Don't try to make up for the shorter distance.", status:"pending" },
   "2026-09-16":{ type:"easy",    name:"Easy Z1 — 4km",            km:4,  pace:"7:10–7:30", hr:"<145",    notes:"4 km only. Recovery flush — short and honest.", status:"pending" },
-  "2026-09-17":{ type:"rest",    name:"Leg Strength (Gym)",        km:0,  pace:"",          hr:"",        notes:"Lighter strength session — cut week. Goblet squat 2×10, hip thrust 2×15, calf raise 2×20. No new maxes. Body is consolidating fitness.", status:"pending" },
+  "2026-09-17":{ type:"rest",    name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Cut-week lower-body stability. Leave 2–3 reps in reserve; no new maxes before Friday tempo.\n\nStrength Day A — lower body stability:\n• Goblet squat or leg press: 3×6–8\n• Romanian deadlift: 3×6–8\n• Split squat or step-up: 2–3×8 each side\n• Calf raises: 3×12–15\n• Side plank: 2–3×30–45 sec", status:"pending" },
   "2026-09-18":{ type:"tempo",   name:"Tempo — 2×15min T Pace",   km:9,  pace:"6:05–6:15", hr:"162–168", notes:"Jack Daniels T Pace. Sharper than W2 — same pace, longer continuous blocks.\n\nStructure:\n• 2 km warm-up\n• 15 min @ 6:05–6:15/km, 3 min easy jog\n• 15 min @ 6:05–6:15/km\n• 1 km cool-down\n\nTreadmill: 9.8–10.0 km/h. This should feel the same effort as W2 tempo but more sustained. Controlled.", status:"pending" },
   "2026-09-19":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
   "2026-09-20":{ type:"long",    name:"Long Run — 12km Z2",        km:12, pace:"7:10–7:30", hr:"136–151", notes:"Cut week long run — 12 km only. HR cap strictly 151 bpm. Short and clean. Let the body absorb weeks 1–3.", status:"pending" },
 
   // ── WEEK 5 (Sep 21–27) — Peak quality week 1
-  "2026-09-21":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Hip flexor + piriformis + hamstring. Light glute bridge.", status:"pending" },
+  "2026-09-21":{ type:"rest",    name:"Strength Day B — Glutes/Core", km:0, pace:"", hr:"", notes:"Recovery-focused strength after Sunday long run. Keep it smooth and pain-free.\n\nStrength Day B — glutes, core, injury prevention:\n• Hip thrust or glute bridge: 3×8–10\n• Single-leg RDL: 2–3×8 each side\n• Clamshell or band walk: 2–3×12–15\n• Dead bug or Pallof press: 3 sets\n• Piriformis/hip mobility: 5–8 min", status:"pending" },
   "2026-09-22":{ type:"easy",    name:"Easy Z2 — 8km",            km:8,  pace:"6:40–7:10", hr:"136–151", notes:"8 km Z2. Back to peak volume after cut week. Treadmill 9.0 km/h or outdoor 7:10/km.", status:"pending" },
   "2026-09-23":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<145",    notes:"5 km Z1 flush. Save legs for Friday 6×1000m.", status:"pending" },
-  "2026-09-24":{ type:"rest",    name:"Leg Strength (Gym — Moderate)", km:0, pace:"",      hr:"",        notes:"Moderate strength only from here — peak quality weeks. Goblet squat 2×10, hip thrust 3×12, calf raise 2×20. No heavy loading — intervals on Friday take priority.", status:"pending" },
-  "2026-09-25":{ type:"tempo",   name:"Intervals — 6×1000m @ I Pace", km:11, pace:"5:45–5:55", hr:"168–175", notes:"Main 10k weapon. Jack Daniels I Pace — VDOT 34.5 → 5:45–5:55/km.\n\nStructure:\n• 2 km warm-up\n• 6×1000m @ 5:45–5:55/km with 90 sec easy jog recovery\n• 1 km cool-down\n\nOne more rep than W3 — same pace. If pace slips on rep 5–6, shorten rest to 60 sec rather than slowing pace.\nThis session builds VO2max — the engine for 10k racing.", status:"pending" },
+  "2026-09-24":{ type:"rest",    name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Moderate strength only — intervals on Friday take priority. Do not train to failure.\n\nStrength Day A — lower body stability:\n• Goblet squat or leg press: 3×6–8\n• Romanian deadlift: 3×6–8\n• Split squat or step-up: 2–3×8 each side\n• Calf raises: 3×12–15\n• Side plank: 2–3×30–45 sec", status:"pending" },
+  "2026-09-25":{ type:"tempo",    name:"Intervals — 5×1000m @ I Pace", km:10, pace:"5:45–5:55", hr:"168–175", notes:"Main 10k weapon, adjusted for better recovery. Jack Daniels I Pace — VDOT 34.5 → 5:45–5:55/km.\n\nStructure:\n• 2 km warm-up\n• 5×1000m @ 5:45–5:55/km with 2:30–3:00 easy jog recovery\n• Optional 6th rep only if fresh and HR is recovering well\n• 1 km cool-down\n\nStop at 4 reps if legs feel flat or pace/HR control breaks. Quality beats volume.", status:"pending" },
   "2026-09-26":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
-  "2026-09-27":{ type:"long",    name:"Long Run — 18km Z2",        km:18, pace:"7:10–7:30", hr:"136–151", notes:"18 km. Same as W3 long run — must stay Z2. The long run builds fat-burning base and mental endurance. Do not drift Z3 even if you feel good.", status:"pending" },
+  "2026-09-27":{ type:"long",    name:"Long Run — 14–16km Z2", km:16, pace:"6:55–7:30", hr:"136–151", notes:"Coach adjustment: 14–16 km only, not 18 km. You already have 20–22 km durability. Today is aerobic control, not proving fitness.\n\nStay Z2. If HR sits above 151 for more than a few minutes, slow down immediately or finish at 14 km.", status:"pending" },
 
   // ── WEEK 6 (Sep 28–Oct 4) — Peak quality week 2
-  "2026-09-28":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Monday stretch. Peak weeks mean recovery is extra important. Full routine.", status:"pending" },
+  "2026-09-28":{ type:"rest",    name:"Strength Day B — Glutes/Core", km:0, pace:"", hr:"", notes:"Injury-prevention strength. Keep effort moderate after the long run.\n\nStrength Day B — glutes, core, injury prevention:\n• Hip thrust or glute bridge: 3×8–10\n• Single-leg RDL: 2–3×8 each side\n• Clamshell or band walk: 2–3×12–15\n• Dead bug or Pallof press: 3 sets\n• Piriformis/hip mobility: 5–8 min", status:"pending" },
   "2026-09-29":{ type:"easy",    name:"Easy Z2 — 8km",            km:8,  pace:"6:40–7:10", hr:"136–151", notes:"8 km Z2. Keep easy days truly easy — R+T combo on Friday is demanding.", status:"pending" },
   "2026-09-30":{ type:"easy",    name:"Easy Z1 — 5km",            km:5,  pace:"7:10–7:30", hr:"<145",    notes:"5 km Z1. Short and honest — legs fresh for Friday.", status:"pending" },
-  "2026-10-01":{ type:"rest",    name:"Leg Strength (Gym — Light)", km:0, pace:"",         hr:"",        notes:"Light strength only. Hip thrust 2×12, calf raise 2×15, single-leg glute bridge 2×10. No squats or deadlifts this week — R+T combo Friday is the priority.", status:"pending" },
-  "2026-10-02":{ type:"tempo",   name:"R+T Combo — Speed + Threshold", km:10, pace:"5:10–6:15", hr:"162–175", notes:"Advanced session: speed then threshold.\n\nStructure:\n• 2 km warm-up\n• 8×200m @ 5:10–5:20/km with full 2 min walk recovery (R Reps)\n• 5 min easy jog transition\n• 2×10 min @ 6:05–6:15/km T Pace with 3 min easy jog rest\n• 1 km cool-down\n\nThe 200m reps wake up neuromuscular speed before you hit threshold. You'll feel the fatigue in the T blocks — that's the point. Start T sections controlled, don't die on rep 2.", status:"pending" },
+  "2026-10-01":{ type:"rest",    name:"Strength Day A — Light Lower Stability", km:0, pace:"", hr:"", notes:"Light version only because Friday quality is the priority. Use lower loads and stop well before fatigue.\n\nStrength Day A — lower body stability:\n• Goblet squat or leg press: 2–3×6–8\n• Romanian deadlift: 2×6–8\n• Split squat or step-up: 2×8 each side\n• Calf raises: 2–3×12–15\n• Side plank: 2×30–45 sec", status:"pending" },
+  "2026-10-02":{ type:"tempo",    name:"Tempo + Strides — Controlled", km:9, pace:"6:00–6:10", hr:"162–170", notes:"Coach adjustment: safer than the R+T combo. Threshold stimulus plus light speed without burying the legs.\n\nStructure:\n• 2 km easy warm-up\n• 3×8 min @ 6:00–6:10/km with 3 min easy jog\n• 4×20 sec relaxed strides, full easy recovery\n• Cool down easy\n\nControlled discomfort only. This should sharpen, not become a race.", status:"pending" },
   "2026-10-03":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest. The hardest week is done.", status:"pending" },
   "2026-10-04":{ type:"long",    name:"Long Run — 16km Z2",        km:16, pace:"7:10–7:30", hr:"136–151", notes:"16 km. Back off from 18 km — taper begins next week. HR cap 151 strictly. Easy and confident.", status:"pending" },
 
   // ── WEEK 7 (Oct 5–11) — Taper begins
-  "2026-10-05":{ type:"rest",    name:"Stretch + Recovery",       km:0,  pace:"",          hr:"",        notes:"Taper start. Stretch + foam roll. No gym from here.", status:"pending" },
+  "2026-10-05":{ type:"rest",    name:"Strength Day B — Taper Glutes/Core", km:0, pace:"", hr:"", notes:"Taper begins. Short injury-prevention version only; no soreness.\n\nStrength Day B — glutes, core, injury prevention:\n• Hip thrust or glute bridge: 2–3×8–10\n• Single-leg RDL: 2×8 each side\n• Clamshell or band walk: 2×12–15\n• Dead bug or Pallof press: 2–3 sets\n• Piriformis/hip mobility: 5–8 min", status:"pending" },
   "2026-10-06":{ type:"easy",    name:"Easy Z2 — 6km",            km:6,  pace:"6:40–7:10", hr:"136–151", notes:"6 km — volume drops. Same easy effort. Fitness is locked — no fitness gains happen in taper, only freshness.", status:"pending" },
   "2026-10-07":{ type:"easy",    name:"Easy Z1 — 4km",            km:4,  pace:"7:10–7:30", hr:"<145",    notes:"4 km very easy. Legs should feel heavy in taper — this is normal. Trust the process.", status:"pending" },
-  "2026-10-08":{ type:"rest",    name:"Stretch Only",             km:0,  pace:"",          hr:"",        notes:"No gym. Full stretch routine only. Piriformis, hip flexor, hamstring, calf. Light foam roll.", status:"pending" },
+  "2026-10-08":{ type:"rest",    name:"Mobility Only", km:0, pace:"", hr:"", notes:"No heavy strength this week — taper. Piriformis/hip mobility 5–8 min, light calf/hip mobility, and stop. Keep legs fresh for Friday sharpener.", status:"pending" },
   "2026-10-09":{ type:"tempo",   name:"Sharpener — 4×1000m @ I Pace", km:8, pace:"5:40–5:50", hr:"168–175", notes:"Taper sharpener — volume down, pace maintained.\n\nStructure:\n• 2 km warm-up\n• 4×1000m @ 5:40–5:50/km with 2 min easy jog rest (slightly faster than earlier I sessions)\n• 2 km cool-down\n\nGoal: keep race-pace feel in the legs without accumulating fatigue. These should feel controlled and smooth — not maximal effort.", status:"pending" },
   "2026-10-10":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Rest.", status:"pending" },
   "2026-10-11":{ type:"easy",    name:"Easy 10km + Strides",       km:10, pace:"7:10–7:30", hr:"136–151", notes:"Last moderate-length run before race week. 10 km easy Z2 + 4×100m strides at end. Strides at 5:30/km effort — feel the speed, stay relaxed. This is your final confidence run.", status:"pending" },
