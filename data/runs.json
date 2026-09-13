@@ -1,5 +1,5 @@
 {
-  "last_synced_at": "2026-09-12T18:50:40Z",
+  "last_synced_at": "2026-09-13T00:15:17Z",
   "runs": [
     {
       "date": "2025-09-12",
@@ -1022,6 +1022,17 @@
       "cad": 168.0,
       "name": "Morning Run",
       "indoor": true,
+      "sport_type": "Run"
+    },
+    {
+      "date": "2026-09-13",
+      "dist": 17.02,
+      "pM": 6,
+      "pS": 24,
+      "hr": 154.7,
+      "cad": 166.4,
+      "name": "Morning Run",
+      "indoor": false,
       "sport_type": "Run"
     }
   ]
