@@ -205,6 +205,8 @@ def main():
                     "detail_keys=", sorted(details[activity_id].keys()),
                     "stream_keys=", sorted(streams[activity_id].keys()) if isinstance(streams[activity_id], dict) else type(streams[activity_id]).__name__,
                     "stream_lengths=", {k: len(v.get("data", [])) for k, v in streams[activity_id].items() if isinstance(v, dict)},
+                    "cadence_nonnull=", sum(v is not None for v in streams[activity_id].get("cadence", {}).get("data", [])),
+                    "cadence_sample=", streams[activity_id].get("cadence", {}).get("data", [])[:3],
                 )
         except (urllib.error.HTTPError, urllib.error.URLError) as exc:
             print(f"⚠️ Split detail unavailable for activity {activity_id}: {exc}")
