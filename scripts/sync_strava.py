@@ -190,7 +190,10 @@ def main():
         str(a["id"])
         for a in newest_first
         if a.get("id") is not None
-        and not previous_runs.get(str(a["id"]), {}).get("splits")
+        and (
+            not previous_runs.get(str(a["id"]), {}).get("splits")
+            or any(s.get("cad") is None for s in previous_runs[str(a["id"])]["splits"])
+        )
     ]
     detail_ids = list(dict.fromkeys(new_ids + missing_split_ids))[:detail_limit]
     details = {}
@@ -199,17 +202,7 @@ def main():
         try:
             details[activity_id] = fetch_activity_detail(access_token, activity_id)
             streams[activity_id] = fetch_activity_streams(access_token, activity_id)
-            if activity_id == detail_ids[0]:
-                print(
-                    "   Split sources:",
-                    "detail_keys=", sorted(details[activity_id].keys()),
-                    "stream_keys=", sorted(streams[activity_id].keys()) if isinstance(streams[activity_id], dict) else type(streams[activity_id]).__name__,
-                    "stream_lengths=", {k: len(v.get("data", [])) for k, v in streams[activity_id].items() if isinstance(v, dict)},
-                    "cadence_nonnull=", sum(v is not None for v in streams[activity_id].get("cadence", {}).get("data", [])),
-                    "cadence_sample=", streams[activity_id].get("cadence", {}).get("data", [])[:3],
-                    "cadence_nonzero=", sum((v or 0) > 0 for v in streams[activity_id].get("cadence", {}).get("data", [])),
-                    "cadence_max=", max(streams[activity_id].get("cadence", {}).get("data", []) or [0]),
-                )
+
         except (urllib.error.HTTPError, urllib.error.URLError) as exc:
             print(f"⚠️ Split detail unavailable for activity {activity_id}: {exc}")
 
