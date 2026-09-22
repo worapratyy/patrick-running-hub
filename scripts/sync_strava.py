@@ -21,6 +21,7 @@ import urllib.parse
 import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
+from statistics import mean
 
 CLIENT_ID     = os.environ["STRAVA_CLIENT_ID"]
 CLIENT_SECRET = os.environ["STRAVA_CLIENT_SECRET"]
@@ -64,13 +65,51 @@ def fetch_activity_detail(access_token, activity_id):
         return json.loads(resp.read())
 
 
-def split_to_record(split, lap=None):
+def fetch_activity_streams(access_token, activity_id):
+    """Fetch distance and cadence streams for per-kilometre cadence."""
+    url = f"https://www.strava.com/api/v3/activities/{activity_id}/streams?keys=distance,cadence&key_by_type=true"
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {access_token}"})
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read())
+
+
+def stream_values(streams, key):
+    stream = streams.get(key) if isinstance(streams, dict) else None
+    if isinstance(stream, dict):
+        return stream.get("data", [])
+    return stream or []
+
+
+def cadence_by_split(splits, streams):
+    distances = stream_values(streams, "distance")
+    cadences = stream_values(streams, "cadence")
+    if not distances or not cadences or len(distances) != len(cadences):
+        return {}
+    result = {}
+    start_m = 0
+    for index, split in enumerate(splits):
+        end_m = start_m + (split.get("distance") or 0)
+        values = [
+            cadence
+            for distance, cadence in zip(distances, cadences)
+            if (distance <= end_m if index == 0 else start_m < distance <= end_m)
+            and cadence is not None
+        ]
+        if values:
+            result[split.get("split")] = round(mean(values) * 2, 1)
+        start_m = end_m
+    return result
+
+
+def split_to_record(split, lap=None, stream_cadence=None):
     distance_km = (split.get("distance") or 0) / 1000
     moving_time = split.get("moving_time") or 0
     pace_sec = moving_time / distance_km if distance_km else 0
     cadence = split.get("average_cadence")
     if cadence is None and lap:
         cadence = lap.get("average_cadence")
+    if cadence is None and stream_cadence is not None:
+        cadence = stream_cadence / 2
     heart_rate = split.get("average_heartrate")
     elevation = split.get("elevation_difference")
     return {
@@ -84,7 +123,7 @@ def split_to_record(split, lap=None):
     }
 
 
-def activity_to_run(act, detail=None, previous=None):
+def activity_to_run(act, detail=None, streams=None, previous=None):
     dist_km   = (act.get("distance") or 0) / 1000
     move_time = act.get("moving_time") or 0
     pace_sec  = (move_time / dist_km) if dist_km > 0 else 0
@@ -107,8 +146,13 @@ def activity_to_run(act, detail=None, previous=None):
     }
     if detail and detail.get("splits_metric"):
         laps = detail.get("laps", [])
+        stream_cadence = cadence_by_split(detail["splits_metric"], streams or {})
         run["splits"] = [
-            split_to_record(s, laps[index] if index < len(laps) else None)
+            split_to_record(
+                s,
+                laps[index] if index < len(laps) else None,
+                stream_cadence.get(s.get("split")),
+            )
             for index, s in enumerate(detail["splits_metric"])
         ]
     elif previous and previous.get("splits"):
@@ -150,14 +194,21 @@ def main():
     ]
     detail_ids = list(dict.fromkeys(new_ids + missing_split_ids))[:detail_limit]
     details = {}
+    streams = {}
     for activity_id in detail_ids:
         try:
             details[activity_id] = fetch_activity_detail(access_token, activity_id)
+            streams[activity_id] = fetch_activity_streams(access_token, activity_id)
         except (urllib.error.HTTPError, urllib.error.URLError) as exc:
             print(f"⚠️ Split detail unavailable for activity {activity_id}: {exc}")
 
     runs = [
-        activity_to_run(a, details.get(str(a.get("id"))), previous_runs.get(str(a.get("id"))))
+        activity_to_run(
+            a,
+            details.get(str(a.get("id"))),
+            streams.get(str(a.get("id"))),
+            previous_runs.get(str(a.get("id"))),
+        )
         for a in activities
     ]
     runs.sort(key=lambda r: r["date"] or "")
