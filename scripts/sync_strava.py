@@ -18,6 +18,7 @@ import os
 import sys
 import urllib.request
 import urllib.parse
+import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -55,7 +56,33 @@ def fetch_all_activities(access_token):
     return all_acts
 
 
-def activity_to_run(act):
+def fetch_activity_detail(access_token, activity_id):
+    """Fetch one detailed activity so per-kilometre splits are available."""
+    url = f"https://www.strava.com/api/v3/activities/{activity_id}"
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {access_token}"})
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read())
+
+
+def split_to_record(split):
+    distance_km = (split.get("distance") or 0) / 1000
+    moving_time = split.get("moving_time") or 0
+    pace_sec = moving_time / distance_km if distance_km else 0
+    cadence = split.get("average_cadence")
+    heart_rate = split.get("average_heartrate")
+    elevation = split.get("elevation_difference")
+    return {
+        "km": split.get("split"),
+        "dist": round(distance_km, 2),
+        "pM": int(pace_sec // 60),
+        "pS": int(pace_sec % 60),
+        "hr": round(heart_rate, 1) if heart_rate else None,
+        "cad": round(cadence * 2, 1) if cadence else None,
+        "elev": round(elevation, 1) if elevation is not None else None,
+    }
+
+
+def activity_to_run(act, detail=None, previous=None):
     dist_km   = (act.get("distance") or 0) / 1000
     move_time = act.get("moving_time") or 0
     pace_sec  = (move_time / dist_km) if dist_km > 0 else 0
@@ -64,7 +91,8 @@ def activity_to_run(act):
     is_indoor = act.get("trainer", False) or act.get("sport_type") == "VirtualRun"
     start_local = act.get("start_date_local", "")
 
-    return {
+    run = {
+        "id":          act.get("id"),
         "date":       start_local[:10] if start_local else None,
         "dist":       round(dist_km, 2),
         "pM":         int(pace_sec // 60),
@@ -75,6 +103,11 @@ def activity_to_run(act):
         "indoor":     bool(is_indoor),
         "sport_type": act.get("sport_type"),
     }
+    if detail and detail.get("splits_metric"):
+        run["splits"] = [split_to_record(s) for s in detail["splits_metric"]]
+    elif previous and previous.get("splits"):
+        run["splits"] = previous["splits"]
+    return run
 
 
 def main():
@@ -86,10 +119,40 @@ def main():
     activities = fetch_all_activities(access_token)
     print(f"   Total fetched: {len(activities)}")
 
+    activities = [a for a in activities if a.get("sport_type") in ("Run", "VirtualRun")]
+    previous_runs = {}
+    if OUTPUT_PATH.exists():
+        try:
+            previous_runs = {
+                str(r["id"]): r
+                for r in json.loads(OUTPUT_PATH.read_text()).get("runs", [])
+                if r.get("id") is not None
+            }
+        except (OSError, json.JSONDecodeError):
+            print("⚠️ Could not read previous runs.json; continuing without split cache.")
+
+    # The list endpoint has summary activities only. Detail calls are limited so
+    # the sync stays below Strava's API rate limit while enriching new runs.
+    detail_limit = int(os.environ.get("STRAVA_DETAIL_LIMIT", "8"))
+    newest_first = sorted(activities, key=lambda a: a.get("start_date_local", ""), reverse=True)
+    new_ids = [str(a["id"]) for a in newest_first if a.get("id") is not None and str(a["id"]) not in previous_runs]
+    missing_split_ids = [
+        str(a["id"])
+        for a in newest_first
+        if a.get("id") is not None
+        and not previous_runs.get(str(a["id"]), {}).get("splits")
+    ]
+    detail_ids = list(dict.fromkeys(new_ids + missing_split_ids))[:detail_limit]
+    details = {}
+    for activity_id in detail_ids:
+        try:
+            details[activity_id] = fetch_activity_detail(access_token, activity_id)
+        except (urllib.error.HTTPError, urllib.error.URLError) as exc:
+            print(f"⚠️ Split detail unavailable for activity {activity_id}: {exc}")
+
     runs = [
-        activity_to_run(a)
+        activity_to_run(a, details.get(str(a.get("id"))), previous_runs.get(str(a.get("id"))))
         for a in activities
-        if a.get("sport_type") in ("Run", "VirtualRun")
     ]
     runs.sort(key=lambda r: r["date"] or "")
     print(f"   Run activities: {len(runs)}")
