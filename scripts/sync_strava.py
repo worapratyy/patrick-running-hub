@@ -207,6 +207,8 @@ def main():
                     "stream_lengths=", {k: len(v.get("data", [])) for k, v in streams[activity_id].items() if isinstance(v, dict)},
                     "cadence_nonnull=", sum(v is not None for v in streams[activity_id].get("cadence", {}).get("data", [])),
                     "cadence_sample=", streams[activity_id].get("cadence", {}).get("data", [])[:3],
+                    "cadence_nonzero=", sum((v or 0) > 0 for v in streams[activity_id].get("cadence", {}).get("data", [])),
+                    "cadence_max=", max(streams[activity_id].get("cadence", {}).get("data", []) or [0]),
                 )
         except (urllib.error.HTTPError, urllib.error.URLError) as exc:
             print(f"⚠️ Split detail unavailable for activity {activity_id}: {exc}")
