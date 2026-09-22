@@ -64,11 +64,13 @@ def fetch_activity_detail(access_token, activity_id):
         return json.loads(resp.read())
 
 
-def split_to_record(split):
+def split_to_record(split, lap=None):
     distance_km = (split.get("distance") or 0) / 1000
     moving_time = split.get("moving_time") or 0
     pace_sec = moving_time / distance_km if distance_km else 0
     cadence = split.get("average_cadence")
+    if cadence is None and lap:
+        cadence = lap.get("average_cadence")
     heart_rate = split.get("average_heartrate")
     elevation = split.get("elevation_difference")
     return {
@@ -104,7 +106,11 @@ def activity_to_run(act, detail=None, previous=None):
         "sport_type": act.get("sport_type"),
     }
     if detail and detail.get("splits_metric"):
-        run["splits"] = [split_to_record(s) for s in detail["splits_metric"]]
+        laps = detail.get("laps", [])
+        run["splits"] = [
+            split_to_record(s, laps[index] if index < len(laps) else None)
+            for index, s in enumerate(detail["splits_metric"])
+        ]
     elif previous and previous.get("splits"):
         run["splits"] = previous["splits"]
     return run
