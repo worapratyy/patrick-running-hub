@@ -199,6 +199,13 @@ def main():
         try:
             details[activity_id] = fetch_activity_detail(access_token, activity_id)
             streams[activity_id] = fetch_activity_streams(access_token, activity_id)
+            if activity_id == detail_ids[0]:
+                print(
+                    "   Split sources:",
+                    "detail_keys=", sorted(details[activity_id].keys()),
+                    "stream_keys=", sorted(streams[activity_id].keys()) if isinstance(streams[activity_id], dict) else type(streams[activity_id]).__name__,
+                    "stream_lengths=", {k: len(v.get("data", [])) for k, v in streams[activity_id].items() if isinstance(v, dict)},
+                )
         except (urllib.error.HTTPError, urllib.error.URLError) as exc:
             print(f"⚠️ Split detail unavailable for activity {activity_id}: {exc}")
 
