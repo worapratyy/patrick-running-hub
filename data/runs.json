@@ -1,5 +1,5 @@
 {
-  "last_synced_at": "2026-09-22T04:15:31Z",
+  "last_synced_at": "2026-09-22T04:17:28Z",
   "runs": [
     {
       "id": 16627205214,
@@ -887,7 +887,63 @@
       "cad": 165.2,
       "name": "Morning Run",
       "indoor": true,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 7,
+          "pS": 7,
+          "hr": 125.6,
+          "cad": 162.2,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 54,
+          "hr": 131.9,
+          "cad": 162.8,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 46,
+          "hr": 131.8,
+          "cad": 165.0,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 51,
+          "hr": 132.5,
+          "cad": 166.4,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 34,
+          "hr": 151.4,
+          "cad": 169.8,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 0.03,
+          "pM": 6,
+          "pS": 45,
+          "hr": 150.5,
+          "cad": 168.6,
+          "elev": null
+        }
+      ]
     },
     {
       "id": 19536461803,
@@ -899,7 +955,81 @@
       "cad": 169.6,
       "name": "Morning Run | Tempo",
       "indoor": true,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 7,
+          "pS": 11,
+          "hr": 122.0,
+          "cad": 160.6,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 37,
+          "hr": 144.5,
+          "cad": 171.2,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 27,
+          "hr": 156.6,
+          "cad": 170.8,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 19,
+          "hr": 158.7,
+          "cad": 174.0,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 23,
+          "hr": 161.3,
+          "cad": 171.8,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 21,
+          "hr": 163.2,
+          "cad": 172.6,
+          "elev": null
+        },
+        {
+          "km": 7,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 42,
+          "hr": 155.5,
+          "cad": 167.6,
+          "elev": null
+        },
+        {
+          "km": 8,
+          "dist": 0.02,
+          "pM": 6,
+          "pS": 41,
+          "hr": 154.7,
+          "cad": 166.8,
+          "elev": null
+        }
+      ]
     },
     {
       "id": 19563319420,
@@ -911,7 +1041,126 @@
       "cad": 165.2,
       "name": "Morning | Long run",
       "indoor": true,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 56,
+          "hr": 131.3,
+          "cad": 164.2,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 47,
+          "hr": 128.5,
+          "cad": 166.4,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 44,
+          "hr": 122.0,
+          "cad": 166.6,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 54,
+          "hr": 127.3,
+          "cad": 165.0,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 46,
+          "hr": 146.3,
+          "cad": 167.0,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 47,
+          "hr": 149.0,
+          "cad": 165.6,
+          "elev": null
+        },
+        {
+          "km": 7,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 54,
+          "hr": 149.1,
+          "cad": 164.8,
+          "elev": null
+        },
+        {
+          "km": 8,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 58,
+          "hr": 152.3,
+          "cad": 165.4,
+          "elev": null
+        },
+        {
+          "km": 9,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 51,
+          "hr": 160.6,
+          "cad": 164.8,
+          "elev": null
+        },
+        {
+          "km": 10,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 59,
+          "hr": 152.1,
+          "cad": 164.0,
+          "elev": null
+        },
+        {
+          "km": 11,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 51,
+          "hr": 152.1,
+          "cad": 164.8,
+          "elev": null
+        },
+        {
+          "km": 12,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 52,
+          "hr": 152.0,
+          "cad": 163.2,
+          "elev": null
+        },
+        {
+          "km": 13,
+          "dist": 0.03,
+          "pM": 7,
+          "pS": 9,
+          "hr": 149.3,
+          "cad": 157.8,
+          "elev": null
+        }
+      ]
     },
     {
       "id": 19590600654,
@@ -923,7 +1172,90 @@
       "cad": 163.4,
       "name": "Morning Run",
       "indoor": true,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 7,
+          "pS": 22,
+          "hr": 127.3,
+          "cad": 157.0,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 54,
+          "hr": 140.0,
+          "cad": 163.6,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 49,
+          "hr": 143.2,
+          "cad": 165.6,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 52,
+          "hr": 144.4,
+          "cad": 165.2,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 56,
+          "hr": 145.9,
+          "cad": 164.8,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 56,
+          "hr": 146.0,
+          "cad": 163.2,
+          "elev": null
+        },
+        {
+          "km": 7,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 47,
+          "hr": 146.1,
+          "cad": 164.6,
+          "elev": null
+        },
+        {
+          "km": 8,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 48,
+          "hr": 147.6,
+          "cad": 164.2,
+          "elev": null
+        },
+        {
+          "km": 9,
+          "dist": 0.04,
+          "pM": 10,
+          "pS": 4,
+          "hr": 146.0,
+          "cad": 156.2,
+          "elev": null
+        }
+      ]
     },
     {
       "id": 19605657200,
@@ -935,7 +1267,63 @@
       "cad": 162.2,
       "name": "Recovery Run",
       "indoor": true,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 7,
+          "pS": 6,
+          "hr": 122.5,
+          "cad": 163.2,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 58,
+          "hr": 132.0,
+          "cad": 162.6,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 55,
+          "hr": 128.5,
+          "cad": 162.4,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 59,
+          "hr": 135.2,
+          "cad": 161.4,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 55,
+          "hr": 142.0,
+          "cad": 161.6,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 0.02,
+          "pM": 7,
+          "pS": 0,
+          "hr": 138.8,
+          "cad": 162.0,
+          "elev": null
+        }
+      ]
     },
     {
       "id": 19640003851,
@@ -947,7 +1335,90 @@
       "cad": 162.4,
       "name": "Evening Tempo Run",
       "indoor": false,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 26,
+          "hr": 146.8,
+          "cad": 162.8,
+          "elev": -5.0
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 31,
+          "hr": 160.4,
+          "cad": 161.6,
+          "elev": 0.0
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 12,
+          "hr": 161.2,
+          "cad": 163.2,
+          "elev": 0.0
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 7,
+          "hr": 167.6,
+          "cad": 161.0,
+          "elev": 0.0
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 1,
+          "hr": 160.8,
+          "cad": 162.8,
+          "elev": 0.0
+        },
+        {
+          "km": 6,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 54,
+          "hr": 159.6,
+          "cad": 164.2,
+          "elev": 0.0
+        },
+        {
+          "km": 7,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 55,
+          "hr": 159.5,
+          "cad": 163.6,
+          "elev": 0.0
+        },
+        {
+          "km": 8,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 40,
+          "hr": 165.0,
+          "cad": 160.2,
+          "elev": 0.0
+        },
+        {
+          "km": 9,
+          "dist": 0.2,
+          "pM": 6,
+          "pS": 15,
+          "hr": 156.2,
+          "cad": 157.8,
+          "elev": 0.0
+        }
+      ]
     },
     {
       "id": 19661314965,
@@ -959,7 +1430,153 @@
       "cad": 160.8,
       "name": "Morning Long Run",
       "indoor": false,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 51,
+          "hr": 138.6,
+          "cad": 163.0,
+          "elev": 0.2
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 22,
+          "hr": 152.8,
+          "cad": 162.6,
+          "elev": 0.2
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 19,
+          "hr": 154.7,
+          "cad": 163.0,
+          "elev": -1.6
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 28,
+          "hr": 157.6,
+          "cad": 161.6,
+          "elev": -0.6
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 45,
+          "hr": 155.7,
+          "cad": 161.0,
+          "elev": 1.0
+        },
+        {
+          "km": 6,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 44,
+          "hr": 157.4,
+          "cad": 160.0,
+          "elev": -0.2
+        },
+        {
+          "km": 7,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 40,
+          "hr": 158.6,
+          "cad": 160.2,
+          "elev": 0.4
+        },
+        {
+          "km": 8,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 37,
+          "hr": 161.2,
+          "cad": 160.2,
+          "elev": -1.0
+        },
+        {
+          "km": 9,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 32,
+          "hr": 158.7,
+          "cad": 160.0,
+          "elev": -0.2
+        },
+        {
+          "km": 10,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 40,
+          "hr": 160.7,
+          "cad": 157.6,
+          "elev": 0.2
+        },
+        {
+          "km": 11,
+          "dist": 1.0,
+          "pM": 19,
+          "pS": 35,
+          "hr": 140.0,
+          "cad": 148.6,
+          "elev": -0.2
+        },
+        {
+          "km": 12,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 24,
+          "hr": 157.1,
+          "cad": 163.6,
+          "elev": -0.4
+        },
+        {
+          "km": 13,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 43,
+          "hr": 156.7,
+          "cad": 164.2,
+          "elev": -0.8
+        },
+        {
+          "km": 14,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 34,
+          "hr": 159.5,
+          "cad": 164.4,
+          "elev": 0.0
+        },
+        {
+          "km": 15,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 37,
+          "hr": 158.5,
+          "cad": 162.0,
+          "elev": 0.8
+        },
+        {
+          "km": 16,
+          "dist": 0.02,
+          "pM": 8,
+          "pS": 44,
+          "hr": 156.8,
+          "cad": 150.6,
+          "elev": 0.0
+        }
+      ]
     },
     {
       "id": 19689050883,
@@ -971,7 +1588,63 @@
       "cad": 165.0,
       "name": "Morning Run",
       "indoor": true,
-      "sport_type": "Run"
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 57,
+          "hr": 128.0,
+          "cad": 162.6,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 47,
+          "hr": 139.4,
+          "cad": 166.0,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 50,
+          "hr": 144.4,
+          "cad": 165.4,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 45,
+          "hr": 147.8,
+          "cad": 165.2,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 48,
+          "hr": 149.8,
+          "cad": 165.4,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 0.01,
+          "pM": 7,
+          "pS": 38,
+          "hr": 152.2,
+          "cad": 168.0,
+          "elev": null
+        }
+      ]
     },
     {
       "id": 19758796492,
