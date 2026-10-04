@@ -851,7 +851,7 @@ const PLAN = {
   "2026-10-17":{ type:"rest",    name:"Rest",                     km:0,  pace:"",          hr:"",        notes:"Race eve. Rest. Lay out race kit. Eat a proper dinner. Sleep early. No last-minute exercise.", status:"pending" },
 
   // ── RACE A — EMS RUN Oct 18
-  "2026-10-18":{ type:"race",    name:"Thailand Post EMS RUN 2026 — 10K", km:10, pace:"5:40–5:45", hr:"162–170", notes:"🏁 RACE DAY — Thailand Post EMS RUN 2026\n📍 ไปรษณีย์กลาง บางรัก\nRegistration: TH343UVR · M 30–39 · Shirt L\n\nTarget A: Sub-57:00 (5:42/km) — 9 weeks of work, realistic\nTarget B: Sub-58:30 (5:51/km) — conservative floor\n\nPACING PLAN:\nkm 1: 5:45–5:50 — controlled, don't go out too fast in crowd\nkm 2–6: 5:40–5:45 — lock rhythm, HR 162–168\nkm 7–8: hold — if HR goes above 170 slow to 5:50\nkm 9: begin push if legs have it\nkm 10: empty the tank — 5:20–5:30\n\nNote: Race B is Oct 25 — run hard but respect recovery.", status:"pending" },
+  "2026-10-18":{ type:"race",    name:"Thailand Post EMS RUN 2026 — 10K (Controlled Tune-up)", km:10, pace:"5:50–6:00", hr:"158–166", notes:"🏁 RACE DAY — Thailand Post EMS RUN 2026\n📍 ไปรษณีย์กลาง บางรัก\nRegistration: TH343UVR · M 30–39 · Shirt L\n\nROLE: Controlled tune-up — the A-race is Saucony BKK10K on Oct 25 (7 days later). Not an all-out effort.\n\nReference: Aug 16 10K = 59:2x · 5:55/km · HR 164.5. Threshold HR is reached at ~6:20/km on the treadmill, so sub-57 (5:42) is not a safe target right now.\n\nTarget: 58:30–60:00 (5:50–6:00/km), HR ≤166. Even or slight negative split.\nFloor: finish feeling you had one more gear — beating 59:20 is a bonus, not the goal.\n\nPACING PLAN:\nkm 1–2: 6:00–6:05 — settle in the crowd, HR <158\nkm 3–7: 5:50–5:58 — steady, HR 160–165\nkm 8–9: hold; only ease forward if HR <165\nkm 10: finish strong but controlled — no sprint to the red line\n\nIf HR climbs above 168 before km 7, back off to 6:00. Protect Oct 25.", status:"pending" },
 
   // ── WEEK 9 (Oct 19–25) — Race Week 2: Saucony BKK10K Oct 25
   "2026-10-19":{ type:"rest",    name:"Post-Race Rest + Stretch",  km:0,  pace:"",          hr:"",        notes:"Full rest. Stretch gently — calf, quad, hip flexor. Eat a real meal. Sleep as long as you can. Don't analyse the race until tomorrow.", status:"pending" },
@@ -862,7 +862,7 @@ const PLAN = {
   "2026-10-24":{ type:"rest",    name:"Rest",                      km:0,  pace:"",          hr:"",        notes:"Race eve. Rest. Eat well. Lay out kit. Sleep early.", status:"pending" },
 
   // ── RACE B — Saucony BKK10K Oct 25
-  "2026-10-25":{ type:"race",    name:"Saucony BKK10K — 10K",      km:10, pace:"5:35–5:45", hr:"162–172", notes:"🏁 RACE DAY — Saucony BKK10K\n\nTarget A: Sub-57:00 — match or beat EMS result\nTarget B: Sub-58:00 — solid result off 7-day recovery\n\nStrategy: Oct 18 race gave you real race sharpness. Legs may feel slightly heavier than race 1 — that's normal, don't panic. Trust the fitness, not the feeling.\n\nkm 1–2: 5:45–5:50 — warm up into pace\nkm 3–7: 5:35–5:45 — locked rhythm\nkm 8–9: push if HR allows (under 172)\nkm 10: empty the tank\n\nYou're fitter than Aug 16. This race is your PR opportunity.", status:"pending" },
+  "2026-10-25":{ type:"race",    name:"Saucony BKK10K — 10K (A-Race)", km:10, pace:"5:40–5:50", hr:"162–170", notes:"🏁 RACE DAY — Saucony BKK10K — your A-race of the block.\n\nTarget A: Sub-58:00 (5:48/km) — realistic PR vs 59:2x on Aug 16\nStretch: 57:xx if the first half feels easy and HR stays ≤166 through km 6\nTarget B: Sub-59:20 — any PR\n\nEMS on Oct 18 was a tune-up, so you arrive race-sharp but not wrecked. Legs may feel slightly flat — that is normal. Trust the fitness.\n\nkm 1–2: 5:55–6:00 — warm into pace\nkm 3–7: 5:45–5:50 — locked rhythm, HR 162–167\nkm 8–9: push only if HR <170\nkm 10: empty the tank\n\nYou're fitter than Aug 16.", status:"pending" },
 };
 
 // ─── PHASE / WEEK META ───────────────────────────────────────────────────────
@@ -893,9 +893,9 @@ const WEEKS = [
   { id:"w21",     label:"W6 — Peak Quality 2 (R+T Combo)",   phase:"peak",     start:"2026-09-28", end:"2026-10-04" },
   { id:"w22",     label:"W7 — Taper Begins",                 phase:"taper",    start:"2026-10-05", end:"2026-10-11" },
   { id:"w23",     label:"W8 — Race Week 1 (EMS RUN Oct 18)", phase:"taper",    start:"2026-10-12", end:"2026-10-17" },
-  { id:"w-raceC", label:"RACE A — EMS RUN 10K",              phase:"race",     start:"2026-10-18", end:"2026-10-18" },
+  { id:"w-raceC", label:"RACE — EMS RUN 10K (tune-up)",              phase:"race",     start:"2026-10-18", end:"2026-10-18" },
   { id:"w-between",label:"W9 — Race Week 2 (Saucony Oct 25)",phase:"recovery", start:"2026-10-19", end:"2026-10-24" },
-  { id:"w-raceD", label:"RACE B — Saucony BKK10K",           phase:"race",     start:"2026-10-25", end:"2026-10-25" },
+  { id:"w-raceD", label:"A-RACE — Saucony BKK10K",           phase:"race",     start:"2026-10-25", end:"2026-10-25" },
 ];
 
 const PHASE_LABELS = {
@@ -975,8 +975,8 @@ function renderMain() {
   // 1. Race Countdown
   const RACES = [
     { date:'2026-08-16', short:'10K — ASICS', target:'59:15 ✓ Sub-60', color:'var(--orange)' },
-    { date:'2026-10-18', short:'EMS RUN 10K', target:'Target: Sub-57:00', color:'var(--blue)' },
-    { date:'2026-10-25', short:'Saucony BKK10K', target:'Target: Sub-57:00 PR', color:'var(--purple)' },
+    { date:'2026-10-18', short:'EMS RUN 10K', target:'Controlled tune-up · ~58:30–60:00', color:'var(--blue)' },
+    { date:'2026-10-25', short:'Saucony BKK10K', target:'A-race · Sub-58:00 PR', color:'var(--purple)' },
   ];
   const todayMs = new Date(todayStr + 'T00:00:00').getTime();
   const futureRaces = RACES.filter(r => new Date(r.date + 'T00:00:00').getTime() >= todayMs);
