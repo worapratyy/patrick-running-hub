@@ -58,6 +58,8 @@ body::before {
 }
 .hdr-brand { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; color:var(--green); letter-spacing:.04em; white-space:nowrap; }
 .hdr-div   { width:1px; height:20px; background:var(--border2); }
+.hdr-back  { font-size:12px; color:var(--muted2); text-decoration:none; padding:4px 10px; border:1px solid var(--border); border-radius:7px; white-space:nowrap; }
+.hdr-back:hover { color:var(--text); border-color:var(--border2); }
 .hdr-sub   { font-size:11px; color:var(--muted); white-space:nowrap; }
 .hdr-spacer{ flex:1; }
 .hdr-stat  { text-align:right; padding:0 10px; }
@@ -411,7 +413,8 @@ body.detail-open .main { padding-right:360px; }
 <header class="hdr">
   <div class="hdr-brand">PATRICK · 2026</div>
   <div class="hdr-div"></div>
-  <div class="hdr-sub">Jack Daniels 10K Block · VDOT 34.5 · LTHR 172 · Oct 18 → Oct 25</div>
+  <a class="hdr-back" href="index.html">← Dashboard</a>
+  <div class="hdr-sub">Saucony Oct 25 · ATM BKK 10K Nov 29 · Pocari 21K Jan 17 · LTHR 172</div>
   <div class="hdr-spacer"></div>
   <div class="hdr-stat" id="hdrWeekly">
     <div class="hv">—</div>
