@@ -315,7 +315,7 @@ function renderToday(){
 
 // ── RENDER: RACES (from plan entries of type "race") ──────
 function renderRaces(){
-  const races = Object.entries(PLAN).filter(([d,s])=>s.type==='race' && d>=TODAY).sort(([a],[b])=>a.localeCompare(b));
+  const races = Object.entries(PLAN).filter(([d,s])=>s.type==='race' && d>=TODAY && s.status!=='done').sort(([a],[b])=>a.localeCompare(b));
   const el = $('races');
   if(!races.length){ el.innerHTML = `<div class="card race-main"><div class="eyebrow">Next race</div><h3>No race planned</h3></div>`; return; }
   const [d0,s0] = races[0], n0 = daysUntil(d0);
