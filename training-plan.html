@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patrick — 2026 Race Season</title>
+<script>try{const t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -31,6 +32,19 @@
   --c-shakeout: var(--teal);
   --c-race:     var(--orange);
   --c-rest:     var(--muted);
+  --hdr: rgba(9,9,11,.96); color-scheme:dark;
+}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]){
+  --bg:#f5f5f2; --s1:#ffffff; --s2:#f0f0ec; --s3:#e4e4df; --border:#e2e2dc; --border2:#cfcfc8;
+  --text:#18181b; --muted:#6b6b73; --muted2:#4b4b53;
+  --green:#059669; --blue:#2563eb; --purple:#7c3aed; --orange:#ea580c; --teal:#0891b2; --red:#dc2626; --gold:#b45309;
+  --hdr:rgba(245,245,242,.92); color-scheme:light;
+}}
+:root[data-theme="light"]{
+  --bg:#f5f5f2; --s1:#ffffff; --s2:#f0f0ec; --s3:#e4e4df; --border:#e2e2dc; --border2:#cfcfc8;
+  --text:#18181b; --muted:#6b6b73; --muted2:#4b4b53;
+  --green:#059669; --blue:#2563eb; --purple:#7c3aed; --orange:#ea580c; --teal:#0891b2; --red:#dc2626; --gold:#b45309;
+  --hdr:rgba(245,245,242,.92); color-scheme:light;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -52,7 +66,7 @@ body::before {
 .hdr {
   position:fixed; top:2px; left:0; right:0; z-index:100;
   height:54px;
-  background:rgba(9,9,11,.96); backdrop-filter:blur(16px);
+  background:var(--hdr); backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
   display:flex; align-items:center; gap:12px; padding:0 18px;
 }
@@ -120,11 +134,11 @@ body::before {
 .cal-day.empty { cursor:default; }
 .cal-day.today { box-shadow:0 0 0 1.5px var(--green); }
 .cal-day.selected { box-shadow:0 0 0 1.5px var(--blue) !important; }
-.cal-day.t-easy     { background:#071f18; color:var(--green); }
-.cal-day.t-tempo    { background:#071525; color:var(--blue); }
-.cal-day.t-long     { background:#160d28; color:var(--purple); }
-.cal-day.t-shakeout { background:#071e28; color:var(--teal); }
-.cal-day.t-race     { background:#2a0d00; color:var(--orange); }
+.cal-day.t-easy     { background:color-mix(in srgb,var(--green) 10%,var(--s1)); color:var(--green); }
+.cal-day.t-tempo    { background:color-mix(in srgb,var(--blue) 10%,var(--s1)); color:var(--blue); }
+.cal-day.t-long     { background:color-mix(in srgb,var(--purple) 10%,var(--s1)); color:var(--purple); }
+.cal-day.t-shakeout { background:color-mix(in srgb,var(--teal) 10%,var(--s1)); color:var(--teal); }
+.cal-day.t-race     { background:color-mix(in srgb,var(--orange) 10%,var(--s1)); color:var(--orange); }
 .cal-day.t-rest     { color:var(--muted); }
 .cal-day.s-done::after { content:''; position:absolute; inset:0; background:rgba(0,229,160,.06); }
 .cal-day.s-skipped::after { content:''; position:absolute; inset:0; background:rgba(239,68,68,.07); }
@@ -223,11 +237,11 @@ body.detail-open .main { padding-right:360px; }
   text-transform:uppercase; padding:3px 9px; border-radius:20px;
   font-family:'Space Mono',monospace; margin-bottom:8px;
 }
-.t-easy     .th-type-pill { background:#071f18; color:var(--green); border:1px solid #0a4030; }
-.t-tempo    .th-type-pill { background:#071525; color:var(--blue); border:1px solid #0a2545; }
-.t-long     .th-type-pill { background:#160d28; color:var(--purple); border:1px solid #2a1250; }
-.t-shakeout .th-type-pill { background:#071e28; color:var(--teal); border:1px solid #0a3040; }
-.t-race     .th-type-pill { background:#2a0d00; color:var(--orange); border:1px solid #4a1a00; }
+.t-easy     .th-type-pill { background:color-mix(in srgb,var(--green) 10%,var(--s1)); color:var(--green); border:1px solid color-mix(in srgb,var(--green) 30%,var(--s1)); }
+.t-tempo    .th-type-pill { background:color-mix(in srgb,var(--blue) 10%,var(--s1)); color:var(--blue); border:1px solid color-mix(in srgb,var(--blue) 30%,var(--s1)); }
+.t-long     .th-type-pill { background:color-mix(in srgb,var(--purple) 10%,var(--s1)); color:var(--purple); border:1px solid color-mix(in srgb,var(--purple) 30%,var(--s1)); }
+.t-shakeout .th-type-pill { background:color-mix(in srgb,var(--teal) 10%,var(--s1)); color:var(--teal); border:1px solid color-mix(in srgb,var(--teal) 30%,var(--s1)); }
+.t-race     .th-type-pill { background:color-mix(in srgb,var(--orange) 10%,var(--s1)); color:var(--orange); border:1px solid color-mix(in srgb,var(--orange) 30%,var(--s1)); }
 .t-rest     .th-type-pill { background:var(--s2); color:var(--muted); border:1px solid var(--border); }
 
 .th-name { font-size:17px; font-weight:600; color:var(--text); line-height:1.3; }
@@ -272,11 +286,11 @@ body.detail-open .main { padding-right:360px; }
 .day-pill.is-sel { border-color:var(--blue) !important; background:rgba(59,130,246,.05); }
 .day-pill.is-past { opacity:.65; }
 .day-pill.t-rest { background:transparent; cursor:default; }
-.day-pill.t-easy     { background:#071f18; }
-.day-pill.t-tempo    { background:#071525; }
-.day-pill.t-long     { background:#160d28; }
-.day-pill.t-shakeout { background:#071e28; }
-.day-pill.t-race     { background:#2a0d00; }
+.day-pill.t-easy     { background:color-mix(in srgb,var(--green) 10%,var(--s1)); }
+.day-pill.t-tempo    { background:color-mix(in srgb,var(--blue) 10%,var(--s1)); }
+.day-pill.t-long     { background:color-mix(in srgb,var(--purple) 10%,var(--s1)); }
+.day-pill.t-shakeout { background:color-mix(in srgb,var(--teal) 10%,var(--s1)); }
+.day-pill.t-race     { background:color-mix(in srgb,var(--orange) 10%,var(--s1)); }
 
 .dp-dow { font-size:9px; color:var(--muted); font-family:'Space Mono',monospace; text-transform:uppercase; }
 .dp-date { font-size:13px; font-weight:600; color:var(--text); font-family:'Space Mono',monospace; }
@@ -367,9 +381,9 @@ body.detail-open .main { padding-right:360px; }
   transition:all .12s;
 }
 .status-btn:hover { border-color:var(--border2); color:var(--text); }
-.status-btn.active-done    { background:#071f15; border-color:#0a4030; color:var(--green); }
-.status-btn.active-pending { background:#1f1007; border-color:#40200a; color:var(--orange); }
-.status-btn.active-skipped { background:#1f0708; border-color:#40100a; color:var(--red); }
+.status-btn.active-done    { background:color-mix(in srgb,var(--green) 10%,var(--s1)); border-color:color-mix(in srgb,var(--green) 30%,var(--s1)); color:var(--green); }
+.status-btn.active-pending { background:color-mix(in srgb,var(--orange) 10%,var(--s1)); border-color:color-mix(in srgb,var(--orange) 30%,var(--s1)); color:var(--orange); }
+.status-btn.active-skipped { background:color-mix(in srgb,var(--red) 10%,var(--s1)); border-color:color-mix(in srgb,var(--red) 30%,var(--s1)); color:var(--red); }
 
 .det-edit-btn {
   width:100%; padding:7px; border-radius:6px; cursor:pointer;
@@ -414,6 +428,7 @@ body.detail-open .main { padding-right:360px; }
   <div class="hdr-brand">PATRICK · 2026</div>
   <div class="hdr-div"></div>
   <a class="hdr-back" href="index.html">← Dashboard</a>
+  <button class="hdr-back" id="themeBtn" style="cursor:pointer;background:none;font-family:inherit" onclick="(function(){const d=document.documentElement,l=d.dataset.theme?d.dataset.theme==='light':matchMedia('(prefers-color-scheme: light)').matches,t=l?'dark':'light';d.dataset.theme=t;try{localStorage.setItem('theme',t)}catch(e){}})()" aria-label="Switch light or dark mode" title="Light / dark">◐</button>
   <div class="hdr-sub">Saucony Oct 25 · ATM BKK 10K Nov 29 · Pocari 21K Jan 17 · LTHR 172</div>
   <div class="hdr-spacer"></div>
   <div class="hdr-stat" id="hdrWeekly">
@@ -870,81 +885,81 @@ const PLAN = {
   // ── ATM BKK block (Oct 26 – Nov 29) · Japan Nov 23–27 · Pocari 21K Jan 17 2027
   "2026-10-26":{ type:"rest", name:"Post-Race Rest", km:0, pace:"", hr:"", notes:"Saucony is done. Full rest, walk only. Don't analyse the race until tomorrow.", status:"pending" },
   "2026-10-27":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<140", notes:"Flush the legs. If they feel dead, cut to 3 km. Recovery, not training.", status:"pending" },
-  "2026-10-28":{ type:"rest", name:"Strength Day A — Light", km:0, pace:"", hr:"", notes:"Light lower-body stability, 2 sets, stop well before fatigue. Rebuilding phase for ATM BKK 10K.", status:"pending" },
-  "2026-10-29":{ type:"easy", name:"Easy Z2 — 6km", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Steady easy Z2. Hold HR, not pace.", status:"pending" },
-  "2026-10-30":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
-  "2026-10-31":{ type:"easy", name:"Easy Z2 — 6km", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2 + 4×20 sec relaxed strides at the end.", status:"pending" },
+  "2026-10-28":{ type:"easy", name:"Easy Z2 — 6km", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Steady easy Z2. Hold HR, not pace.", status:"pending" },
+  "2026-10-29":{ type:"rest", name:"Strength Day A — Light", km:0, pace:"", hr:"", notes:"Light lower-body stability, 2 sets, stop well before fatigue. Rebuilding phase for ATM BKK 10K.", status:"pending" },
+  "2026-10-30":{ type:"easy", name:"Easy Z2 — 6km + Strides", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2 + 4×20 sec relaxed strides at the end.", status:"pending" },
+  "2026-10-31":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest. Saturday is always off.", status:"pending" },
   "2026-11-01":{ type:"long", name:"Long Run — 10km Z2", km:10, pace:"6:50–7:20", hr:"136–151", notes:"Base rebuild after the Saucony race. Z2 only; if HR sits above 151 for several minutes, slow down.", status:"pending" },
-  "2026-11-02":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
-  "2026-11-03":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Aerobic base. Keep easy days truly easy — Friday is a threshold session.", status:"pending" },
+  "2026-11-02":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-11-03":{ type:"tempo", name:"Tempo — 2×12min Threshold (VDOT 36)", km:9, pace:"5:30–5:40", hr:"162–169", notes:"VDOT 36 threshold (T) pace: 5:30–5:40/km on the road, HR 162–169 (Z4). On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 2×12 min @ T effort, HR 162–169\n• 3 min easy jog between\n• 1.5 km cool-down\n\nSaucony showed your real threshold sits around HR 169–172. 160–166 was too easy.", status:"pending" },
   "2026-11-04":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-11-05":{ type:"rest", name:"Strength Day B — Glutes/Core", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.", status:"pending" },
-  "2026-11-06":{ type:"tempo", name:"Tempo — 2×12min Threshold (VDOT 36)", km:9, pace:"5:30–5:40", hr:"162–169", notes:"VDOT 36 threshold (T) pace: 5:30–5:40/km on the road, HR 162–169 (Z4). On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 2×12 min @ T effort, HR 162–169\n• 3 min easy jog between\n• 1.5 km cool-down\n\nSaucony showed your real threshold sits around HR 169–172. 160–166 was too easy.", status:"pending" },
+  "2026-11-05":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2026-11-06":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Aerobic base. Keep easy days truly easy — Friday is a threshold session.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2026-11-07":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest. Threshold sessions need 48 hrs to absorb.", status:"pending" },
   "2026-11-08":{ type:"long", name:"Long Run — 14km Z2", km:14, pace:"6:50–7:20", hr:"136–151", notes:"Z2 long run. Fuel and hydrate as for race day.", status:"pending" },
-  "2026-11-09":{ type:"rest", name:"Strength Day A — Light", km:0, pace:"", hr:"", notes:"Light lower-body stability. Intervals on Friday take priority.", status:"pending" },
-  "2026-11-10":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
+  "2026-11-09":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-11-10":{ type:"tempo", name:"Key Session — 5×1000m @ 10K Effort", km:9, pace:"5:18–5:26", hr:"168–174", notes:"The last big quality session. 10K effort for ATM (goal 5:24/km). HR 168–174.\n\nStructure:\n• 2 km warm-up + 4 strides\n• 5×1000m @ 5:18–5:26/km road (10K effort), HR 168–174\n• 90 sec easy jog between\n• 1.5 km cool-down\n\nPass: all five reps even, no faster than 5:18. Practise starting rep 1 at goal pace, not faster. Saucony's 5:10 start cost a fade at km 5–7.", status:"pending" },
   "2026-11-11":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-11-12":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest before intervals.", status:"pending" },
-  "2026-11-13":{ type:"tempo", name:"Key Session — 5×1000m @ 10K Effort", km:9, pace:"5:18–5:26", hr:"168–174", notes:"The last big quality session. 10K effort for ATM (goal 5:24/km). HR 168–174.\n\nStructure:\n• 2 km warm-up + 4 strides\n• 5×1000m @ 5:18–5:26/km road (10K effort), HR 168–174\n• 90 sec easy jog between\n• 1.5 km cool-down\n\nPass: all five reps even, no faster than 5:18. Practise starting rep 1 at goal pace, not faster. Saucony's 5:10 start cost a fade at km 5–7.", status:"pending" },
+  "2026-11-12":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2026-11-13":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2026-11-14":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2026-11-15":{ type:"long", name:"Long Run — 16km Z2", km:16, pace:"6:50–7:20", hr:"136–151", notes:"Peak long run before the trip. Z2 only. This is the longest run in the ATM block.", status:"pending" },
-  "2026-11-16":{ type:"rest", name:"Strength Day B — Light", km:0, pace:"", hr:"", notes:"Light glutes/core. Last strength session before the Japan trip.", status:"pending" },
-  "2026-11-17":{ type:"easy", name:"Easy Z2 — 7km", km:7, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
+  "2026-11-16":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-11-17":{ type:"tempo", name:"Tempo + Strides — 2×10min Threshold (VDOT 36)", km:8, pace:"5:30–5:40", hr:"162–169", notes:"Final threshold session, 12 days before ATM. T pace 5:30–5:40/km road, HR 162–169. On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 2×10 min @ T effort, 3 min easy jog between\n• 1 km cool-down\n• 4×20 sec strides\n\nControlled: finish feeling you could do more.", status:"pending" },
   "2026-11-18":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-11-19":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
-  "2026-11-20":{ type:"tempo", name:"Tempo + Strides — 2×10min Threshold (VDOT 36)", km:8, pace:"5:30–5:40", hr:"162–169", notes:"Final threshold session, 9 days before ATM. T pace 5:30–5:40/km road, HR 162–169. On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 2×10 min @ T effort, 3 min easy jog between\n• 1 km cool-down\n• 4×20 sec strides\n\nControlled: finish feeling you could do more.", status:"pending" },
+  "2026-11-19":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2026-11-20":{ type:"easy", name:"Easy Z2 — 7km + Strides", km:7, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2026-11-21":{ type:"rest", name:"Rest — Pack", km:0, pace:"", hr:"", notes:"Rest. Pack for Japan, pack running kit.", status:"pending" },
   "2026-11-22":{ type:"easy", name:"Easy Z2 — 12km", km:12, pace:"6:50–7:20", hr:"136–151", notes:"Last longer run before Japan. Easy Z2 only; no hero pace.", status:"pending" },
   "2026-11-23":{ type:"rest", name:"Japan Day 1 — Travel", km:0, pace:"", hr:"", notes:"✈️ Japan trip Nov 23–27. No training. Walk a lot, hydrate, sleep.", status:"pending" },
   "2026-11-24":{ type:"easy", name:"Japan — Easy 6km (optional)", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Optional easy run in Japan. Z2 only, flat route, skip if tired. Treat Japan as the taper — lots of walking already.", status:"pending" },
   "2026-11-25":{ type:"rest", name:"Japan — Rest", km:0, pace:"", hr:"", notes:"Walking day. No running.", status:"pending" },
-  "2026-11-26":{ type:"easy", name:"Japan — Easy 5km + Strides (optional)", km:5, pace:"6:40–7:10", hr:"136–151", notes:"Optional 5 km easy + 4×20 sec strides. Keep legs light.", status:"pending" },
+  "2026-11-26":{ type:"easy", name:"Japan — Easy 5km + Strides (optional)", km:5, pace:"6:40–7:10", hr:"136–151", notes:"Optional 5 km easy + 4×20 sec strides. Keep legs light. Last run before the race — Fri is the flight home and Sat is rest.", status:"pending" },
   "2026-11-27":{ type:"rest", name:"Japan Day 5 — Fly Home", km:0, pace:"", hr:"", notes:"✈️ Fly home. Hydrate, light food, sleep early. No running.", status:"pending" },
-  "2026-11-28":{ type:"shakeout", name:"Shakeout — 3km + 4 Strides", km:3, pace:"7:15–7:45", hr:"<140", notes:"3 km very easy + 4×20 sec strides. Collect race kit/BIB if not already done. Eat well, sleep early.", status:"pending" },
+  "2026-11-28":{ type:"rest", name:"Rest — Race Eve", km:0, pace:"", hr:"", notes:"Race eve, the day after flying home. Rest: collect race kit/BIB if not done, hydrate, eat well, sleep early. (Optional only if legs feel stiff from the flight: 10 min very easy jog + 2 strides.)", status:"pending" },
   "2026-11-29":{ type:"race", name:"Amazing Thailand Marathon Bangkok — 10K", km:10, pace:"5:22–5:26", hr:"165–175", notes:"🏁 RACE DAY — ATMBKK 2026 10K\n📍 Start: Sanam Luang, Ratchadamnoen Nai Rd · Finish: Na Phra That Rd\n⏰ 10K window 06:00–08:30 (Sunday). Fast & flat, World Athletics certified.\n\nPR to beat: 54:39 (Saucony, Oct 25) · VDOT 36\nTarget A: Sub-54:00 (5:24/km)\nTarget B: Sub-54:39 (any PR)\nCaution: Japan Nov 23–27 right before. If sleep and legs are off, race for B.\n\nPACING (even, not Saucony's 5:10 start):\nkm 1–2: 5:28–5:32, HR ≤168\nkm 3–7: 5:22–5:26, HR 168–172\nkm 8–9: 5:18–5:22 if HR <175\nkm 10: empty the tank\nCadence cue: 166+ from km 5 when it starts to sag.", status:"pending" },
   "2026-11-30":{ type:"rest", name:"Post-Race Rest", km:0, pace:"", hr:"", notes:"Rest. Then 2 easy weeks before the half-marathon build for Pocari Sweat Run Carnival (21K, Jan 17).", status:"pending" },
 
   // ── Pocari 21K half-marathon build (Dec 1 – Jan 17 2027)
   "2026-12-01":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<140", notes:"Post-ATM flush. If legs are dead, cut to 3 km.", status:"pending" },
   "2026-12-02":{ type:"rest", name:"Strength Day B — Light — Glutes/Core", km:0, pace:"", hr:"", notes:"Light version only. Half-marathon build starts properly next week.", status:"pending" },
-  "2026-12-03":{ type:"easy", name:"Easy Z2 — 6km", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
-  "2026-12-04":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
+  "2026-12-03":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
+  "2026-12-04":{ type:"easy", name:"Easy Z2 — 6km", km:6, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
   "2026-12-05":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2026-12-06":{ type:"long", name:"Long Run — 12km Z2", km:12, pace:"6:50–7:20", hr:"136–151", notes:"Start of the half-marathon build. Z2 only. Slow down if HR sits above 151 for more than a few minutes.", status:"pending" },
-  "2026-12-07":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat/leg press, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve. Protects the piriformis/sciatic side — no sciatic pain, no exceptions.", status:"pending" },
-  "2026-12-08":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Aerobic base.", status:"pending" },
+  "2026-12-07":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-12-08":{ type:"tempo", name:"Tempo — 3×10min Threshold (VDOT 36)", km:9, pace:"5:30–5:40", hr:"162–169", notes:"T pace 5:30–5:40/km road, HR 162–169 (Z4). On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 3×10 min @ T effort, HR 162–169\n• 2 min easy jog between\n• 1.5 km cool-down\n\nHM engine session. Comfortably hard.", status:"pending" },
   "2026-12-09":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-12-10":{ type:"rest", name:"Strength Day B — Glutes/Core", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug, piriformis/hip mobility. Moderate.", status:"pending" },
-  "2026-12-11":{ type:"tempo", name:"Tempo — 3×10min Threshold (VDOT 36)", km:9, pace:"5:30–5:40", hr:"162–169", notes:"T pace 5:30–5:40/km road, HR 162–169 (Z4). On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 3×10 min @ T effort, HR 162–169\n• 2 min easy jog between\n• 1.5 km cool-down\n\nHM engine session. Comfortably hard.", status:"pending" },
+  "2026-12-10":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2026-12-11":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Aerobic base.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2026-12-12":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2026-12-13":{ type:"long", name:"Long Run — 16km Z2", km:16, pace:"6:50–7:20", hr:"136–151", notes:"Z2 long run. Practise race-day fuelling: 1 gel around km 8–10.", status:"pending" },
-  "2026-12-14":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat/leg press, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve. Protects the piriformis/sciatic side — no sciatic pain, no exceptions.", status:"pending" },
-  "2026-12-15":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
+  "2026-12-14":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-12-15":{ type:"tempo", name:"HM Effort — 2×4km @ Half-Marathon Pace", km:11, pace:"5:45–5:55", hr:"160–167", notes:"First HM-specific session. HM pace for VDOT 36 ≈ 5:44/km; goal pace for sub-2:03 is 5:50. HR 160–167.\n\nStructure:\n• 2 km warm-up\n• 2×4 km @ 5:45–5:55/km road, HR 160–167\n• 2 min easy jog between\n• 1 km cool-down\n\nGoal: lock in the rhythm you will hold for 21 km. Steady, not hard.", status:"pending" },
   "2026-12-16":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-12-17":{ type:"rest", name:"Strength Day B — Glutes/Core", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug, piriformis/hip mobility. Moderate.", status:"pending" },
-  "2026-12-18":{ type:"tempo", name:"HM Effort — 2×4km @ Half-Marathon Pace", km:11, pace:"5:45–5:55", hr:"160–167", notes:"First HM-specific session. HM pace for VDOT 36 ≈ 5:44/km; goal pace for sub-2:03 is 5:50. HR 160–167.\n\nStructure:\n• 2 km warm-up\n• 2×4 km @ 5:45–5:55/km road, HR 160–167\n• 2 min easy jog between\n• 1 km cool-down\n\nGoal: lock in the rhythm you will hold for 21 km. Steady, not hard.", status:"pending" },
+  "2026-12-17":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2026-12-18":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2026-12-19":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2026-12-20":{ type:"long", name:"Long Run — 18km Z2", km:18, pace:"6:50–7:20", hr:"136–151", notes:"Z2 long run. Fuel as for race day.", status:"pending" },
-  "2026-12-21":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat/leg press, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve. Protects the piriformis/sciatic side — no sciatic pain, no exceptions.", status:"pending" },
-  "2026-12-22":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
+  "2026-12-21":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-12-22":{ type:"tempo", name:"Tempo — 2×15min Threshold (VDOT 36)", km:10, pace:"5:30–5:40", hr:"162–169", notes:"T pace 5:30–5:40/km road, HR 162–169. On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 2×15 min @ T effort, HR 162–169\n• 3 min easy jog between\n• 1.5 km cool-down", status:"pending" },
   "2026-12-23":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-12-24":{ type:"tempo", name:"Tempo — 2×15min Threshold (VDOT 36)", km:10, pace:"5:30–5:40", hr:"162–169", notes:"T pace 5:30–5:40/km road, HR 162–169. On the treadmill, run by HR: treadmill speed has read 40–60 s/km slower than your road pace at the same HR.\n\nStructure:\n• 2 km warm-up\n• 2×15 min @ T effort, HR 162–169\n• 3 min easy jog between\n• 1.5 km cool-down", status:"pending" },
-  "2026-12-25":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest. Holiday week — enjoy it.", status:"pending" },
+  "2026-12-24":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2026-12-25":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2026-12-26":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2026-12-27":{ type:"long", name:"Long Run — 18km, last 4km @ HM Effort", km:18, pace:"6:50–7:20 / HM 5:45–5:55", hr:"136–151, last 4 km 160–167", notes:"14 km Z2, then the last 4 km at HM pace (5:45–5:55/km road, HR 160–167). Practise finishing strong, not racing.", status:"pending" },
-  "2026-12-28":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat/leg press, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve. Protects the piriformis/sciatic side — no sciatic pain, no exceptions.", status:"pending" },
-  "2026-12-29":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
+  "2026-12-28":{ type:"rest", name:"Strength Day B — Glutes/Core (light)", km:0, pace:"", hr:"", notes:"Hip thrust, single-leg RDL, clamshell/band walk, dead bug. Moderate.\n\nKeep it light: quality session tomorrow.", status:"pending" },
+  "2026-12-29":{ type:"tempo", name:"HM Effort — 3×3km @ Half-Marathon Pace", km:12, pace:"5:45–5:55", hr:"160–167", notes:"Peak HM-specific session at 5:45–5:55/km road, HR 160–167.\n\nStructure:\n• 2 km warm-up\n• 3×3 km @ HM pace, HR 160–167\n• 2 min easy jog between\n• 1 km cool-down\n\nPass: all three reps on pace with HR ≤167 and the last rep controlled. This decides sub-2:03 vs the 2:00 stretch.", status:"pending" },
   "2026-12-30":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
-  "2026-12-31":{ type:"tempo", name:"HM Effort — 3×3km @ Half-Marathon Pace", km:12, pace:"5:45–5:55", hr:"160–167", notes:"Peak HM-specific session at 5:45–5:55/km road, HR 160–167.\n\nStructure:\n• 2 km warm-up\n• 3×3 km @ HM pace, HR 160–167\n• 2 min easy jog between\n• 1 km cool-down\n\nPass: all three reps on pace with HR ≤167 and the last rep controlled. This decides sub-2:03 vs the 2:00 stretch.", status:"pending" },
-  "2027-01-01":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest. New Year.", status:"pending" },
+  "2026-12-31":{ type:"rest", name:"Strength Day A — Lower Stability", km:0, pace:"", hr:"", notes:"Goblet squat, RDL, split squat, calf raises: 2–3 sets, 2–3 reps in reserve.", status:"pending" },
+  "2027-01-01":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2027-01-02":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2027-01-03":{ type:"long", name:"Long Run — 21km Z2 (Peak)", km:21, pace:"6:45–7:15", hr:"136–155", notes:"Peak long run, 14 days before the race. Z2 for 16 km, last 5 km steady (HR up to 160). Do not go further than 21 km. Stop if sciatic/piriformis pain returns.", status:"pending" },
-  "2027-01-04":{ type:"rest", name:"Strength Day A — Light", km:0, pace:"", hr:"", notes:"Light lower-body stability. Taper begins.", status:"pending" },
-  "2027-01-05":{ type:"easy", name:"Easy Z2 — 8km", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.", status:"pending" },
+  "2027-01-04":{ type:"rest", name:"Mobility + Light Core", km:0, pace:"", hr:"", notes:"Taper week. Piriformis/hip mobility 8 min + light core. No leg weights — sharpener tomorrow.", status:"pending" },
+  "2027-01-05":{ type:"tempo", name:"Sharpener — 2×10min Threshold + Strides", km:8, pace:"5:30–5:40", hr:"162–169", notes:"Last quality session, 12 days out. T pace 5:30–5:40/km road, HR 162–169.\n\nStructure:\n• 2 km warm-up\n• 2×10 min @ T effort, 3 min easy jog between\n• 1 km cool-down\n• 4×20 sec strides", status:"pending" },
   "2027-01-06":{ type:"easy", name:"Easy Z1 — 5km", km:5, pace:"7:15–7:45", hr:"<145", notes:"Short and easy.", status:"pending" },
   "2027-01-07":{ type:"rest", name:"Mobility Only", km:0, pace:"", hr:"", notes:"Piriformis/hip mobility 5–8 min, light calf work. No weights.", status:"pending" },
-  "2027-01-08":{ type:"tempo", name:"Sharpener — 2×10min Threshold + Strides", km:8, pace:"5:30–5:40", hr:"162–169", notes:"Last quality session, 9 days out. T pace 5:30–5:40/km road, HR 162–169.\n\nStructure:\n• 2 km warm-up\n• 2×10 min @ T effort, 3 min easy jog between\n• 1 km cool-down\n• 4×20 sec strides", status:"pending" },
+  "2027-01-08":{ type:"easy", name:"Easy Z2 — 8km + Strides", km:8, pace:"6:40–7:10", hr:"136–151", notes:"Easy Z2.\n\nFinish with 4×20 sec relaxed strides.", status:"pending" },
   "2027-01-09":{ type:"rest", name:"Rest", km:0, pace:"", hr:"", notes:"Rest.", status:"pending" },
   "2027-01-10":{ type:"long", name:"Long Run — 12km Easy", km:12, pace:"6:50–7:20", hr:"136–151", notes:"Last longer run. Easy Z2, trust the work.", status:"pending" },
   "2027-01-11":{ type:"rest", name:"Rest + Mobility", km:0, pace:"", hr:"", notes:"Race week. Stretch and mobility only.", status:"pending" },
