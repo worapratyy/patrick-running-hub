@@ -6,6 +6,7 @@
 <title>Patrick — Running Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" crossorigin="anonymous"></script>
+<script>try{const t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
 /* Same tokens as training-plan.html so the two pages read as one product */
 :root{
@@ -15,19 +16,39 @@
   --green:#00e5a0; --blue:#3b82f6; --purple:#a855f7; --orange:#f97316; --teal:#22d3ee; --red:#ef4444; --gold:#f5c842;
   --c-easy:var(--green); --c-tempo:var(--blue); --c-long:var(--purple); --c-shakeout:var(--teal); --c-race:var(--orange); --c-rest:var(--muted);
   --mono:'Space Mono',monospace; --r:14px;
+  --hdr:rgba(9,9,11,.9); --glow1:rgba(0,229,160,.10); --glow2:rgba(168,85,247,.08);
+  --err-bg:rgba(239,68,68,.1); --err-bd:rgba(239,68,68,.4); --err-tx:#fca5a5;
+  color-scheme:dark;
 }
+/* Light theme: follows the OS unless the toggle picked one */
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]){
+  --bg:#f5f5f2; --s1:#ffffff; --s2:#f0f0ec; --s3:#e4e4df; --border:#e2e2dc; --border2:#cfcfc8;
+  --text:#18181b; --muted:#6b6b73; --muted2:#4b4b53;
+  --green:#059669; --blue:#2563eb; --purple:#7c3aed; --orange:#ea580c; --teal:#0891b2; --red:#dc2626; --gold:#b45309;
+  --hdr:rgba(245,245,242,.88); --glow1:rgba(5,150,105,.08); --glow2:rgba(124,58,237,.06);
+  --err-bg:#fef2f2; --err-bd:#fca5a5; --err-tx:#991b1b; color-scheme:light;
+}}
+:root[data-theme="light"]{
+  --bg:#f5f5f2; --s1:#ffffff; --s2:#f0f0ec; --s3:#e4e4df; --border:#e2e2dc; --border2:#cfcfc8;
+  --text:#18181b; --muted:#6b6b73; --muted2:#4b4b53;
+  --green:#059669; --blue:#2563eb; --purple:#7c3aed; --orange:#ea580c; --teal:#0891b2; --red:#dc2626; --gold:#b45309;
+  --hdr:rgba(245,245,242,.88); --glow1:rgba(5,150,105,.08); --glow2:rgba(124,58,237,.06);
+  --err-bg:#fef2f2; --err-bd:#fca5a5; --err-tx:#991b1b; color-scheme:light;
+}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]) .card{box-shadow:0 1px 2px rgba(0,0,0,.04)} }
+:root[data-theme="light"] .card{box-shadow:0 1px 2px rgba(0,0,0,.04)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font:14px/1.5 'Outfit',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:2px;z-index:200;background:linear-gradient(90deg,var(--green),var(--blue),var(--purple))}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background:radial-gradient(900px 420px at 12% -10%,rgba(0,229,160,.10),transparent 60%),radial-gradient(700px 380px at 95% 0%,rgba(168,85,247,.08),transparent 60%)}
+  background:radial-gradient(900px 420px at 12% -10%,var(--glow1),transparent 60%),radial-gradient(700px 380px at 95% 0%,var(--glow2),transparent 60%)}
 a{color:inherit;text-decoration:none}
 .mono{font-family:var(--mono)}
 .muted{color:var(--muted)} .muted2{color:var(--muted2)}
 
 /* header — mirrors training plan */
-.hdr{position:sticky;top:2px;z-index:100;height:54px;background:rgba(9,9,11,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 20px}
+.hdr{position:sticky;top:2px;z-index:100;height:54px;background:var(--hdr);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 20px}
 .brand{font:700 13px var(--mono);color:var(--green);letter-spacing:.04em;white-space:nowrap}
 .nav{display:flex;gap:2px}
 .nav a{font-size:13px;color:var(--muted2);padding:6px 11px;border-radius:7px;white-space:nowrap}
@@ -154,7 +175,7 @@ td .pl i{width:7px;height:7px;border-radius:50%;background:var(--tc)}
 #overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;gap:12px;z-index:300;font:12px var(--mono);color:var(--muted)}
 #overlay i{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--green);animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#err{display:none;margin-bottom:14px;padding:12px 16px;border-radius:10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:13px}
+#err{display:none;margin-bottom:14px;padding:12px 16px;border-radius:10px;background:var(--err-bg);border:1px solid var(--err-bd);color:var(--err-tx);font-size:13px}
 .foot{margin-top:30px;font:11px var(--mono);color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:14px}
 .foot a{color:var(--muted2)} .foot a:hover{color:var(--green)}
 
@@ -176,6 +197,7 @@ td .pl i{width:7px;height:7px;border-radius:50%;background:var(--tc)}
   </nav>
   <div class="sp"></div>
   <div class="sync" id="sync"><i></i>—</div>
+  <button class="btn" id="themeBtn" onclick="toggleTheme()" aria-label="Switch light or dark mode" title="Light / dark">◐</button>
   <button class="btn" id="syncBtn" onclick="boot()">↻ Refresh</button>
 </header>
 
@@ -253,7 +275,6 @@ td .pl i{width:7px;height:7px;border-radius:50%;background:var(--tc)}
 const TODAY = new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'}); // Bangkok date, not UTC
 const Z = {z2lo:136, z2hi:151, z3hi:161, z4hi:169};
 const TYPE_C = {easy:'var(--c-easy)',tempo:'var(--c-tempo)',long:'var(--c-long)',shakeout:'var(--c-shakeout)',race:'var(--c-race)',rest:'var(--c-rest)'};
-const TYPE_HEX = {easy:'#00e5a0',tempo:'#3b82f6',long:'#a855f7',shakeout:'#22d3ee',race:'#f97316',rest:'#71717a'};
 let PLAN = {}, RUNS = [];
 
 // ── HELPERS ───────────────────────────────────────────────
@@ -415,36 +436,49 @@ function renderStats(){
 const CH={};
 function mk(id,cfg){ if(CH[id])CH[id].destroy(); CH[id]=new Chart($(id),cfg); }
 function renderCharts(){
-  Chart.defaults.color='#71717a'; Chart.defaults.borderColor='#27272a';
+  const C=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const A=(hex,a)=>{const h=hex.replace('#','');const n=parseInt(h.length===3?h.replace(/./g,'$&$&'):h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
+  const G=C('--green'),B=C('--blue'),O=C('--orange'),RD=C('--red');
+  Chart.defaults.color=C('--muted'); Chart.defaults.borderColor=C('--border');
   Chart.defaults.font.family="'Space Mono',monospace"; Chart.defaults.font.size=10;
   const base={responsive:true,maintainAspectRatio:false,animation:{duration:600},plugins:{legend:{display:false}}};
-  const grid={color:'rgba(63,63,70,.35)'};
+  const grid={color:A(C('--border2'),.45)};
 
   // weekly volume: 14 past weeks + 4 planned weeks ahead
   const curM=weekMon(TODAY), weeks=[]; for(let i=-13;i<=4;i++) weeks.push(addDays(curM,7*i));
   const act=weeks.map(w=>w>curM?null:+RUNS.filter(r=>weekMon(r.date)===w).reduce((t,r)=>t+r.dist,0).toFixed(1));
   const pln=weeks.map(w=>{ let t=0; for(let i=0;i<7;i++){const s=PLAN[addDays(w,i)]; if(isRun(s))t+=Number(s.km)||0;} return t?+t.toFixed(1):null; });
   mk('cWeekly',{type:'bar',data:{labels:weeks.map(sdt),datasets:[
-    {label:'Planned',data:pln,backgroundColor:'transparent',borderColor:'rgba(161,161,170,.5)',borderWidth:1.2,borderDash:[3,3],borderRadius:6,grouped:false,order:2},
-    {label:'Actual',data:act,backgroundColor:weeks.map(w=>w===curM?'#00e5a0':'rgba(0,229,160,.45)'),borderRadius:6,grouped:false,barPercentage:.62,order:1}
+    {label:'Planned',data:pln,backgroundColor:'transparent',borderColor:A(C('--muted2'),.5),borderWidth:1.2,borderDash:[3,3],borderRadius:6,grouped:false,order:2},
+    {label:'Actual',data:act,backgroundColor:weeks.map(w=>w===curM?G:A(G,.45)),borderRadius:6,grouped:false,barPercentage:.62,order:1}
   ]},options:{...base,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y??0} km`}}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,grid,ticks:{callback:v=>v+' km'}}}}});
 
   const rec=RUNS.filter(r=>r.date>=addDays(TODAY,-90));
   mk('cHR',{type:'line',data:{labels:rec.map(r=>sdt(r.date)),datasets:[
-    {data:rec.map(()=>Z.z2hi),borderWidth:0,pointRadius:0,fill:'+1',backgroundColor:'rgba(0,229,160,.08)'},
+    {data:rec.map(()=>Z.z2hi),borderWidth:0,pointRadius:0,fill:'+1',backgroundColor:A(G,.1)},
     {data:rec.map(()=>Z.z2lo),borderWidth:0,pointRadius:0,fill:false},
-    {label:'HR',data:rec.map(r=>r.hr||null),borderColor:'#ef4444',borderWidth:2,tension:.35,spanGaps:true,pointRadius:3.5,
-     pointBackgroundColor:rec.map(r=>r.hr<=Z.z2hi?'#00e5a0':'#f97316'),pointBorderWidth:0}
+    {label:'HR',data:rec.map(r=>r.hr||null),borderColor:RD,borderWidth:2,tension:.35,spanGaps:true,pointRadius:3.5,
+     pointBackgroundColor:rec.map(r=>r.hr<=Z.z2hi?G:O),pointBorderWidth:0}
   ]},options:{...base,plugins:{legend:{display:false},tooltip:{filter:i=>i.datasetIndex===2,callbacks:{label:c=>`${c.parsed.y} bpm · ${zone(c.parsed.y)}`}}},scales:{x:{grid:{display:false}},y:{min:110,max:175,grid}}}});
 
   const pr=rec.filter(r=>r.pM>0&&r.pM<12), pv=pr.map(r=>+pf(r.pM,r.pS).toFixed(3));
   const roll=pv.map((_,i)=>i<3?null:+(pv.slice(i-3,i+1).reduce((a,b)=>a+b,0)/4).toFixed(3));
   mk('cPace',{type:'line',data:{labels:pr.map(r=>sdt(r.date)),datasets:[
-    {label:'Pace',data:pv,borderColor:'#3b82f6',fill:false,borderWidth:2,tension:.3,pointRadius:3,pointBackgroundColor:'#3b82f6'},
-    {label:'4-run avg',data:roll,borderColor:'#f97316',borderDash:[4,3],borderWidth:1.5,pointRadius:0,fill:false}
+    {label:'Pace',data:pv,borderColor:B,fill:false,borderWidth:2,tension:.3,pointRadius:3,pointBackgroundColor:B},
+    {label:'4-run avg',data:roll,borderColor:O,borderDash:[4,3],borderWidth:1.5,pointRadius:0,fill:false}
   ]},options:{...base,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${Math.floor(c.parsed.y)}:${String(Math.round(c.parsed.y%1*60)).padStart(2,'0')}/km`}}},
     scales:{x:{grid:{display:false}},y:{reverse:true,grid,ticks:{callback:v=>`${Math.floor(v)}:${String(Math.round(v%1*60)).padStart(2,'0')}`}}}}});
 }
+
+// ── THEME ─────────────────────────────────────────────────
+function isLight(){ const t=document.documentElement.dataset.theme; return t? t==='light' : matchMedia('(prefers-color-scheme: light)').matches; }
+function toggleTheme(){
+  const t = isLight()? 'dark':'light';
+  document.documentElement.dataset.theme = t;
+  try{ localStorage.setItem('theme',t); }catch(e){}
+  if(RUNS.length) renderCharts();
+}
+matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{ if(!document.documentElement.dataset.theme && RUNS.length) renderCharts(); });
 
 // ── BOOT ──────────────────────────────────────────────────
 async function boot(){
