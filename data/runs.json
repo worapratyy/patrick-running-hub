@@ -1,5 +1,5 @@
 {
-  "last_synced_at": "2026-11-03T22:08:08Z",
+  "last_synced_at": "2026-11-04T11:22:17Z",
   "runs": [
     {
       "id": 16627205214,
@@ -10663,6 +10663,74 @@
           "pS": 53,
           "hr": 144.7,
           "cad": 165.8,
+          "elev": null
+        }
+      ]
+    },
+    {
+      "id": 20854946071,
+      "date": "2026-11-04",
+      "dist": 5.02,
+      "pM": 6,
+      "pS": 56,
+      "hr": 142.2,
+      "cad": 163.0,
+      "name": "Afternoon Run",
+      "indoor": true,
+      "sport_type": "Run",
+      "splits": [
+        {
+          "km": 1,
+          "dist": 1.0,
+          "pM": 7,
+          "pS": 7,
+          "hr": 124.4,
+          "cad": 163.0,
+          "elev": null
+        },
+        {
+          "km": 2,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 47,
+          "hr": 144.0,
+          "cad": 164.0,
+          "elev": null
+        },
+        {
+          "km": 3,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 53,
+          "hr": 145.3,
+          "cad": 163.4,
+          "elev": null
+        },
+        {
+          "km": 4,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 54,
+          "hr": 149.0,
+          "cad": 162.4,
+          "elev": null
+        },
+        {
+          "km": 5,
+          "dist": 1.0,
+          "pM": 6,
+          "pS": 55,
+          "hr": 148.8,
+          "cad": 162.4,
+          "elev": null
+        },
+        {
+          "km": 6,
+          "dist": 0.02,
+          "pM": 6,
+          "pS": 58,
+          "hr": 148.1,
+          "cad": 164.0,
           "elev": null
         }
       ]
